@@ -42,7 +42,7 @@ func constrainedPermutations(
 		return
 	}
 
-	for i := uint64(1); i <= domains[currentDomain]; i++ {
+	for i := uint64(0); i < domains[currentDomain]; i++ {
 		permutation[currentDomain] = i
 		constraintViolated := false
 		for _, constraint := range constraints {

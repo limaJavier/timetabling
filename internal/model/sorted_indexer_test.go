@@ -116,8 +116,8 @@ func TestIntegerConstraints(t *testing.T) {
 		// Assert
 		for i, index := range indices {
 			if i == 0 {
-				// First index should be 0
-				assert.Equal(t, uint64(0), index)
+				// First index should be 1
+				assert.Equal(t, uint64(1), index)
 				continue
 			}
 

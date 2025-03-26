@@ -3,24 +3,68 @@ package model
 import (
 	"slices"
 	"timetabling/internal/sat"
+
+	"github.com/samber/lo"
 )
 
 type satTimetabler struct {
 	evaluator    PredicateEvaluator
 	indexer      Indexer
 	permutations func(constraints []func(permutation []uint64) bool) [][]uint64
+	solver       sat.SATSolver
 }
 
-func newSatTimetabler() *satTimetabler {
-	panic("not implemented")
+func newSatTimetabler(solver sat.SATSolver) *satTimetabler {
+	return &satTimetabler{
+		solver: solver,
+	}
 }
 
-func (timetabler *satTimetabler) Build() sat.SATSolution {
-	panic("not implemented")
+func (timetabler *satTimetabler) Build(
+	curriculum [][]uint64,
+	availability map[uint64][][]bool,
+	rooms map[uint64]uint64,
+	professors map[uint64]uint64,
+) (sat.SATSolution, error) {
+
+	periods := uint64(len(availability[0]))
+	days := uint64(len(availability[0][0]))
+	lessons := lo.Reduce(curriculum, func(max uint64, row []uint64, _ int) uint64 {
+		current := lo.Max(row)
+		if current > max {
+			return current
+		}
+		return max
+	}, 0)
+	subjectTeachers := uint64(len(curriculum[0]))
+	classes := uint64(len(curriculum))
+
+	timetabler.evaluator = NewPredicateEvaluator(
+		availability,
+		rooms,
+		professors,
+		curriculum,
+		lessons,
+		subjectTeachers,
+	)
+	timetabler.indexer = NewIndexer(periods, days, lessons, subjectTeachers, classes)
+	timetabler.permutations = MakeConstrainedPermutations(periods, days, lessons, subjectTeachers, classes)
+
+	satInstance := sat.SAT{
+		Variables: periods * days * lessons * subjectTeachers * classes,
+		Clauses:   [][]int64{},
+	}
+
+	satInstance.Clauses = append(satInstance.Clauses, timetabler.professorConstraints()...)
+
+	solution, err := timetabler.solver.Solve(satInstance)
+	if err != nil {
+		return nil, err
+	}
+	return solution, nil
 }
 
-// TODO: This method should be private
-func (timetabler *satTimetabler) ProfessorConstraints() [][]int64 {
+func (timetabler *satTimetabler) professorConstraints() [][]int64 {
 	permutations := timetabler.permutations([]func(permutation []uint64) bool{
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, class := permutation[2], permutation[3], permutation[4]

@@ -9,10 +9,11 @@ type sortedIndexer struct {
 }
 
 func (i *sortedIndexer) Index(period, day, lesson, subjectProfessor, class uint64) uint64 {
-	return period + i.periods*(day) + i.periods*i.days*(lesson) + i.periods*i.days*i.lessons*(subjectProfessor) + i.periods*i.days*i.lessons*i.subjectProfessors*(class)
+	return period + i.periods*(day) + i.periods*i.days*(lesson) + i.periods*i.days*i.lessons*(subjectProfessor) + i.periods*i.days*i.lessons*i.subjectProfessors*(class) + 1
 }
 
 func (i *sortedIndexer) Attributes(index uint64) (period uint64, day uint64, lesson uint64, subjectProfessor uint64, class uint64) {
+	index = index - 1
 	period = index % i.periods
 	index = index / i.periods
 

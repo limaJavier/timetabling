@@ -9,7 +9,7 @@ import (
 )
 
 type SATSolver interface {
-	Solve(SAT) (SATSolution, error)
+	Solve(SAT) (SATSolution, error) // Returns a solution of the SAT instance if satisfiable, else returns nil (these are valid outputs where error shall be nil)
 }
 
 func NewKissatSolver() SATSolver {
@@ -17,24 +17,25 @@ func NewKissatSolver() SATSolver {
 }
 
 func ParseSolution(solverOutput string) SATSolution {
-	resultLine, ok := lo.Find(strings.Split(solverOutput, "\n"), func(line string) bool { return len(line) > 0 && line[0] == 'v' })
+	values := lo.Map(
+		lo.Reduce(
+			lo.Filter(strings.Split(solverOutput, "\n"), func(line string, _ int) bool {
+				return len(line) > 0 && line[0] == 'v'
+			}),
+			func(values []string, line string, _ int) []string {
+				return append(values, strings.Split(line[2:], " ")...)
+			},
+			[]string{},
+		),
+		func(valueStr string, _ int) int64 {
+			value, err := strconv.ParseInt(valueStr, 10, 64)
+			if err != nil {
+				log.Panicf("invalid literal in kissat output: %v", err)
+			}
+			return value
+		},
+	)
 
-	if !ok {
-		return nil
-	} else if len(resultLine) == 3 {
-		return SATSolution{}
-	}
-
-	splits := strings.Split(resultLine[2:len(resultLine)-2], " ")
-
-	var solution SATSolution = make(SATSolution, 0, len(splits))
-	lo.ForEach(splits, func(item string, _ int) {
-		value, err := strconv.ParseInt(item, 10, 64)
-		if item != "" && err != nil {
-			log.Panicf("invalid literal in kissat output: %v", err)
-		}
-		solution = append(solution, value)
-	})
-
+	solution := values[:len(values)-1]
 	return solution
 }

@@ -14,7 +14,21 @@ type PredicateEvaluator interface {
 	Teaches(class, subjectProfessor, lesson uint64) bool
 }
 
-func NewPredicateEvaluator() PredicateEvaluator {
-	// return newMatrixPredicateEvaluator()
-	panic("not implemented")
+func NewPredicateEvaluator(
+	availability map[uint64][][]bool,
+	rooms map[uint64]uint64,
+	professors map[uint64]uint64,
+	curriculum [][]uint64,
+	lessons uint64,
+	subjectTeachers uint64,
+) PredicateEvaluator {
+
+	return newMatrixPredicateEvaluator(
+		availability,
+		rooms,
+		professors,
+		curriculum,
+		lessons,
+		subjectTeachers,
+	)
 }
