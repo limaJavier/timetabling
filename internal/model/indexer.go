@@ -10,10 +10,10 @@ type Indexer interface {
 
 func NewIndexer(periods, days, lessons, subjectProfessors, classes uint64) Indexer {
 	return &sortedIndexer{
-		Periods:           periods,
-		Days:              days,
-		SubjectProfessors: subjectProfessors,
-		Lessons:           lessons,
-		Classes:           classes,
+		periods:           periods,
+		days:              days,
+		subjectProfessors: subjectProfessors,
+		lessons:           lessons,
+		classes:           classes,
 	}
 }
