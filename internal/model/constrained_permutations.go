@@ -48,7 +48,10 @@ func constrainedPermutations(
 		permutation[currentDomain] = i
 		constraintViolated := false
 		for _, constraint := range constraints {
-			constraintViolated = !constraint(permutation)
+			if !constraint(permutation) {
+				constraintViolated = true
+				break
+			}
 		}
 
 		if constraintViolated {
