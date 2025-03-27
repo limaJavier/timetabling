@@ -20,7 +20,7 @@ func NewPredicateEvaluator(
 	professors map[uint64]uint64,
 	curriculum [][]uint64,
 	lessons uint64,
-	subjectTeachers uint64,
+	subjectProfessors uint64,
 ) PredicateEvaluator {
 
 	return newMatrixPredicateEvaluator(
@@ -29,6 +29,6 @@ func NewPredicateEvaluator(
 		professors,
 		curriculum,
 		lessons,
-		subjectTeachers,
+		subjectProfessors,
 	)
 }

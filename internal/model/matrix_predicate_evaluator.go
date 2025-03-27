@@ -17,7 +17,7 @@ func newMatrixPredicateEvaluator(
 	professors map[uint64]uint64,
 	curriculum [][]uint64,
 	lessons uint64,
-	subjectTeachers uint64,
+	subjectProfessors uint64,
 ) *matrixPredicateEvaluator {
 
 	evaluator := matrixPredicateEvaluator{
@@ -28,12 +28,12 @@ func newMatrixPredicateEvaluator(
 
 	evaluator.allocations = make(map[uint64][][]bool) // Initialize dictionary
 	for class, _ := range curriculum {                // For each class
-		evaluator.allocations[uint64(class)] = make([][]bool, subjectTeachers) // Initialize allocation per class
+		evaluator.allocations[uint64(class)] = make([][]bool, subjectProfessors) // Initialize allocation per class
 
-		for subjectTeacher, _ := range curriculum[class] { // For each subjectTeacher
-			evaluator.allocations[uint64(class)][subjectTeacher] = make([]bool, lessons) // Initialize subjectTeacher row
-			for i := range curriculum[class][subjectTeacher] {
-				evaluator.allocations[uint64(class)][subjectTeacher][i] = true // Set to true the first j lessons where j is the number of lessons assigned for "subjectTeacher" to teach to "class" (i.e. curriculum[class][subjectTeacher])
+		for subjectProfessor, _ := range curriculum[class] { // For each subjectProfessor
+			evaluator.allocations[uint64(class)][subjectProfessor] = make([]bool, lessons) // Initialize subjectProfessor row
+			for i := range curriculum[class][subjectProfessor] {
+				evaluator.allocations[uint64(class)][subjectProfessor][i] = true // Set to true the first j lessons where j is the number of lessons assigned for "subjectProfessor" to teach to "class" (i.e. curriculum[class][subjectProfessor])
 			}
 		}
 	}
