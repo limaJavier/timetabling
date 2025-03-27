@@ -1,6 +1,7 @@
 package model
 
 import (
+	"math"
 	"timetabling/internal/sat"
 
 	"github.com/samber/lo"
@@ -56,6 +57,7 @@ func (timetabler *satTimetabler) Build(
 
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.professorConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.studentConstraints()...)
+	satInstance.Clauses = append(satInstance.Clauses, timetabler.teacherAvailabilityConstraints()...)
 
 	solution, err := timetabler.solver.Solve(satInstance)
 	if err != nil {
@@ -69,12 +71,24 @@ func (timetabler *satTimetabler) professorConstraints() [][]int64 {
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, class := permutation[2], permutation[3], permutation[4]
-			return timetabler.evaluator.Teaches(class, subjectProfessor, lesson)
+
+			return lesson == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				class == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Teaches(class, subjectProfessor, lesson)
 		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
 			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
-			return timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
 		},
 	})
 
@@ -107,12 +121,24 @@ func (timetabler *satTimetabler) studentConstraints() [][]int64 {
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, class := permutation[2], permutation[3], permutation[4]
-			return timetabler.evaluator.Teaches(class, subjectProfessor, lesson)
+
+			return lesson == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				class == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Teaches(class, subjectProfessor, lesson)
 		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
 			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
-			return timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
 		},
 	})
 
@@ -136,6 +162,45 @@ func (timetabler *satTimetabler) studentConstraints() [][]int64 {
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
 			}
 		}
+	}
+
+	return clauses
+}
+
+func (timetabler *satTimetabler) teacherAvailabilityConstraints() [][]int64 {
+	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+		// A_k(i,j) = 1
+		func(permutation []uint64) bool {
+			lesson, subjectProfessor, class := permutation[2], permutation[3], permutation[4]
+
+			return lesson == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				class == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Teaches(class, subjectProfessor, lesson)
+		},
+		// ProfessorAvailable(i, d, t) = 0
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				!timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+		},
+	})
+
+	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+
+	for _, permutation := range permutations {
+		period, day, lesson, subjectProfessor, class := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4]
+
+		index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, class)
+
+		clauses = append(clauses, []int64{-int64(index)})
 	}
 
 	return clauses
