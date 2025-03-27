@@ -1,8 +1,10 @@
 package model
 
+import "math"
+
 // Returns a stateful function (that's bound to periods, days, lessons, subjectProfessors and classes) that builds all the variables's attributes permutations that hold the constraints.
 // Attributes' order in the permutation parameter is the following: Period, Day, Lesson, SubjectProfessor, Class.
-// All the constraints must take into account that if the value of permutation[i] (for all feasible i's) is zero then the permutation is not ready to be evaluated if this evaluation involves permutation[i]
+// All the constraints must take into account that if the value of permutation[i] (for all feasible i's) is math.MaxUint64 then the permutation is not ready to be evaluated if this evaluation involves permutation[i]
 //
 // Example:
 //
@@ -10,8 +12,8 @@ package model
 //
 //	permutations := constrainedPermutations([]func(permutation []uint64) bool{
 //				func(permutation []uint64) bool {
-//	       		// Verify "permutation[1] == 0", since the predicate "permutation[1] == 1" relies in this index
-//					return permutation[1] == 0 || permutation[1] == 1
+//	       		// Verify "permutation[1] == math.MaxUint64", since the predicate "permutation[1] == 1" relies in this index
+//					return permutation[1] == math.MaxUint64 || permutation[1] == 1
 //				},
 //			})
 func MakeConstrainedPermutations(periods, days, lessons, subjectProfessors, classes uint64) func(constraints []func(permutation []uint64) bool) [][]uint64 {
@@ -21,7 +23,7 @@ func MakeConstrainedPermutations(periods, days, lessons, subjectProfessors, clas
 			constraints,
 			[]uint64{periods, days, lessons, subjectProfessors, classes},
 			0,
-			make([]uint64, 5),
+			[]uint64{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
 			&permutations,
 		)
 		return permutations
@@ -56,5 +58,5 @@ func constrainedPermutations(
 		constrainedPermutations(constraints, domains, currentDomain+1, permutation, permutations)
 	}
 
-	permutation[currentDomain] = 0
+	permutation[currentDomain] = math.MaxUint64
 }
