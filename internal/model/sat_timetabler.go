@@ -1,7 +1,6 @@
 package model
 
 import (
-	"slices"
 	"timetabling/internal/sat"
 
 	"github.com/samber/lo"
@@ -56,6 +55,7 @@ func (timetabler *satTimetabler) Build(
 	}
 
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.professorConstraints()...)
+	satInstance.Clauses = append(satInstance.Clauses, timetabler.studentConstraints()...)
 
 	solution, err := timetabler.solver.Solve(satInstance)
 	if err != nil {
@@ -66,10 +66,12 @@ func (timetabler *satTimetabler) Build(
 
 func (timetabler *satTimetabler) professorConstraints() [][]int64 {
 	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, class := permutation[2], permutation[3], permutation[4]
 			return timetabler.evaluator.Teaches(class, subjectProfessor, lesson)
 		},
+		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
 			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
 			return timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
@@ -81,11 +83,53 @@ func (timetabler *satTimetabler) professorConstraints() [][]int64 {
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
+			period1, period2 := permutation1[0], permutation2[0]
+			day1, day2 := permutation1[1], permutation2[1]
 			subjectProfessor1, subjectProfessor2 := permutation1[3], permutation2[3]
 
-			if !slices.Equal(permutation1, permutation2) && timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) {
-				period1, day1, lesson1, class1 := permutation1[0], permutation1[1], permutation1[2], permutation1[4]
-				period2, day2, lesson2, class2 := permutation2[0], permutation2[1], permutation2[2], permutation2[4]
+			// d == d', t == t', SameProfessor(i, i') = 1
+			if period1 == period2 && day1 == day2 && timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) {
+				lesson1, class1 := permutation1[2], permutation1[4]
+				lesson2, class2 := permutation2[2], permutation2[4]
+
+				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, class1)
+				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, class2)
+				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
+			}
+		}
+	}
+
+	return clauses
+}
+
+func (timetabler *satTimetabler) studentConstraints() [][]int64 {
+	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+		// A_k(i,j) = 1
+		func(permutation []uint64) bool {
+			lesson, subjectProfessor, class := permutation[2], permutation[3], permutation[4]
+			return timetabler.evaluator.Teaches(class, subjectProfessor, lesson)
+		},
+		// ProfessorAvailable(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+			return timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+		},
+	})
+
+	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+
+	for i := range len(permutations) - 1 {
+		for j := i + 1; j < len(permutations); j++ {
+			permutation1, permutation2 := permutations[i], permutations[j]
+			period1, period2 := permutation1[0], permutation2[0]
+			day1, day2 := permutation1[1], permutation2[1]
+			subjectProfessor1, subjectProfessor2 := permutation1[3], permutation2[3]
+			class1, class2 := permutation1[0], permutation2[0]
+
+			// k = k', d = d', t = t', SameProfessor(i, i') = 0
+			if class1 == class2 && period1 == period2 && day1 == day2 && !timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) {
+				lesson1 := permutation1[2]
+				lesson2 := permutation2[2]
 
 				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, class1)
 				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, class2)

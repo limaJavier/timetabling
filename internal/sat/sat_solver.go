@@ -35,7 +35,5 @@ func ParseSolution(solverOutput string) SATSolution {
 			return value
 		},
 	)
-
-	solution := values[:len(values)-1]
-	return solution
+	return values[:len(values)-1]
 }
