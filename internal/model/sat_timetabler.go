@@ -72,9 +72,13 @@ func (timetabler *satTimetabler) Build(
 		return nil, nil
 	}
 
+	present := func(variable int64) bool {
+		return lo.SomeBy(satInstance.Clauses, func(clause []int64) bool { return slices.Contains(clause, variable) })
+	}
+
 	timetable := [][5]uint64{}
 	for _, variable := range solution {
-		if variable > 0 {
+		if variable > 0 && present(variable) {
 			positive := [5]uint64{}
 			positive[0], positive[1], positive[2], positive[3], positive[4] = timetabler.indexer.Attributes(uint64(variable))
 			timetable = append(timetable, positive)
@@ -110,16 +114,26 @@ func (timetabler *satTimetabler) Verify(
 		}
 	}
 
+	//** Initialize class-assistance
+	classAssistance := make(map[uint64][][]bool, 0)
+	for class := range timetabler.classes {
+		classAssistance[class] = make([][]bool, timetabler.periods)
+		for i := range classAssistance[class] {
+			classAssistance[class][i] = make([]bool, timetabler.days)
+		}
+	}
+
 	for _, positive := range timetable {
 		period, day, subjectProfessor, class := positive[0], positive[1], positive[3], positive[4]
 		professor := professors[subjectProfessor]
 
-		// Check professor is actually available for that period and day, and it have not assisted already
-		if !availability[professor][period][day] || professorAssistance[professor][period][day] {
+		// Check professor is actually available for that period and day, and that he/she have not assisted already. Check as well for previous class assistance
+		if !availability[professor][period][day] || professorAssistance[professor][period][day] || classAssistance[class][period][day] {
 			return false
 		}
 
 		professorAssistance[professor][period][day] = true // Store professor assistance
+		classAssistance[class][period][day] = true         // Store class assistance
 		derivedCurriculum[class][subjectProfessor]++       // Store lesson taught
 	}
 
@@ -216,7 +230,7 @@ func (timetabler *satTimetabler) studentConstraints() [][]int64 {
 			period1, period2 := permutation1[0], permutation2[0]
 			day1, day2 := permutation1[1], permutation2[1]
 			subjectProfessor1, subjectProfessor2 := permutation1[3], permutation2[3]
-			class1, class2 := permutation1[0], permutation2[0]
+			class1, class2 := permutation1[4], permutation2[4]
 
 			// k = k', d = d', t = t', SameProfessor(i, i') = 0
 			if class1 == class2 && period1 == period2 && day1 == day2 && !timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) {
