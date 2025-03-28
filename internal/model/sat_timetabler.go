@@ -2,6 +2,7 @@ package model
 
 import (
 	"math"
+	"slices"
 	"timetabling/internal/sat"
 
 	"github.com/samber/lo"
@@ -31,20 +32,12 @@ func (timetabler *satTimetabler) Build(
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
-) (sat.SATSolution, error) {
+) ([][5]uint64, error) {
 
-	timetabler.periods = uint64(len(availability[0]))
-	timetabler.days = uint64(len(availability[0][0]))
-	timetabler.lessons = lo.Reduce(curriculum, func(max uint64, row []uint64, _ int) uint64 {
-		current := lo.Max(row)
-		if current > max {
-			return current
-		}
-		return max
-	}, 0)
-	timetabler.subjectProfessors = uint64(len(curriculum[0]))
-	timetabler.classes = uint64(len(curriculum))
+	//** Extract attributes's domains
+	timetabler.getAttributes(curriculum, availability)
 
+	//** Initialize dependencies
 	timetabler.evaluator = NewPredicateEvaluator(
 		availability,
 		rooms,
@@ -56,11 +49,13 @@ func (timetabler *satTimetabler) Build(
 	timetabler.indexer = NewIndexer(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.classes)
 	timetabler.permutations = MakeConstrainedPermutations(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.classes)
 
+	//** Build SAT instance
 	satInstance := sat.SAT{
 		Variables: timetabler.periods * timetabler.days * timetabler.lessons * timetabler.subjectProfessors * timetabler.classes,
 		Clauses:   [][]int64{},
 	}
 
+	// TODO: To improve performance each set of clauses could be built in a different goroutine.
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.professorConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.studentConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.professorAvailabilityConstraints()...)
@@ -69,11 +64,72 @@ func (timetabler *satTimetabler) Build(
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.negationConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.uniquenessConstraints()...)
 
+	//** Solve SAT instance
 	solution, err := timetabler.solver.Solve(satInstance)
 	if err != nil {
 		return nil, err
+	} else if solution == nil { // Return nil if the SAT instance is not satisfiable
+		return nil, nil
 	}
-	return solution, nil
+
+	timetable := [][5]uint64{}
+	for _, variable := range solution {
+		if variable > 0 {
+			positive := [5]uint64{}
+			positive[0], positive[1], positive[2], positive[3], positive[4] = timetabler.indexer.Attributes(uint64(variable))
+			timetable = append(timetable, positive)
+		}
+	}
+
+	return timetable, nil
+}
+
+func (timetabler *satTimetabler) Verify(
+	timetable [][5]uint64,
+	curriculum [][]uint64,
+	availability map[uint64][][]bool,
+	rooms map[uint64]uint64,
+	professors map[uint64]uint64,
+) bool {
+
+	//** Extract attributes's domains
+	timetabler.getAttributes(curriculum, availability)
+
+	//** Initialize derived-curriculum
+	derivedCurriculum := make([][]uint64, timetabler.classes)
+	for i := range derivedCurriculum {
+		derivedCurriculum[i] = make([]uint64, timetabler.subjectProfessors)
+	}
+
+	//** Initialize professor-assistance
+	professorAssistance := make(map[uint64][][]bool, 0)
+	for professor := range len(professors) {
+		professorAssistance[uint64(professor)] = make([][]bool, timetabler.periods)
+		for i := range professorAssistance[uint64(professor)] {
+			professorAssistance[uint64(professor)][i] = make([]bool, timetabler.days)
+		}
+	}
+
+	for _, positive := range timetable {
+		period, day, subjectProfessor, class := positive[0], positive[1], positive[3], positive[4]
+		professor := professors[subjectProfessor]
+
+		// Check professor is actually available for that period and day, and it have not assisted already
+		if !availability[professor][period][day] || professorAssistance[professor][period][day] {
+			return false
+		}
+
+		professorAssistance[professor][period][day] = true // Store professor assistance
+		derivedCurriculum[class][subjectProfessor]++       // Store lesson taught
+	}
+
+	// Check that curriculum and derivedCurriculum are the same
+	return !lo.SomeBy(
+		lo.Zip2(curriculum, derivedCurriculum),
+		func(rows lo.Tuple2[[]uint64, []uint64]) bool {
+			return !slices.Equal(rows.A, rows.B)
+		},
+	)
 }
 
 func (timetabler *satTimetabler) professorConstraints() [][]int64 {
@@ -396,4 +452,18 @@ func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
 	}
 
 	return clauses
+}
+
+func (timetabler *satTimetabler) getAttributes(curriculum [][]uint64, availability map[uint64][][]bool) {
+	timetabler.periods = uint64(len(availability[0]))
+	timetabler.days = uint64(len(availability[0][0]))
+	timetabler.lessons = lo.Reduce(curriculum, func(max uint64, row []uint64, _ int) uint64 {
+		current := lo.Max(row)
+		if current > max {
+			return current
+		}
+		return max
+	}, 0)
+	timetabler.subjectProfessors = uint64(len(curriculum[0]))
+	timetabler.classes = uint64(len(curriculum))
 }
