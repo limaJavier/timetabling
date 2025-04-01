@@ -174,6 +174,7 @@ func (timetabler *satTimetabler) professorConstraints() [][]int64 {
 
 	clauses := make([][]int64, 0, len(permutations)*len(permutations))
 
+	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
@@ -337,7 +338,7 @@ func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
 }
 
 func (timetabler *satTimetabler) completenessConstraints() [][]int64 {
-	// Lesson, SubjectProfessor, Class triplets
+	// <Lesson, SubjectProfessor, Class> triplets
 	triplets := make([][3]uint64, 0)
 	_ = timetabler.permutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
@@ -422,6 +423,7 @@ func (timetabler *satTimetabler) negationConstraints() [][]int64 {
 	return clauses
 }
 
+// TODO: This method can be performance-optimized by a triple for loop instead of going through all permutations
 func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
 	permutations := timetabler.permutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
@@ -450,6 +452,7 @@ func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
 
 	clauses := make([][]int64, 0, len(permutations)*len(permutations))
 
+	// Due to the nature of the iteration we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
@@ -457,7 +460,7 @@ func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
 			period2, day2, lesson2, subjectProfessor2, class2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4]
 
 			// k == k', i == i', j == j'
-			if class1 == class2 && subjectProfessor1 == subjectProfessor2 && lesson1 == lesson2 && !(period1 == period2 && day1 == day2) {
+			if class1 == class2 && subjectProfessor1 == subjectProfessor2 && lesson1 == lesson2 {
 				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, class1)
 				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, class2)
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})

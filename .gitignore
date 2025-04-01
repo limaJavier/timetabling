@@ -28,3 +28,6 @@ go.work.sum
 # Custom settings
 debug/
 .vscode/
+*.cnf
+*.o
+*.dat

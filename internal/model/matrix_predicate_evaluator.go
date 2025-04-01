@@ -70,7 +70,7 @@ func (evaluator *matrixPredicateEvaluator) SameRoom(subjectProfessor1, subjectPr
 	if !ok1 || !ok2 {
 		panic("subject-professor not found")
 	}
-	return room1 != room2
+	return room1 == room2
 }
 
 func (evaluator *matrixPredicateEvaluator) Teaches(class, subjectProfessor, lesson uint64) bool {
