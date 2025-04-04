@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"math"
 	"slices"
 	"timetabling/internal/sat"
@@ -9,10 +10,13 @@ import (
 )
 
 type satTimetabler struct {
+	//** Dependencies
 	evaluator    PredicateEvaluator
 	indexer      Indexer
 	permutations func(constraints []func(permutation []uint64) bool) [][]uint64 // TODO: (Refactor) Instead of a function this should be an interface ConstrainedPermutator to ensure the permutation-contract from an interface level
 	solver       sat.SATSolver
+
+	groups     map[uint64][][]uint64
 
 	periods           uint64
 	days              uint64
@@ -29,20 +33,25 @@ func newSatTimetabler(solver sat.SATSolver) *satTimetabler {
 
 func (timetabler *satTimetabler) Build(
 	curriculum [][]uint64,
+	groups map[uint64][][]uint64, // TODO: (Optional) Consider lessons as well
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
 ) ([][5]uint64, error) {
-
 	//** Extract attributes's domains
 	timetabler.getAttributes(curriculum, availability)
 
+	//** Add singleton groups for completeness
+	timetabler.addSingletonGroups(curriculum, groups)
+	timetabler.groups = groups
+
 	//** Initialize dependencies
 	timetabler.evaluator = NewPredicateEvaluator(
+		curriculum,
+		groups,
 		availability,
 		rooms,
 		professors,
-		curriculum,
 		timetabler.lessons,
 		timetabler.subjectProfessors,
 	)
@@ -181,11 +190,12 @@ func (timetabler *satTimetabler) professorConstraints() [][]int64 {
 			period1, period2 := permutation1[0], permutation2[0]
 			day1, day2 := permutation1[1], permutation2[1]
 			subjectProfessor1, subjectProfessor2 := permutation1[3], permutation2[3]
+			class1, class2 := permutation1[4], permutation2[4]
 
-			// d == d', t == t', SameProfessor(i, i') = 1
-			if period1 == period2 && day1 == day2 && timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) {
-				lesson1, class1 := permutation1[2], permutation1[4]
-				lesson2, class2 := permutation2[2], permutation2[4]
+			// d == d', t == t', SameProfessor(i, i') = 1, !Together(k1, k2, i) (where i == i')
+			if period1 == period2 && day1 == day2 && timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) && (subjectProfessor1 != subjectProfessor2 || !timetabler.evaluator.Together(subjectProfessor1, class1, class2)) {
+				lesson1 := permutation1[2]
+				lesson2 := permutation2[2]
 
 				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, class1)
 				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, class2)
@@ -315,17 +325,19 @@ func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
 
 	clauses := make([][]int64, 0, len(permutations)*len(permutations))
 
+	// Due to the nature of the iteration we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
 			period1, period2 := permutation1[0], permutation2[0]
 			day1, day2 := permutation1[1], permutation2[1]
 			subjectProfessor1, subjectProfessor2 := permutation1[3], permutation2[3]
+			class1, class2 := permutation1[4], permutation2[4]
 
-			// d == d', t == t', SameRoom(i, i') = 1
-			if period1 == period2 && day1 == day2 && timetabler.evaluator.SameRoom(subjectProfessor1, subjectProfessor2) {
-				lesson1, class1 := permutation1[2], permutation1[4]
-				lesson2, class2 := permutation2[2], permutation2[4]
+			// d == d', t == t', SameRoom(i, i') = 1, !Together(k1, k2, i) (where i == i')
+			if period1 == period2 && day1 == day2 && timetabler.evaluator.SameRoom(subjectProfessor1, subjectProfessor2) && (subjectProfessor1 != subjectProfessor2 || !timetabler.evaluator.Together(subjectProfessor1, class1, class2)) {
+				lesson1 := permutation1[2]
+				lesson2 := permutation2[2]
 
 				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, class1)
 				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, class2)
@@ -369,11 +381,11 @@ func (timetabler *satTimetabler) completenessConstraints() [][]int64 {
 	for _, triplet := range triplets {
 		lesson, subjectProfessor, class := triplet[0], triplet[1], triplet[2]
 		clause := []int64{}
-		for period := range timetabler.periods {
-			for day := range timetabler.days {
+					for period := range timetabler.periods {
+						for day := range timetabler.days {
 				// ProfessorAvailable(i, d, t) = 1
-				if timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period) {
-					index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, class)
+							if timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period) {
+								index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, class)
 					clause = append(clause, int64(index))
 				}
 			}
@@ -484,3 +496,25 @@ func (timetabler *satTimetabler) getAttributes(curriculum [][]uint64, availabili
 	timetabler.subjectProfessors = uint64(len(curriculum[0]))
 	timetabler.classes = uint64(len(curriculum))
 }
+
+func (timetabler *satTimetabler) addSingletonGroups(curriculum [][]uint64, groups map[uint64][][]uint64) {
+	for class := range timetabler.classes {
+		for subjectProfessor := range timetabler.subjectProfessors {
+			if curriculum[class][subjectProfessor] > 0 {
+				contained := false
+
+				for _, group := range groups[subjectProfessor] {
+					if slices.Contains(group, class) {
+						contained = true
+						break
+					}
+				}
+
+				if !contained {
+					groups[subjectProfessor] = append(groups[subjectProfessor], []uint64{class})
+				}
+			}
+		}
+	}
+}
+
