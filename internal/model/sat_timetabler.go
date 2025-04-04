@@ -16,6 +16,7 @@ type satTimetabler struct {
 	permutations func(constraints []func(permutation []uint64) bool) [][]uint64 // TODO: (Refactor) Instead of a function this should be an interface ConstrainedPermutator to ensure the permutation-contract from an interface level
 	solver       sat.SATSolver
 
+	curriculum [][]uint64
 	groups     map[uint64][][]uint64
 
 	periods           uint64
@@ -42,6 +43,7 @@ func (timetabler *satTimetabler) Build(
 	timetabler.getAttributes(curriculum, availability)
 
 	//** Add singleton groups for completeness
+	timetabler.curriculum = curriculum
 	timetabler.addSingletonGroups(curriculum, groups)
 	timetabler.groups = groups
 
@@ -350,50 +352,49 @@ func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
 }
 
 func (timetabler *satTimetabler) completenessConstraints() [][]int64 {
-	// <Lesson, SubjectProfessor, Class> triplets
-	triplets := make([][3]uint64, 0)
-	_ = timetabler.permutations([]func(permutation []uint64) bool{
-		// A_k(i,j) = 1
-		func(permutation []uint64) bool {
-			lesson, subjectProfessor, class := permutation[2], permutation[3], permutation[4]
+	batches := make(map[[3]uint64]map[[2]uint64][]int64) // batches is a dictionary that contains <lesson, subjectProfessor, group> as key and as value another dictionary which its key is <period, day> and its value is a list of arrays representing a combination of attributes associated with all previous keys and representing grouped classes
 
-			return lesson == math.MaxUint64 ||
-				subjectProfessor == math.MaxUint64 ||
-				class == math.MaxUint64 ||
+	for subjectProfessor, associatedGroups := range timetabler.groups {
+		for group, groupList := range associatedGroups {
+			firstClass := groupList[0]                                     // A group cannot be empty
+			lessons := timetabler.curriculum[firstClass][subjectProfessor] // We're assuming that all classes belonging to a group associated to a subject professor are to take the same number of lessons
 
-				// Actual predicate
-				timetabler.evaluator.Teaches(class, subjectProfessor, lesson)
-		},
-		// According to how ConstrainedPermutations works this predicate will be evaluated only if the previous one evaluates to true, therefore any triplet that reaches it will be a valid one
-		func(permutation []uint64) bool {
-			lesson, subjectProfessor, class := permutation[2], permutation[3], permutation[4]
-			triplet := [3]uint64{lesson, subjectProfessor, class}
+			for lesson := range lessons {
+				for _, class := range groupList {
+					// Verify subjectProfessor actually teaches that lesson to that class, panic expected if not
+					if !timetabler.evaluator.Teaches(class, subjectProfessor, lesson) {
+						panic(fmt.Sprintf("subject-professor %v is expected to teach lesson %v to class %v", subjectProfessor, lesson, class))
+					}
 
-			if lesson != math.MaxUint64 && subjectProfessor != math.MaxUint64 && class != math.MaxUint64 {
-				triplets = append(triplets, triplet)
-			}
-			return true // Always return true since class will be the last attribute to fill during backtracking, so there will be no further ado
-		},
-	})
-
-	clauses := make([][]int64, 0, len(triplets)*int(timetabler.periods)*int(timetabler.days))
-
-	for _, triplet := range triplets {
-		lesson, subjectProfessor, class := triplet[0], triplet[1], triplet[2]
-		clause := []int64{}
 					for period := range timetabler.periods {
 						for day := range timetabler.days {
-				// ProfessorAvailable(i, d, t) = 1
+							// Verify professor is available for that given period and day
 							if timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period) {
+								outerKey := [3]uint64{lesson, subjectProfessor, uint64(group)}
+								innerKey := [2]uint64{period, day}
+
+								// Initialize dictionary and list if necessary
+								_, ok := batches[outerKey]
+								if !ok {
+									batches[outerKey] = make(map[[2]uint64][]int64)
+								}
+								_, ok = batches[outerKey][innerKey]
+								if !ok {
+									batches[outerKey][innerKey] = make([]int64, 0)
+								}
+
 								index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, class)
-					clause = append(clause, int64(index))
+
+								batches[outerKey][innerKey] = append(batches[outerKey][innerKey], int64(index))
+							}
+						}
+					}
 				}
 			}
 		}
-		clauses = append(clauses, clause)
 	}
 
-	return clauses
+	return clausesFromBatches(batches)
 }
 
 func (timetabler *satTimetabler) negationConstraints() [][]int64 {
@@ -518,3 +519,31 @@ func (timetabler *satTimetabler) addSingletonGroups(curriculum [][]uint64, group
 	}
 }
 
+// TODO: (Optional) The behavior of this function can be replaced by an external library for performance concerns
+func clausesFromBatches(batches map[[3]uint64]map[[2]uint64][]int64) [][]int64 {
+	clauses := make([][]int64, 0)
+	for _, outerValue := range batches {
+		keys := make([][2]uint64, 0, len(outerValue))
+		for key := range outerValue {
+			keys = append(keys, key)
+		}
+
+		clausesFromBatch(outerValue, keys, 0, make([]int64, 0), &clauses)
+	}
+	return clauses
+}
+
+func clausesFromBatch(batch map[[2]uint64][]int64, keys [][2]uint64, currentKey uint64, clause []int64, clauses *[][]int64) {
+	if currentKey >= uint64(len(keys)) {
+		clauseCopy := make([]int64, len(clause))
+		copy(clauseCopy, clause)
+		*clauses = append(*clauses, clauseCopy)
+		return
+	}
+
+	for _, variable := range batch[keys[currentKey]] {
+		clause = append(clause, variable) // Append variable to clause
+		clausesFromBatch(batch, keys, currentKey+1, clause, clauses)
+		clause = slices.Delete(clause, len(clause)-1, len(clause)) // Remove variable from clause
+	}
+}
