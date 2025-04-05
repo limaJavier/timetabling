@@ -1,6 +1,11 @@
 package sat
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
+
+// TODO: (Optional) Define type Clause []int64
 
 type SATSolution []int64
 
@@ -10,13 +15,13 @@ type SAT struct {
 }
 
 func (s *SAT) ToDIMACS() string {
-	var dimacs string
-	dimacs += fmt.Sprintf("p cnf %d %d\n", s.Variables, len(s.Clauses))
+	var builder strings.Builder
+	fmt.Fprintf(&builder, "p cnf %d %d\n", s.Variables, len(s.Clauses))
 	for _, clause := range s.Clauses {
 		for _, literal := range clause {
-			dimacs += fmt.Sprintf("%d ", literal)
+			fmt.Fprintf(&builder, "%d ", literal)
 		}
-		dimacs += "0\n"
+		builder.WriteString("0\n")
 	}
-	return dimacs
+	return builder.String()
 }
