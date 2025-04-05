@@ -3,14 +3,68 @@ package main
 import (
 	"fmt"
 	"log"
-	"slices"
 	"timetabling/internal/model"
 	"timetabling/internal/sat"
-
-	"github.com/samber/lo"
 )
 
 func main() {
+	preprocessor := model.NewPreprocessor()
+
+	subjectTeachersStr := []string{
+		"algebraConf",
+		"logicaConf",
+		"analisisConf",
+		"programacionConf",
+		"algebraCp",
+		"algebraCp",
+		"logicaCp",
+		"logicaCp",
+		"analisisCp",
+		"analisisCp",
+		"programacionCp",
+		"programacionCp",
+		"discretaConf",
+		"edaConf",
+		"arquitecturaConf",
+		"edoConf",
+		"discretaCp",
+		"discretaCp",
+		"edaCp",
+		"edaCp",
+		"arquitecturaCp",
+		"arquitecturaCp",
+		"edoCp",
+		"edoCp",
+	}
+
+	professorsStr := []string{
+		"pancho",
+		"luisa",
+		"juan",
+		"manuel",
+		"pedro",
+		"rosa",
+		"miguel",
+		"beatriz",
+		"julia",
+		"juana",
+		"julian",
+		"sonia",
+		"esteban",
+		"rocio",
+		"leonardo",
+		"minerva",
+		"penelope",
+		"alejandro",
+		"carlos",
+		"helen",
+		"rachel",
+		"ross",
+		"chandler",
+		"phoebe",
+		"joseph",
+	}
+
 	classesCurriculumInt := [][]uint64{
 		{1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -30,20 +84,20 @@ func main() {
 	}
 
 	groupsPerSubjectProfessor := map[uint64][][]uint64{
-		// 0:  {{0, 1}},
-		// 1:  {{0, 1}},
-		// 2:  {{0, 1}},
-		// 3:  {{0, 1}},
-		// 12: {{2, 3}},
-		// 13: {{2, 3}},
-		// 14: {{2, 3}},
-		// 15: {{2, 3}},
+		0:  {{0, 1}},
+		1:  {{0, 1}},
+		2:  {{0, 1}},
+		3:  {{0, 1}},
+		12: {{2, 3}},
+		13: {{2, 3}},
+		14: {{2, 3}},
+		15: {{2, 3}},
 	}
 
-	addSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
-	curriculum, groups := extractCurriculumAndGroups(groupsPerSubjectProfessor)
+	preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
+	curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
 
-	groupsGraph := buildGroupsGraph(groups)
+	groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
 	lessons := map[uint64]uint64{}
 
@@ -109,9 +163,11 @@ func main() {
 	}
 
 	for _, positive := range timetable {
-		// str := fmt.Sprintf("%v~%v", subjectTeachersStr[positive[3]], professorsStr[professors[positive[3]]])
-		str := positive[3]
-		fmt.Printf("Period: %v, Day: %v, Lesson: %v, SubjectProfessor: %v, Group: %v \n", positive[0], positive[1], positive[2], str, positive[4])
+		subjectProfessor := fmt.Sprintf("%v~%v", subjectTeachersStr[positive[3]], professorsStr[professors[positive[3]]])
+		// subjectProfessor := positive[3]
+		for _, class := range groups[positive[4]] {
+			fmt.Printf("Period: %v, Day: %v, Lesson: %v, SubjectProfessor: %v, Class: %v \n", positive[0], positive[1], positive[2], subjectProfessor, class)
+		}
 	}
 
 	if !timetabler.Verify(timetable, curriculum, groupsGraph, lessons, availability, rooms, professors, groupsPerSubjectProfessor) {
@@ -122,102 +178,3 @@ func main() {
 }
 
 // TODO: Test this
-func addSingletonGroups(classesCurriculum [][]bool, groupsPerSubjectProfessor map[uint64][][]uint64) {
-	classes := uint64(len(classesCurriculum))
-	subjectProfessors := uint64(len(classesCurriculum[0]))
-
-	for class := range classes {
-		for subjectProfessor := range subjectProfessors {
-			if classesCurriculum[class][subjectProfessor] {
-				contained := false
-
-				for _, group := range groupsPerSubjectProfessor[subjectProfessor] {
-					if slices.Contains(group, class) {
-						contained = true
-						break
-					}
-				}
-
-				if !contained {
-					groupsPerSubjectProfessor[subjectProfessor] = append(groupsPerSubjectProfessor[subjectProfessor], []uint64{class})
-				}
-			}
-		}
-	}
-}
-
-// TODO: Test this
-func extractCurriculumAndGroups(groupsPerSubjectProfessor map[uint64][][]uint64) ([][]bool, map[uint64][]uint64) {
-	subjectProfessors := len(groupsPerSubjectProfessor)
-	curriculum := make([][]bool, 0)
-	groups := make(map[uint64][]uint64)
-
-	currentId := uint64(0)
-	for subjectProfessor, associatedGroups := range groupsPerSubjectProfessor {
-		associatedClasses := make(map[uint64]bool)
-
-		for _, group := range associatedGroups {
-			// Verify associated groups are disjoint
-			lo.ForEach(group, func(class uint64, _ int) {
-				if _, ok := associatedClasses[class]; ok {
-					panic(fmt.Sprintf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessor, class, group))
-				}
-				associatedClasses[class] = true
-			})
-
-			groupCopy := make([]uint64, len(group))
-			copy(groupCopy, group)
-			slices.Sort(groupCopy)
-
-			exists := false
-			for groupId, group := range groups {
-				if slices.Equal(group, groupCopy) {
-					curriculum[groupId][subjectProfessor] = true
-					exists = true
-					break
-				}
-			}
-
-			if !exists {
-				groups[currentId] = groupCopy
-				currentId++
-
-				row := make([]bool, subjectProfessors)
-				row[subjectProfessor] = true
-				curriculum = append(curriculum, row)
-			}
-		}
-	}
-
-	return curriculum, groups
-}
-
-// TODO: Test this
-func buildGroupsGraph(groups map[uint64][]uint64) [][]bool {
-	groupsGraph := make([][]bool, len(groups))
-
-	groupsIds := make([]uint64, 0, len(groups))
-	for id := range groups {
-		groupsIds = append(groupsIds, id)
-		groupsGraph[id] = make([]bool, len(groups)) // Initialize each row
-	}
-
-	for i := range len(groupsIds) - 1 {
-		groupsGraph[i][i] = true // For completeness we assume that groups[i][i] = true for all i
-		for j := i + 1; j < len(groupsIds); j++ {
-			id1, id2 := groupsIds[i], groupsIds[j]
-			group1, group2 := groups[id1], groups[id2]
-
-			// Verify group1 and group2 have a class in common
-			if lo.SomeBy(group1, func(class uint64) bool {
-				return slices.Contains(group2, class)
-			}) {
-				groupsGraph[id1][id2] = true
-				groupsGraph[id2][id1] = true
-			}
-		}
-	}
-	groupsGraph[len(groups)-1][len(groups)-1] = true // Set last index from diagonal to true since the previous iteration does not account for it
-
-	return groupsGraph
-}
