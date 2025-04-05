@@ -9,18 +9,28 @@ type matrixPredicateEvaluator struct {
 	rooms        map[uint64]uint64   // Room assigned to subjectProfessor
 	professors   map[uint64]uint64   // Professor belonging to subjectProfessor
 	allocations  map[uint64][][]bool // Allocation matrix per group
+	groupsGraph  [][]bool            // Groups matrix' coordinate (i, j) = true if and only if group_i and group_j have at least one class in common (i.e. it represents an undirected graph where an edge indicate that two groups share a common class). For completeness we assume that groups[i][i] = true for all i
 }
 
 func newMatrixPredicateEvaluator(
+	curriculum [][]bool,
+	groupsGraph [][]bool,
+	lessons map[uint64]uint64,
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
-	curriculum [][]uint64,
-	lessons uint64,
-	subjectProfessors uint64,
 ) *matrixPredicateEvaluator {
+	subjectProfessors := uint64(len(curriculum[0]))
+	// TODO: (Optional) Refactor into a oneliner, too much to find the max
+	maxLessons := uint64(0)
+	for _, associatedLessons := range lessons {
+		if associatedLessons > maxLessons {
+			maxLessons = associatedLessons
+		}
+	}
 
 	evaluator := matrixPredicateEvaluator{
+		groupsGraph:  groupsGraph,
 		availability: availability,
 		rooms:        rooms,
 		professors:   professors,
@@ -31,9 +41,11 @@ func newMatrixPredicateEvaluator(
 		evaluator.allocations[uint64(group)] = make([][]bool, subjectProfessors) // Initialize allocation per group
 
 		for subjectProfessor := range curriculum[group] { // For each subjectProfessor
-			evaluator.allocations[uint64(group)][subjectProfessor] = make([]bool, lessons) // Initialize subjectProfessor row
-			for i := range curriculum[group][subjectProfessor] {
-				evaluator.allocations[uint64(group)][subjectProfessor][i] = true // Set to true the first j lessons where j is the number of lessons assigned for "subjectProfessor" to teach to "group" (i.e. curriculum[group][subjectProfessor])
+			evaluator.allocations[uint64(group)][subjectProfessor] = make([]bool, maxLessons) // Initialize subjectProfessor row
+			for i := range lessons[uint64(subjectProfessor)] {
+				if curriculum[group][subjectProfessor] {
+					evaluator.allocations[uint64(group)][subjectProfessor][i] = true // Set to true the first j lessons where j is the number of lessons assigned for "subjectProfessor" to teach to "group" (i.e. curriculum[group][subjectProfessor])
+				}
 			}
 		}
 	}
@@ -79,4 +91,8 @@ func (evaluator *matrixPredicateEvaluator) Teaches(group, subjectProfessor, less
 		panic("group not found")
 	}
 	return allocation[subjectProfessor][lesson]
+}
+
+func (evaluator *matrixPredicateEvaluator) Disjoint(group1, group2 uint64) bool {
+	return !evaluator.groupsGraph[group1][group2]
 }

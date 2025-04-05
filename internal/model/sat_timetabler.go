@@ -28,23 +28,25 @@ func newSatTimetabler(solver sat.SATSolver) *satTimetabler {
 }
 
 func (timetabler *satTimetabler) Build(
-	curriculum [][]uint64,
+	curriculum [][]bool,
+	groupsGraph [][]bool,
+	lessons map[uint64]uint64,
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
 ) ([][5]uint64, error) {
 
 	//** Extract attributes's domains
-	timetabler.getAttributes(curriculum, availability)
+	timetabler.getAttributes(curriculum, lessons, availability)
 
 	//** Initialize dependencies
 	timetabler.evaluator = NewPredicateEvaluator(
+		curriculum,
+		groupsGraph,
+		lessons,
 		availability,
 		rooms,
 		professors,
-		curriculum,
-		timetabler.lessons,
-		timetabler.subjectProfessors,
 	)
 	timetabler.indexer = NewIndexer(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups)
 	timetabler.permutations = MakeConstrainedPermutations(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups)
@@ -90,14 +92,16 @@ func (timetabler *satTimetabler) Build(
 
 func (timetabler *satTimetabler) Verify(
 	timetable [][5]uint64,
-	curriculum [][]uint64,
+	curriculum [][]bool,
+	groupsGraph [][]bool,
+	lessons map[uint64]uint64,
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
 ) bool {
 
 	//** Extract attributes's domains
-	timetabler.getAttributes(curriculum, availability)
+	timetabler.getAttributes(curriculum, nil, availability)
 
 	//** Initialize derived-curriculum
 	derivedCurriculum := make([][]uint64, timetabler.groups)
@@ -137,13 +141,15 @@ func (timetabler *satTimetabler) Verify(
 		derivedCurriculum[group][subjectProfessor]++       // Store lesson taught
 	}
 
-	// Check that curriculum and derivedCurriculum are the same
-	return !lo.SomeBy(
-		lo.Zip2(curriculum, derivedCurriculum),
-		func(rows lo.Tuple2[[]uint64, []uint64]) bool {
-			return !slices.Equal(rows.A, rows.B)
-		},
-	)
+	// // Check that curriculum and derivedCurriculum are the same
+	// return !lo.SomeBy(
+	// 	lo.Zip2(curriculum, derivedCurriculum),
+	// 	func(rows lo.Tuple2[[]uint64, []uint64]) bool {
+	// 		return !slices.Equal(rows.A, rows.B)
+	// 	},
+	// )
+
+	panic("not implemented")
 }
 
 func (timetabler *satTimetabler) professorConstraints() [][]int64 {
@@ -240,6 +246,7 @@ func (timetabler *satTimetabler) studentConstraints() [][]int64 {
 
 				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1)
 				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2)
+
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
 			}
 		}
@@ -410,7 +417,7 @@ func (timetabler *satTimetabler) negationConstraints() [][]int64 {
 		},
 	})
 
-	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+	clauses := make([][]int64, 0)
 
 	for _, permutation := range permutations {
 		period, day, lesson, subjectProfessor, group := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4]
@@ -471,16 +478,17 @@ func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
 	return clauses
 }
 
-func (timetabler *satTimetabler) getAttributes(curriculum [][]uint64, availability map[uint64][][]bool) {
+func (timetabler *satTimetabler) getAttributes(curriculum [][]bool, lessons map[uint64]uint64, availability map[uint64][][]bool) {
 	timetabler.periods = uint64(len(availability[0]))
 	timetabler.days = uint64(len(availability[0][0]))
-	timetabler.lessons = lo.Reduce(curriculum, func(max uint64, row []uint64, _ int) uint64 {
-		current := lo.Max(row)
-		if current > max {
-			return current
-		}
-		return max
-	}, 0)
 	timetabler.subjectProfessors = uint64(len(curriculum[0]))
 	timetabler.groups = uint64(len(curriculum))
+
+	// TODO: (Optional) Refactor into a oneliner, too much to find the max
+	timetabler.lessons = 0
+	for _, associatedLessons := range lessons {
+		if associatedLessons > timetabler.lessons {
+			timetabler.lessons = associatedLessons
+		}
+	}
 }

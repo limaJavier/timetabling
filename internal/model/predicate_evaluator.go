@@ -18,20 +18,20 @@ type PredicateEvaluator interface {
 }
 
 func NewPredicateEvaluator(
+	curriculum [][]bool,
+	groupsGraph [][]bool,
+	lessons map[uint64]uint64,
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
-	curriculum [][]uint64,
-	lessons uint64,
-	subjectProfessors uint64,
 ) PredicateEvaluator {
 
 	return newMatrixPredicateEvaluator(
+		curriculum,
+		groupsGraph,
+		lessons,
 		availability,
 		rooms,
 		professors,
-		curriculum,
-		lessons,
-		subjectProfessors,
 	)
 }
