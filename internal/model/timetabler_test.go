@@ -7,14 +7,45 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TODO: Change test into a file containing multiple test cases for different scenarios
 func TestBuild(t *testing.T) {
 	t.Run("Test I", func(t *testing.T) {
 		// Arrange
-		curriculum := [][]uint64{
+		preprocessor := NewPreprocessor()
+
+		classesCurriculumInt := [][]uint64{
 			{1, 1, 1, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0},
 			{1, 1, 1, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0},
 			{0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0},
 			{0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2},
+		}
+
+		classesCurriculum := [][]bool{}
+
+		for i, row := range classesCurriculumInt {
+			classesCurriculum = append(classesCurriculum, make([]bool, len(row)))
+			for j, bit := range row {
+				if bit > 0 {
+					classesCurriculum[i][j] = true
+				}
+			}
+		}
+
+		groupsPerSubjectProfessor := map[uint64][][]uint64{}
+
+		preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
+		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
+
+		groupsGraph := preprocessor.BuildGroupsGraph(groups)
+
+		lessons := map[uint64]uint64{}
+
+		for i := range len(curriculum[0]) {
+			amount := uint64(1)
+			if i > 5 {
+				amount = 2
+			}
+			lessons[uint64(i)] = amount
 		}
 
 		professors := map[uint64]uint64{
@@ -73,21 +104,50 @@ func TestBuild(t *testing.T) {
 		timetabler := NewTimetabler(solver)
 
 		// Act
-		timetable, err := timetabler.Build(curriculum, availability, rooms, professors)
+		timetable, err := timetabler.Build(curriculum, groupsGraph, lessons, availability, rooms, professors)
 
 		// Assert
 		assert.Nil(t, err)
 		assert.NotNil(t, timetable)
-		assert.True(t, timetabler.Verify(timetable, curriculum, availability, rooms, professors))
+		assert.True(t, timetabler.Verify(timetable, curriculum, groupsGraph, lessons, availability, rooms, professors, groupsPerSubjectProfessor))
 	})
 
 	t.Run("Test II", func(t *testing.T) {
 		// Arrange
-		curriculum := [][]uint64{
+		classesCurriculumInt := [][]uint64{
 			{1, 1, 1, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0},
 			{1, 1, 1, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0},
 			{0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0},
 			{0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2},
+		}
+
+		preprocessor := NewPreprocessor()
+		classesCurriculum := [][]bool{}
+
+		for i, row := range classesCurriculumInt {
+			classesCurriculum = append(classesCurriculum, make([]bool, len(row)))
+			for j, bit := range row {
+				if bit > 0 {
+					classesCurriculum[i][j] = true
+				}
+			}
+		}
+
+		groupsPerSubjectProfessor := map[uint64][][]uint64{}
+
+		preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
+		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
+
+		groupsGraph := preprocessor.BuildGroupsGraph(groups)
+
+		lessons := map[uint64]uint64{}
+
+		for i := range len(curriculum[0]) {
+			amount := uint64(1)
+			if i > 5 {
+				amount = 2
+			}
+			lessons[uint64(i)] = amount
 		}
 
 		professors := map[uint64]uint64{
@@ -177,21 +237,54 @@ func TestBuild(t *testing.T) {
 		timetabler := NewTimetabler(solver)
 
 		// Act
-		timetable, err := timetabler.Build(curriculum, availability, rooms, professors)
+		timetable, err := timetabler.Build(curriculum, groupsGraph, lessons, availability, rooms, professors)
 
 		// Assert
 		assert.Nil(t, err)
 		assert.NotNil(t, timetable)
-		assert.True(t, timetabler.Verify(timetable, curriculum, availability, rooms, professors))
+		assert.True(t, timetabler.Verify(timetable, curriculum, groupsGraph, lessons, availability, rooms, professors, groupsPerSubjectProfessor))
 	})
 
 	t.Run("Test III", func(t *testing.T) {
-		// Arrange
-		curriculum := [][]uint64{
+		preprocessor := NewPreprocessor()
+		classesCurriculumInt := [][]uint64{
 			{1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 			{1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0},
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+		}
+
+		classesCurriculum := [][]bool{}
+
+		for i, row := range classesCurriculumInt {
+			classesCurriculum = append(classesCurriculum, make([]bool, len(row)))
+			for j, bit := range row {
+				if bit == 1 {
+					classesCurriculum[i][j] = true
+				}
+			}
+		}
+
+		groupsPerSubjectProfessor := map[uint64][][]uint64{
+			0:  {{0, 1}},
+			1:  {{0, 1}},
+			2:  {{0, 1}},
+			3:  {{0, 1}},
+			12: {{2, 3}},
+			13: {{2, 3}},
+			14: {{2, 3}},
+			15: {{2, 3}},
+		}
+
+		preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
+		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
+
+		groupsGraph := preprocessor.BuildGroupsGraph(groups)
+
+		lessons := map[uint64]uint64{}
+
+		for i := range len(curriculum[0]) {
+			lessons[uint64(i)] = 1
 		}
 
 		professors := map[uint64]uint64{}
@@ -204,6 +297,9 @@ func TestBuild(t *testing.T) {
 
 		for i := range 50 {
 			availability[uint64(i)] = [][]bool{
+				{true, true, true, true, true},
+				{true, true, true, true, true},
+				{true, true, true, true, true},
 				{true, true, true, true, true},
 				{true, true, true, true, true},
 				{true, true, true, true, true},
@@ -241,11 +337,11 @@ func TestBuild(t *testing.T) {
 		timetabler := NewTimetabler(solver)
 
 		// Act
-		timetable, err := timetabler.Build(curriculum, availability, rooms, professors)
+		timetable, err := timetabler.Build(curriculum, groupsGraph, lessons, availability, rooms, professors)
 
 		// Assert
 		assert.Nil(t, err)
 		assert.NotNil(t, timetable)
-		assert.True(t, timetabler.Verify(timetable, curriculum, availability, rooms, professors))
+		assert.True(t, timetabler.Verify(timetable, curriculum, groupsGraph, lessons, availability, rooms, professors, groupsPerSubjectProfessor))
 	})
 }
