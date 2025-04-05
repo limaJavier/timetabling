@@ -95,7 +95,7 @@ func main() {
 	}
 
 	preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
-	curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
+	curriculum, groups := preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor)
 
 	groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
@@ -176,5 +176,3 @@ func main() {
 
 	fmt.Println("Well done!")
 }
-
-// TODO: Test this

@@ -34,7 +34,7 @@ func TestBuild(t *testing.T) {
 		groupsPerSubjectProfessor := map[uint64][][]uint64{}
 
 		preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
-		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
+		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor)
 
 		groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
@@ -136,7 +136,7 @@ func TestBuild(t *testing.T) {
 		groupsPerSubjectProfessor := map[uint64][][]uint64{}
 
 		preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
-		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
+		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor)
 
 		groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
@@ -277,7 +277,7 @@ func TestBuild(t *testing.T) {
 		}
 
 		preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
-		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
+		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor)
 
 		groupsGraph := preprocessor.BuildGroupsGraph(groups)
 

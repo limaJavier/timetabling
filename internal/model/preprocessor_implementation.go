@@ -34,8 +34,7 @@ func (preprocessor *preprocessorImplementation) AddSingletonGroups(classesCurric
 	}
 }
 
-// TODO: Test this
-func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(groupsPerSubjectProfessor map[uint64][][]uint64) ([][]bool, map[uint64][]uint64) {
+func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(classesCurriculum [][]bool, groupsPerSubjectProfessor map[uint64][][]uint64) ([][]bool, map[uint64][]uint64) {
 	subjectProfessors := len(groupsPerSubjectProfessor)
 	curriculum := make([][]bool, 0)
 	groups := make(map[uint64][]uint64)
@@ -51,6 +50,11 @@ func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(group
 					panic(fmt.Sprintf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessor, class, group))
 				}
 				associatedClasses[class] = true
+
+				// Verify that the associated class has the subjectProfessor as well in its curriculum
+				if !classesCurriculum[class][subjectProfessor] {
+					panic(fmt.Sprintf("subjectProfessor %v is expected to teach class %v from group %v", subjectProfessor, class, group))
+				}
 			})
 
 			groupCopy := make([]uint64, len(group))
@@ -80,7 +84,6 @@ func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(group
 	return curriculum, groups
 }
 
-// TODO: Test this
 func (preprocessor *preprocessorImplementation) BuildGroupsGraph(groups map[uint64][]uint64) [][]bool {
 	groupsGraph := make([][]bool, len(groups))
 

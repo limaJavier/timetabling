@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-// TODO: (Optional) Define type Clause []int64
-
 type SATSolution []int64
 
 type SAT struct {
