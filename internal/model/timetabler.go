@@ -20,6 +20,7 @@ type Timetabler interface {
 		availability map[uint64][][]bool,
 		rooms map[uint64]uint64,
 		professors map[uint64]uint64,
+		groupsPerSubjectProfessor map[uint64][][]uint64,
 	) bool
 }
 

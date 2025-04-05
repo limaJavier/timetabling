@@ -47,7 +47,7 @@ func main() {
 
 	lessons := map[uint64]uint64{}
 
-	for i := range 50 {
+	for i := range len(curriculum[0]) {
 		lessons[uint64(i)] = 1
 	}
 
@@ -61,6 +61,9 @@ func main() {
 
 	for i := range 50 {
 		availability[uint64(i)] = [][]bool{
+			{true, true, true, true, true},
+			{true, true, true, true, true},
+			{true, true, true, true, true},
 			{true, true, true, true, true},
 			{true, true, true, true, true},
 			{true, true, true, true, true},
@@ -111,13 +114,11 @@ func main() {
 		fmt.Printf("Period: %v, Day: %v, Lesson: %v, SubjectProfessor: %v, Group: %v \n", positive[0], positive[1], positive[2], str, positive[4])
 	}
 
-	// if !timetabler.Verify(timetable, curriculum, groupsGraph, lessons, availability, rooms, professors) {
-	// 	log.Fatal("Verification failed")
-	// }
-}
+	if !timetabler.Verify(timetable, curriculum, groupsGraph, lessons, availability, rooms, professors, groupsPerSubjectProfessor) {
+		log.Fatal("Verification failed")
+	}
 
-func ParseCurriculum(classCurriculum [][]bool, classGroups map[uint64][][]uint64) {
-
+	fmt.Println("Well done!")
 }
 
 // TODO: Test this

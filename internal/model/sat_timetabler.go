@@ -1,6 +1,7 @@
 package model
 
 import (
+	"maps"
 	"math"
 	"slices"
 	"timetabling/internal/sat"
@@ -98,16 +99,14 @@ func (timetabler *satTimetabler) Verify(
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
+	groupsPerSubjectProfessor map[uint64][][]uint64,
 ) bool {
 
 	//** Extract attributes's domains
-	timetabler.getAttributes(curriculum, nil, availability)
+	timetabler.getAttributes(curriculum, lessons, availability)
 
-	//** Initialize derived-curriculum
-	derivedCurriculum := make([][]uint64, timetabler.groups)
-	for i := range derivedCurriculum {
-		derivedCurriculum[i] = make([]uint64, timetabler.subjectProfessors)
-	}
+	//** Initialize derived-lessons
+	derivedLessons := make(map[uint64]uint64)
 
 	//** Initialize professor-assistance
 	professorAssistance := make(map[uint64][][]bool, 0)
@@ -132,24 +131,20 @@ func (timetabler *satTimetabler) Verify(
 		professor := professors[subjectProfessor]
 
 		// Check professor is actually available for that period and day, and that he/she have not assisted already. Check as well for previous group assistance
-		if !availability[professor][period][day] || professorAssistance[professor][period][day] || groupAssistance[group][period][day] {
+		if !availability[professor][period][day] || professorAssistance[professor][period][day] || collide(groupsGraph, groupAssistance, group, period, day) {
 			return false
 		}
 
 		professorAssistance[professor][period][day] = true // Store professor assistance
 		groupAssistance[group][period][day] = true         // Store group assistance
-		derivedCurriculum[group][subjectProfessor]++       // Store lesson taught
+		derivedLessons[subjectProfessor]++                 // Store lesson taught
 	}
 
-	// // Check that curriculum and derivedCurriculum are the same
-	// return !lo.SomeBy(
-	// 	lo.Zip2(curriculum, derivedCurriculum),
-	// 	func(rows lo.Tuple2[[]uint64, []uint64]) bool {
-	// 		return !slices.Equal(rows.A, rows.B)
-	// 	},
-	// )
+	for subjectProfessor, associatedGroups := range groupsPerSubjectProfessor {
+		derivedLessons[subjectProfessor] /= uint64(len(associatedGroups))
+	}
 
-	panic("not implemented")
+	return maps.Equal(lessons, derivedLessons)
 }
 
 func (timetabler *satTimetabler) professorConstraints() [][]int64 {
@@ -491,4 +486,14 @@ func (timetabler *satTimetabler) getAttributes(curriculum [][]bool, lessons map[
 			timetabler.lessons = associatedLessons
 		}
 	}
+}
+
+// Checks whether two groups sharing a common class (or classes) are scheduled in the same period and day
+func collide(groupsGraph [][]bool, groupAssistance map[uint64][][]bool, group, period, day uint64) bool {
+	for neighborGroup, notDisjoint := range groupsGraph[group] {
+		if notDisjoint && groupAssistance[uint64(neighborGroup)][period][day] {
+			return true
+		}
+	}
+	return false
 }
