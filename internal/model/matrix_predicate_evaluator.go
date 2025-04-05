@@ -8,7 +8,7 @@ type matrixPredicateEvaluator struct {
 	availability map[uint64][][]bool // Professor's availability for each period of each day
 	rooms        map[uint64]uint64   // Room assigned to subjectProfessor
 	professors   map[uint64]uint64   // Professor belonging to subjectProfessor
-	allocations  map[uint64][][]bool // Allocation matrix per class
+	allocations  map[uint64][][]bool // Allocation matrix per group
 }
 
 func newMatrixPredicateEvaluator(
@@ -27,13 +27,13 @@ func newMatrixPredicateEvaluator(
 	}
 
 	evaluator.allocations = make(map[uint64][][]bool) // Initialize dictionary
-	for class := range curriculum {                   // For each class
-		evaluator.allocations[uint64(class)] = make([][]bool, subjectProfessors) // Initialize allocation per class
+	for group := range curriculum {                   // For each group
+		evaluator.allocations[uint64(group)] = make([][]bool, subjectProfessors) // Initialize allocation per group
 
-		for subjectProfessor := range curriculum[class] { // For each subjectProfessor
-			evaluator.allocations[uint64(class)][subjectProfessor] = make([]bool, lessons) // Initialize subjectProfessor row
-			for i := range curriculum[class][subjectProfessor] {
-				evaluator.allocations[uint64(class)][subjectProfessor][i] = true // Set to true the first j lessons where j is the number of lessons assigned for "subjectProfessor" to teach to "class" (i.e. curriculum[class][subjectProfessor])
+		for subjectProfessor := range curriculum[group] { // For each subjectProfessor
+			evaluator.allocations[uint64(group)][subjectProfessor] = make([]bool, lessons) // Initialize subjectProfessor row
+			for i := range curriculum[group][subjectProfessor] {
+				evaluator.allocations[uint64(group)][subjectProfessor][i] = true // Set to true the first j lessons where j is the number of lessons assigned for "subjectProfessor" to teach to "group" (i.e. curriculum[group][subjectProfessor])
 			}
 		}
 	}
@@ -73,10 +73,10 @@ func (evaluator *matrixPredicateEvaluator) SameRoom(subjectProfessor1, subjectPr
 	return room1 == room2
 }
 
-func (evaluator *matrixPredicateEvaluator) Teaches(class, subjectProfessor, lesson uint64) bool {
-	allocation, ok := evaluator.allocations[class]
+func (evaluator *matrixPredicateEvaluator) Teaches(group, subjectProfessor, lesson uint64) bool {
+	allocation, ok := evaluator.allocations[group]
 	if !ok {
-		panic("class not found")
+		panic("group not found")
 	}
 	return allocation[subjectProfessor][lesson]
 }

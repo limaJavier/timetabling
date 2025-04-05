@@ -24,19 +24,19 @@ func TestIndexAndAttributesDeterministic(t *testing.T) {
 		var Days uint64 = scenario[1]
 		var Lessons uint64 = scenario[2]
 		var SubjectProfessors = scenario[3]
-		var Classes uint64 = scenario[4]
+		var Groups uint64 = scenario[4]
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Classes)
+		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups)
 
-		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Classes)
+		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 
 		for period := uint64(0); period < Periods; period++ {
 			for day := uint64(0); day < Days; day++ {
 				for lesson := uint64(0); lesson < Lessons; lesson++ {
 					for subjectProfessor := uint64(0); subjectProfessor < SubjectProfessors; subjectProfessor++ {
-						for class := uint64(0); class < Classes; class++ {
-							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, class))
+						for group := uint64(0); group < Groups; group++ {
+							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group))
 						}
 					}
 				}
@@ -45,8 +45,8 @@ func TestIndexAndAttributesDeterministic(t *testing.T) {
 
 		// Assert
 		for _, index := range indices {
-			period, day, lesson, subjectProfessor, class := indexer.Attributes(index)
-			assert.Equal(t, index, indexer.Index(period, day, lesson, subjectProfessor, class))
+			period, day, lesson, subjectProfessor, group := indexer.Attributes(index)
+			assert.Equal(t, index, indexer.Index(period, day, lesson, subjectProfessor, group))
 		}
 	}
 }
@@ -58,19 +58,19 @@ func TestIndexAndAttributesNonDeterministic(t *testing.T) {
 		var Days uint64 = uint64(rand.Intn(7) + 1)
 		var Lessons uint64 = uint64(rand.Intn(10) + 1)
 		var SubjectProfessors uint64 = uint64(rand.Intn(50) + 1)
-		var Classes uint64 = uint64(rand.Intn(20) + 1)
+		var Groups uint64 = uint64(rand.Intn(20) + 1)
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Classes)
+		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups)
 
-		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Classes)
+		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 
 		for period := uint64(0); period < Periods; period++ {
 			for day := uint64(0); day < Days; day++ {
 				for lesson := uint64(0); lesson < Lessons; lesson++ {
 					for subjectProfessor := uint64(1); subjectProfessor < SubjectProfessors; subjectProfessor++ {
-						for class := uint64(0); class < Classes; class++ {
-							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, class))
+						for group := uint64(0); group < Groups; group++ {
+							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group))
 						}
 					}
 				}
@@ -79,8 +79,8 @@ func TestIndexAndAttributesNonDeterministic(t *testing.T) {
 
 		// Assert
 		for _, index := range indices {
-			period, day, lesson, subjectProfessor, class := indexer.Attributes(index)
-			assert.Equal(t, index, indexer.Index(period, day, lesson, subjectProfessor, class))
+			period, day, lesson, subjectProfessor, group := indexer.Attributes(index)
+			assert.Equal(t, index, indexer.Index(period, day, lesson, subjectProfessor, group))
 		}
 	}
 }
@@ -92,19 +92,19 @@ func TestIntegerConstraints(t *testing.T) {
 		var Days uint64 = uint64(rand.Intn(7) + 1)
 		var Lessons uint64 = uint64(rand.Intn(10) + 1)
 		var SubjectProfessors uint64 = uint64(rand.Intn(50) + 1)
-		var Classes uint64 = uint64(rand.Intn(20) + 1)
+		var Groups uint64 = uint64(rand.Intn(20) + 1)
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Classes)
+		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups)
 
-		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Classes)
+		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 
 		for period := uint64(0); period < Periods; period++ {
 			for day := uint64(0); day < Days; day++ {
 				for lesson := uint64(0); lesson < Lessons; lesson++ {
 					for subjectProfessor := uint64(0); subjectProfessor < SubjectProfessors; subjectProfessor++ {
-						for class := uint64(0); class < Classes; class++ {
-							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, class))
+						for group := uint64(0); group < Groups; group++ {
+							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group))
 						}
 					}
 				}

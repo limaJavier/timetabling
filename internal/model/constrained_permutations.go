@@ -2,13 +2,13 @@ package model
 
 import "math"
 
-// Returns a stateful function (that's bound to periods, days, lessons, subjectProfessors and classes) that builds all the variables's attributes permutations that hold the constraints.
-// Attributes' order in the permutation parameter is the following: Period, Day, Lesson, SubjectProfessor, Class.
+// Returns a stateful function (that's bound to periods, days, lessons, subjectProfessors and groups) that builds all the variables's attributes permutations that hold the constraints.
+// Attributes' order in the permutation parameter is the following: Period, Day, Lesson, SubjectProfessor, Group.
 // All the constraints must take into account that if the value of permutation[i] (for all feasible i's) is math.MaxUint64 then the permutation is not ready to be evaluated if this evaluation involves permutation[i]
 //
 // Example:
 //
-//	constrainedPermutations := model.MakeConstrainedPermutations(Periods, Days, Lessons, SubjectProfessors, Classes)
+//	constrainedPermutations := model.MakeConstrainedPermutations(Periods, Days, Lessons, SubjectProfessors, Groups)
 //
 //	permutations := constrainedPermutations([]func(permutation []uint64) bool{
 //				func(permutation []uint64) bool {
@@ -16,12 +16,12 @@ import "math"
 //					return permutation[1] == math.MaxUint64 || permutation[1] == 1
 //				},
 //			})
-func MakeConstrainedPermutations(periods, days, lessons, subjectProfessors, classes uint64) func(constraints []func(permutation []uint64) bool) [][]uint64 {
+func MakeConstrainedPermutations(periods, days, lessons, subjectProfessors, groups uint64) func(constraints []func(permutation []uint64) bool) [][]uint64 {
 	return func(constraints []func(permutation []uint64) bool) [][]uint64 {
-		permutations := make([][]uint64, 0, periods*days*lessons*subjectProfessors*classes)
+		permutations := make([][]uint64, 0, periods*days*lessons*subjectProfessors*groups)
 		constrainedPermutations(
 			constraints,
-			[]uint64{periods, days, lessons, subjectProfessors, classes},
+			[]uint64{periods, days, lessons, subjectProfessors, groups},
 			0,
 			[]uint64{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
 			&permutations,
