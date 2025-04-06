@@ -105,22 +105,62 @@ func main() {
 		lessons[uint64(i)] = 1
 	}
 
+	permissibility := map[uint64][][]bool{}
+
+	for i := range 24 {
+		if i < 5 {
+			permissibility[uint64(i)] = [][]bool{
+				{true, true, false, false, false},
+				{true, true, false, false, false},
+				{true, true, false, false, false},
+				{false, false, false, false, false},
+				{false, false, false, false, false},
+				{false, false, false, false, false},
+			}
+		} else if i < 12 {
+			permissibility[uint64(i)] = [][]bool{
+				{false, false, true, true, true},
+				{false, false, true, true, true},
+				{false, false, true, true, true},
+				{false, false, false, false, false},
+				{false, false, false, false, false},
+				{false, false, false, false, false},
+			}
+		} else if i < 16 {
+			permissibility[uint64(i)] = [][]bool{
+				{false, false, false, false, false},
+				{false, false, false, false, false},
+				{false, false, false, false, false},
+				{true, true, false, false, false},
+				{true, true, false, false, false},
+				{true, true, false, false, false},
+			}
+		} else {
+			permissibility[uint64(i)] = [][]bool{
+				{false, false, false, false, false},
+				{false, false, false, false, false},
+				{false, false, false, false, false},
+				{false, false, true, true, true},
+				{false, false, true, true, true},
+				{false, false, true, true, true},
+			}
+		}
+	}
+
 	professors := map[uint64]uint64{}
-
-	availability := map[uint64][][]bool{}
-
 	for i := range 50 {
 		professors[uint64(i)] = uint64(i)
 	}
 
+	availability := map[uint64][][]bool{}
 	for i := range 50 {
 		availability[uint64(i)] = [][]bool{
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
+			{true, true, true, false, false},
+			{true, true, true, false, false},
+			{true, true, true, true, false},
+			{true, true, true, true, false},
+			{true, true, true, true, false},
+			{true, true, true, true, false},
 		}
 	}
 
@@ -154,7 +194,7 @@ func main() {
 	solver := sat.NewKissatSolver()
 	timetabler := model.NewTimetabler(solver)
 
-	timetable, err := timetabler.Build(curriculum, groupsGraph, lessons, availability, rooms, professors)
+	timetable, err := timetabler.Build(curriculum, groupsGraph, lessons, permissibility, availability, rooms, professors)
 	if err != nil {
 		log.Fatal(err)
 	} else if timetable == nil {
@@ -170,7 +210,7 @@ func main() {
 		}
 	}
 
-	if !timetabler.Verify(timetable, curriculum, groupsGraph, lessons, availability, rooms, professors, groupsPerSubjectProfessor) {
+	if !timetabler.Verify(timetable, curriculum, groupsGraph, lessons, permissibility, availability, rooms, professors, groupsPerSubjectProfessor) {
 		log.Fatal("Verification failed")
 	}
 

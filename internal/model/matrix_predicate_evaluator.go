@@ -5,17 +5,19 @@ package model
 // Allocation matrix can be built from the curriculum matrix
 
 type matrixPredicateEvaluator struct {
-	availability map[uint64][][]bool // Professor's availability for each period of each day
-	rooms        map[uint64]uint64   // Room assigned to subjectProfessor
-	professors   map[uint64]uint64   // Professor belonging to subjectProfessor
-	allocations  map[uint64][][]bool // Allocation matrix per group
-	groupsGraph  [][]bool            // Groups matrix' coordinate (i, j) = true if and only if group_i and group_j have at least one class in common (i.e. it represents an undirected graph where an edge indicate that two groups share a common class). For completeness we assume that groups[i][i] = true for all i
+	permissibility map[uint64][][]bool // SubjectProfessor permissibility for each period of each day
+	availability   map[uint64][][]bool // Professor's availability for each period of each day
+	rooms          map[uint64]uint64   // Room assigned to subjectProfessor
+	professors     map[uint64]uint64   // Professor belonging to subjectProfessor
+	allocations    map[uint64][][]bool // Allocation matrix per group
+	groupsGraph    [][]bool            // Groups matrix' coordinate (i, j) = true if and only if group_i and group_j have at least one class in common (i.e. it represents an undirected graph where an edge indicate that two groups share a common class). For completeness we assume that groups[i][i] = true for all i
 }
 
 func newMatrixPredicateEvaluator(
 	curriculum [][]bool,
 	groupsGraph [][]bool,
 	lessons map[uint64]uint64,
+	permissibility map[uint64][][]bool,
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
@@ -30,10 +32,11 @@ func newMatrixPredicateEvaluator(
 	}
 
 	evaluator := matrixPredicateEvaluator{
-		groupsGraph:  groupsGraph,
-		availability: availability,
-		rooms:        rooms,
-		professors:   professors,
+		permissibility: permissibility,
+		availability:   availability,
+		rooms:          rooms,
+		professors:     professors,
+		groupsGraph:    groupsGraph,
 	}
 
 	evaluator.allocations = make(map[uint64][][]bool) // Initialize dictionary
@@ -95,4 +98,13 @@ func (evaluator *matrixPredicateEvaluator) Teaches(group, subjectProfessor, less
 
 func (evaluator *matrixPredicateEvaluator) Disjoint(group1, group2 uint64) bool {
 	return !evaluator.groupsGraph[group1][group2]
+}
+
+func (evaluator *matrixPredicateEvaluator) Allowed(subjectProfessor, day, period uint64) bool {
+	distribution, ok := evaluator.permissibility[subjectProfessor]
+	if !ok {
+		panic("subject-professor not found")
+	}
+
+	return distribution[period][day]
 }
