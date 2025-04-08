@@ -65,6 +65,7 @@ func (timetabler *satTimetabler) Build(
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.studentConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.subjectPermissibilityConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.professorAvailabilityConstraints()...)
+	satInstance.Clauses = append(satInstance.Clauses, timetabler.lessonConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.roomCompatibilityConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.completenessConstraints()...)
 	satInstance.Clauses = append(satInstance.Clauses, timetabler.negationConstraints()...)
@@ -113,7 +114,7 @@ func (timetabler *satTimetabler) Verify(
 	derivedLessons := make(map[uint64]uint64)
 
 	//** Initialize professor-assistance
-	professorAssistance := make(map[uint64][][]bool, 0)
+	professorAssistance := make(map[uint64][][]bool)
 	for professor := range len(professors) {
 		professorAssistance[uint64(professor)] = make([][]bool, timetabler.periods)
 		for i := range professorAssistance[uint64(professor)] {
@@ -122,7 +123,7 @@ func (timetabler *satTimetabler) Verify(
 	}
 
 	//** Initialize group-assistance
-	groupAssistance := make(map[uint64][][]bool, 0)
+	groupAssistance := make(map[uint64][][]bool)
 	for group := range timetabler.groups {
 		groupAssistance[group] = make([][]bool, timetabler.periods)
 		for i := range groupAssistance[group] {
@@ -130,22 +131,27 @@ func (timetabler *satTimetabler) Verify(
 		}
 	}
 
+	lessonTaught := make(map[[3]uint64]bool)
+
 	for _, positive := range timetable {
 		period, day, subjectProfessor, group := positive[0], positive[1], positive[3], positive[4]
 		professor := professors[subjectProfessor]
+		_, alreadyTaught := lessonTaught[[3]uint64{group, subjectProfessor, day}]
 
 		// Check that:
 		// - SubjectProfessor is allowed to teach (or to be taught) in the period and day
 		// - Professor is available in the period and day
 		// - Professor is not already assisting in the period and day
 		// - A group with a common class is not already scheduled in the period and day (no collision)
-		if !permissibility[subjectProfessor][period][day] || !availability[professor][period][day] || professorAssistance[professor][period][day] || collide(groupsGraph, groupAssistance, group, period, day) {
+		// - A subjectProfessor can only teach (or be taught) a group once a day
+		if !permissibility[subjectProfessor][period][day] || !availability[professor][period][day] || professorAssistance[professor][period][day] || collide(groupsGraph, groupAssistance, group, period, day) || alreadyTaught {
 			return false
 		}
 
-		professorAssistance[professor][period][day] = true // Store professor assistance
-		groupAssistance[group][period][day] = true         // Store group assistance
-		derivedLessons[subjectProfessor]++                 // Store lesson taught
+		professorAssistance[professor][period][day] = true           // Store professor assistance
+		groupAssistance[group][period][day] = true                   // Store group assistance
+		derivedLessons[subjectProfessor]++                           // Store lesson taught
+		lessonTaught[[3]uint64{group, subjectProfessor, day}] = true // Store lesson taught
 	}
 
 	for subjectProfessor, associatedGroups := range groupsPerSubjectProfessor {
@@ -256,6 +262,7 @@ func (timetabler *satTimetabler) studentConstraints() [][]int64 {
 
 	clauses := make([][]int64, 0, len(permutations)*len(permutations))
 
+	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
@@ -358,6 +365,65 @@ func (timetabler *satTimetabler) professorAvailabilityConstraints() [][]int64 {
 	return clauses
 }
 
+func (timetabler *satTimetabler) lessonConstraints() [][]int64 {
+	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+		// A_k(i,j) = 1
+		func(permutation []uint64) bool {
+			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
+
+			return lesson == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Teaches(group, subjectProfessor, lesson)
+		},
+		// Allowed(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Allowed(subjectProfessor, day, period)
+		},
+		// ProfessorAvailable(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+		},
+	})
+
+	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+
+	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
+	for i := range len(permutations) - 1 {
+		for j := i + 1; j < len(permutations); j++ {
+			permutation1, permutation2 := permutations[i], permutations[j]
+			period1, day1, lesson1, subjectProfessor1, group1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4]
+			period2, day2, lesson2, subjectProfessor2, group2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4]
+
+			// k = k', i = i', d = d', j != j'
+			if group1 == group2 && subjectProfessor1 == subjectProfessor2 && day1 == day2 && lesson1 != lesson2 {
+				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1)
+				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2)
+
+				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
+			}
+		}
+	}
+
+	return clauses
+}
+
 func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
 	permutations := timetabler.permutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
@@ -397,6 +463,7 @@ func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
 
 	clauses := make([][]int64, 0, len(permutations)*len(permutations))
 
+	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
