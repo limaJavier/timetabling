@@ -3,6 +3,7 @@ module timetabling
 go 1.24.0
 
 require (
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/samber/lo v1.49.1
 	github.com/stretchr/testify v1.10.0
 )
