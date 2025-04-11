@@ -3,10 +3,7 @@ package model
 import (
 	"maps"
 	"math"
-	"slices"
 	"timetabling/internal/sat"
-
-	"github.com/samber/lo"
 )
 
 type satTimetabler struct {
@@ -60,16 +57,48 @@ func (timetabler *satTimetabler) Build(
 		Clauses:   [][]int64{},
 	}
 
-	// TODO: To improve performance each set of clauses could be built in a different goroutine.
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.professorConstraints()...)
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.studentConstraints()...)
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.subjectPermissibilityConstraints()...)
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.professorAvailabilityConstraints()...)
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.lessonConstraints()...)
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.roomCompatibilityConstraints()...)
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.completenessConstraints()...)
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.negationConstraints()...)
-	satInstance.Clauses = append(satInstance.Clauses, timetabler.uniquenessConstraints()...)
+	explicitVariables := make(map[int64]bool)  // Variables that are explicitly stated in the clauses
+	constraintsChannel := make(chan [][]int64) // Channel to collect constraints
+
+	// Constraints functions
+	constraints := []func() [][]int64{
+		timetabler.professorConstraints,
+		timetabler.studentConstraints,
+		timetabler.subjectPermissibilityConstraints,
+		timetabler.professorAvailabilityConstraints,
+		timetabler.lessonConstraints,
+		timetabler.roomCompatibilityConstraints,
+		timetabler.completenessConstraints,
+		timetabler.negationConstraints,
+		timetabler.uniquenessConstraints,
+	}
+
+	// Execute constraints functions on different goroutines to improve performance
+	for _, constraint := range constraints {
+		go func(constraint func() [][]int64) {
+			constraintsChannel <- constraint()
+		}(constraint)
+	}
+
+	// Collect generated constraints
+	collectedConstraints := 0
+	for clauses := range constraintsChannel {
+		for _, clause := range clauses {
+			for _, variable := range clause {
+				// Check whether the variable is positive, since required explicit variables ought to be positive
+				if variable > 0 {
+					explicitVariables[variable] = true
+				}
+			}
+		}
+		// Append clauses to the SAT instance
+		satInstance.Clauses = append(satInstance.Clauses, clauses...)
+
+		// Check whether all constraints have been collected to properly close the channel
+		if collectedConstraints++; collectedConstraints == len(constraints) {
+			close(constraintsChannel)
+		}
+	}
 
 	//** Solve SAT instance
 	solution, err := timetabler.solver.Solve(satInstance)
@@ -79,13 +108,10 @@ func (timetabler *satTimetabler) Build(
 		return nil, nil
 	}
 
-	present := func(variable int64) bool {
-		return lo.SomeBy(satInstance.Clauses, func(clause []int64) bool { return slices.Contains(clause, variable) })
-	}
-
 	timetable := [][5]uint64{}
 	for _, variable := range solution {
-		if variable > 0 && present(variable) {
+		// Acknowledge only positive variables that are explicitly stated in the clauses
+		if variable > 0 && explicitVariables[variable] {
 			positive := [5]uint64{}
 			positive[0], positive[1], positive[2], positive[3], positive[4] = timetabler.indexer.Attributes(uint64(variable))
 			timetable = append(timetable, positive)
