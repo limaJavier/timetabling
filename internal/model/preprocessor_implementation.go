@@ -10,30 +10,6 @@ import (
 type preprocessorImplementation struct {
 }
 
-func (preprocessor *preprocessorImplementation) AddSingletonGroups(classesCurriculum [][]bool, groupsPerSubjectProfessor map[uint64][][]uint64) {
-	classes := uint64(len(classesCurriculum))
-	subjectProfessors := uint64(len(classesCurriculum[0]))
-
-	for class := range classes {
-		for subjectProfessor := range subjectProfessors {
-			if classesCurriculum[class][subjectProfessor] {
-				contained := false
-
-				for _, group := range groupsPerSubjectProfessor[subjectProfessor] {
-					if slices.Contains(group, class) {
-						contained = true
-						break
-					}
-				}
-
-				if !contained {
-					groupsPerSubjectProfessor[subjectProfessor] = append(groupsPerSubjectProfessor[subjectProfessor], []uint64{class})
-				}
-			}
-		}
-	}
-}
-
 func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(groupsPerSubjectProfessor map[uint64][][]uint64) ([][]bool, map[uint64][]uint64) {
 	subjectProfessors := len(groupsPerSubjectProfessor)
 	curriculum := make([][]bool, 0)

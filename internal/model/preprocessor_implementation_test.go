@@ -8,171 +8,31 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAddSingletonGroups(t *testing.T) {
-	preprocessor := preprocessorImplementation{}
-
-	t.Run("Correct flow", func(t *testing.T) {
-		//**Arrange
-		classesCurriculums := [][][]bool{
-			{
-				{true, true, true, true, true},
-				{true, true, true, true, true},
-				{true, true, true, true, true},
-				{true, true, true, true, true},
-			},
-			{
-				{true, false, true, true},
-				{false, true, false, true},
-				{true, true, true, false},
-				{false, true, true, false},
-			},
-			{
-				{true, false, true, true, false},
-				{true, true, false, true, false},
-				{true, true, false, false, true},
-				{true, false, true, false, true},
-			},
-		}
-
-		groupsPerSubjectProfessors := []map[uint64][][]uint64{
-			{},
-			{
-				0: {{0, 2}},
-				1: {{1, 2, 3}},
-				2: {{0, 2, 3}},
-				3: {{0, 1}},
-			},
-			{
-				0: {{0, 1, 2, 3}},
-				1: {{1, 2}},
-				2: {{0, 3}},
-				3: {{0, 1}},
-				4: {{2, 3}},
-			},
-		}
-
-		for i := range len(classesCurriculums) {
-			classesCurriculum, groupsPerSubjectProfessor := classesCurriculums[i], groupsPerSubjectProfessors[i]
-
-			//**Act
-			preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
-
-			//**Assert
-			assert.NotPanics(t, func() { preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor) })
-
-			for class := range classesCurriculum {
-				for subjectProfessor, associatedGroups := range groupsPerSubjectProfessor {
-					if classesCurriculum[class][subjectProfessor] {
-						exists := false
-						for _, group := range associatedGroups {
-							if slices.Contains(group, uint64(class)) {
-								exists = true
-								break
-							}
-						}
-
-						if !exists {
-							t.Errorf("class %v does belong to any group of subjectProfessor %v", class, subjectProfessor)
-						}
-					}
-				}
-			}
-		}
-	})
-
-	t.Run("Panic flow", func(t *testing.T) {
-		//**Arrange
-		classesCurriculums := [][][]bool{
-			{
-				{false, false, true, true},
-				{false, true, false, true},
-				{true, true, true, false},
-				{false, true, true, false},
-			},
-			{
-				{false, false, true, true, false},
-				{false, true, false, true, false},
-				{false, true, false, false, true},
-				{false, false, true, false, true},
-			},
-		}
-
-		groupsPerSubjectProfessors := []map[uint64][][]uint64{
-			{
-				0: {{0, 2}},
-				1: {{1, 2, 3}},
-				2: {{0, 2, 3}},
-				3: {{0, 1}},
-			},
-			{
-				0: {{0, 1, 2, 3}},
-				1: {{1, 2}},
-				2: {{0, 3}},
-				3: {{0, 1}},
-				4: {{2, 3}},
-			},
-		}
-
-		for i := range len(classesCurriculums) {
-			classesCurriculum, groupsPerSubjectProfessor := classesCurriculums[i], groupsPerSubjectProfessors[i]
-
-			//**Act
-			preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
-
-			//**Assert
-			assert.Panics(t, func() { preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor) })
-		}
-	})
-}
-
 func TestExtractCurriculumAndGroups(t *testing.T) {
 	preprocessor := preprocessorImplementation{}
 	t.Run("Correct flow", func(t *testing.T) {
 		//**Arrange
-		classesCurriculums := [][][]bool{
-			{
-				{true, true, true, true, true},
-				{true, true, true, true, true},
-				{true, true, true, true, true},
-				{true, true, true, true, true},
-			},
-			{
-				{true, false, true, true},
-				{false, true, false, true},
-				{true, true, true, false},
-				{false, true, true, false},
-			},
-			{
-				{true, false, true, true, false},
-				{true, true, false, true, false},
-				{true, true, false, false, true},
-				{true, false, true, false, true},
-			},
-		}
-
 		groupsPerSubjectProfessors := []map[uint64][][]uint64{
-			{},
 			{
-				0: {{0, 2}},
-				1: {{1, 2, 3}},
-				2: {{0, 2, 3}},
-				3: {{0, 1}},
+				0: {{0, 1}, {2, 3}},
+				1: {{0, 1}},
+				2: {{2, 3}},
+				3: {{1, 3}},
 			},
 			{
 				0: {{0, 1, 2, 3}},
-				1: {{1, 2}},
-				2: {{0, 3}},
-				3: {{0, 1}},
-				4: {{2, 3}},
+				1: {{0}, {1}, {2}, {3}},
+				2: {{0}},
+				3: {{1}},
+				4: {{2}},
 			},
 		}
 
-		for i := range len(classesCurriculums) {
-			classesCurriculum, groupsPerSubjectProfessor := classesCurriculums[i], groupsPerSubjectProfessors[i]
-			preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
+		for i := range len(groupsPerSubjectProfessors) {
+			groupsPerSubjectProfessor := groupsPerSubjectProfessors[i]
 
 			//**Act
-			curriculum, groups := preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor)
+			curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
 
 			//**Assert
 			for subjectProfessor, associatedGroups := range groupsPerSubjectProfessor {
@@ -201,26 +61,11 @@ func TestExtractCurriculumAndGroups(t *testing.T) {
 
 	t.Run("Panic flow", func(t *testing.T) {
 		//**Arrange
-		classesCurriculums := [][][]bool{
-			{
-				{false, false, true, true},
-				{true, true, false, true},
-				{true, true, true, false},
-				{false, true, true, false},
-			},
-			{
-				{true, false, true, true, false},
-				{true, true, false, true, false},
-				{true, true, false, false, true},
-				{true, false, true, false, true},
-			},
-		}
-
 		groupsPerSubjectProfessors := []map[uint64][][]uint64{
 			{
 				0: {{0, 1}},
-				1: {{1, 2, 3}},
-				2: {{0, 2, 3}},
+				1: {{1, 2, 3}, {3}},
+				2: {{0, 2, 3}, {2}},
 				3: {{0, 1}},
 			},
 			{
@@ -232,63 +77,39 @@ func TestExtractCurriculumAndGroups(t *testing.T) {
 			},
 		}
 
-		for i := range len(classesCurriculums) {
-			classesCurriculum, groupsPerSubjectProfessor := classesCurriculums[i], groupsPerSubjectProfessors[i]
-			preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
+		for i := range len(groupsPerSubjectProfessors) {
+			groupsPerSubjectProfessor := groupsPerSubjectProfessors[i]
 
 			//**Act and assert
 			assert.Panics(t, func() {
-				preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor)
+				preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
 			})
 		}
 	})
 }
 
 func TestBuildGroupsGraph(t *testing.T) {
-	preprocessor := preprocessorImplementation{}
 	//**Arrange
-	classesCurriculums := [][][]bool{
-		{
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-			{true, true, true, true, true},
-		},
-		{
-			{true, false, true, true},
-			{false, true, false, true},
-			{true, true, true, false},
-			{false, true, true, false},
-		},
-		{
-			{true, false, true, true, false},
-			{true, true, false, true, false},
-			{true, true, false, false, true},
-			{true, false, true, false, true},
-		},
-	}
-
+	preprocessor := preprocessorImplementation{}
 	groupsPerSubjectProfessors := []map[uint64][][]uint64{
-		{},
 		{
-			0: {{0, 2}},
-			1: {{1, 2, 3}},
-			2: {{0, 2, 3}},
-			3: {{0, 1}},
+			0: {{0, 1}, {2, 3}},
+			1: {{0, 1}},
+			2: {{2, 3}},
+			3: {{1, 3}},
 		},
 		{
 			0: {{0, 1, 2, 3}},
-			1: {{1, 2}},
-			2: {{0, 3}},
-			3: {{0, 1}},
-			4: {{2, 3}},
+			1: {{0}, {1}, {2}, {3}},
+			2: {{0}},
+			3: {{1}},
+			4: {{2}},
 		},
 	}
 
-	for i := range len(classesCurriculums) {
-		classesCurriculum, groupsPerSubjectProfessor := classesCurriculums[i], groupsPerSubjectProfessors[i]
-		preprocessor.AddSingletonGroups(classesCurriculum, groupsPerSubjectProfessor)
-		_, groups := preprocessor.ExtractCurriculumAndGroups(classesCurriculum, groupsPerSubjectProfessor)
+	for i := range len(groupsPerSubjectProfessors) {
+		groupsPerSubjectProfessor := groupsPerSubjectProfessors[i]
+		_, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
 
 		//**Act
 		groupsGraph := preprocessor.BuildGroupsGraph(groups)

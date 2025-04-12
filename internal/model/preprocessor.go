@@ -1,7 +1,6 @@
 package model
 
 type Preprocessor interface {
-	AddSingletonGroups(classesCurriculum [][]bool, groupsPerSubjectProfessor map[uint64][][]uint64)
 	ExtractCurriculumAndGroups(groupsPerSubjectProfessor map[uint64][][]uint64) ([][]bool, map[uint64][]uint64)
 	BuildGroupsGraph(groups map[uint64][]uint64) [][]bool
 }
