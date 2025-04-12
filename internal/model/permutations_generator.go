@@ -1,0 +1,22 @@
+package model
+
+type PermutationGenerator interface {
+	// Attributes' order in the permutation parameter is the following: Period, Day, Lesson, SubjectProfessor, Group.
+	// All the constraints must take into account that if the value of permutation[i] (for all feasible i's) is math.MaxUint64 then the permutation is not ready to be evaluated if this evaluation involves permutation[i]
+	//
+	// Example:
+	//
+	//	generator := model.NewPermutationGenerator(Periods, Days, Lessons, SubjectProfessors, Groups)
+	//
+	//	permutations := generator.ConstrainedPermutations([]func(permutation []uint64) bool{
+	//				func(permutation []uint64) bool {
+	//	       		// Verify "permutation[1] == math.MaxUint64", since the predicate "permutation[1] == 1" relies in this index
+	//					return permutation[1] == math.MaxUint64 || permutation[1] == 1
+	//				},
+	//			})
+	ConstrainedPermutations(constraints []func(permutation []uint64) bool) [][]uint64
+}
+
+func NewPermutationGenerator(periods, days, lessons, subjectProfessors, groups uint64) PermutationGenerator {
+	return &permutationGeneratorImplementation{periods, days, lessons, subjectProfessors, groups}
+}

@@ -7,10 +7,10 @@ import (
 )
 
 type satTimetabler struct {
-	evaluator    PredicateEvaluator
-	indexer      Indexer
-	permutations func(constraints []func(permutation []uint64) bool) [][]uint64 // TODO: (Refactor) Instead of a function this should be an interface ConstrainedPermutator to ensure the permutation-contract from an interface level
-	solver       sat.SATSolver
+	evaluator PredicateEvaluator
+	indexer   Indexer
+	generator PermutationGenerator
+	solver    sat.SATSolver
 
 	periods           uint64
 	days              uint64
@@ -49,7 +49,7 @@ func (timetabler *satTimetabler) Build(
 		professors,
 	)
 	timetabler.indexer = NewIndexer(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups)
-	timetabler.permutations = MakeConstrainedPermutations(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups)
+	timetabler.generator = NewPermutationGenerator(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups)
 
 	//** Build SAT instance
 	satInstance := sat.SAT{
@@ -188,7 +188,7 @@ func (timetabler *satTimetabler) Verify(
 }
 
 func (timetabler *satTimetabler) professorConstraints() [][]int64 {
-	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
@@ -250,7 +250,7 @@ func (timetabler *satTimetabler) professorConstraints() [][]int64 {
 }
 
 func (timetabler *satTimetabler) studentConstraints() [][]int64 {
-	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
@@ -314,7 +314,7 @@ func (timetabler *satTimetabler) studentConstraints() [][]int64 {
 }
 
 func (timetabler *satTimetabler) subjectPermissibilityConstraints() [][]int64 {
-	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
@@ -353,7 +353,7 @@ func (timetabler *satTimetabler) subjectPermissibilityConstraints() [][]int64 {
 }
 
 func (timetabler *satTimetabler) professorAvailabilityConstraints() [][]int64 {
-	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
@@ -392,7 +392,7 @@ func (timetabler *satTimetabler) professorAvailabilityConstraints() [][]int64 {
 }
 
 func (timetabler *satTimetabler) lessonConstraints() [][]int64 {
-	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
@@ -451,7 +451,7 @@ func (timetabler *satTimetabler) lessonConstraints() [][]int64 {
 }
 
 func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
-	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
@@ -515,7 +515,7 @@ func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
 func (timetabler *satTimetabler) completenessConstraints() [][]int64 {
 	// <Lesson, SubjectProfessor, Group> triplets
 	triplets := make([][3]uint64, 0)
-	_ = timetabler.permutations([]func(permutation []uint64) bool{
+	_ = timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
@@ -560,7 +560,7 @@ func (timetabler *satTimetabler) completenessConstraints() [][]int64 {
 }
 
 func (timetabler *satTimetabler) negationConstraints() [][]int64 {
-	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 0
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
@@ -611,7 +611,7 @@ func (timetabler *satTimetabler) negationConstraints() [][]int64 {
 
 // TODO: This method can be performance-optimized by a triple for loop instead of going through all permutations
 func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
-	permutations := timetabler.permutations([]func(permutation []uint64) bool{
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
 			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
