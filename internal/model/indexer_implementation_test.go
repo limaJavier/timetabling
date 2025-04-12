@@ -11,12 +11,12 @@ import (
 func TestIndexAndAttributesDeterministic(t *testing.T) {
 	// Arrange
 	scenarios := [][]uint64{
-		{3, 3, 3, 3, 3},
-		{20, 5, 10, 5, 20},
-		{15, 7, 7, 10, 5},
-		{10, 6, 8, 35, 20},
-		{5, 7, 5, 20, 5},
-		{1, 4, 5, 45, 20},
+		{3, 3, 3, 3, 3, 3},
+		{20, 5, 10, 5, 20, 25},
+		{15, 7, 7, 10, 5, 8},
+		{10, 6, 8, 35, 20, 35},
+		{5, 7, 5, 20, 5, 7},
+		{1, 4, 5, 45, 20, 15},
 	}
 
 	for _, scenario := range scenarios {
@@ -25,9 +25,10 @@ func TestIndexAndAttributesDeterministic(t *testing.T) {
 		var Lessons uint64 = scenario[2]
 		var SubjectProfessors = scenario[3]
 		var Groups uint64 = scenario[4]
+		var Rooms uint64 = scenario[5]
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups)
+		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
 
 		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 
@@ -36,7 +37,9 @@ func TestIndexAndAttributesDeterministic(t *testing.T) {
 				for lesson := uint64(0); lesson < Lessons; lesson++ {
 					for subjectProfessor := uint64(0); subjectProfessor < SubjectProfessors; subjectProfessor++ {
 						for group := uint64(0); group < Groups; group++ {
-							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group))
+							for room := uint64(0); room < Rooms; room++ {
+								indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group, room))
+							}
 						}
 					}
 				}
@@ -45,8 +48,8 @@ func TestIndexAndAttributesDeterministic(t *testing.T) {
 
 		// Assert
 		for _, index := range indices {
-			period, day, lesson, subjectProfessor, group := indexer.Attributes(index)
-			assert.Equal(t, index, indexer.Index(period, day, lesson, subjectProfessor, group))
+			period, day, lesson, subjectProfessor, group, room := indexer.Attributes(index)
+			assert.Equal(t, index, indexer.Index(period, day, lesson, subjectProfessor, group, room))
 		}
 	}
 }
@@ -59,9 +62,10 @@ func TestIndexAndAttributesNonDeterministic(t *testing.T) {
 		var Lessons uint64 = uint64(rand.Intn(10) + 1)
 		var SubjectProfessors uint64 = uint64(rand.Intn(50) + 1)
 		var Groups uint64 = uint64(rand.Intn(20) + 1)
+		var Rooms uint64 = uint64(rand.Intn(50) + 1)
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups)
+		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
 
 		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 
@@ -70,7 +74,9 @@ func TestIndexAndAttributesNonDeterministic(t *testing.T) {
 				for lesson := uint64(0); lesson < Lessons; lesson++ {
 					for subjectProfessor := uint64(1); subjectProfessor < SubjectProfessors; subjectProfessor++ {
 						for group := uint64(0); group < Groups; group++ {
-							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group))
+							for room := uint64(0); room < Rooms; room++ {
+								indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group, room))
+							}
 						}
 					}
 				}
@@ -79,8 +85,8 @@ func TestIndexAndAttributesNonDeterministic(t *testing.T) {
 
 		// Assert
 		for _, index := range indices {
-			period, day, lesson, subjectProfessor, group := indexer.Attributes(index)
-			assert.Equal(t, index, indexer.Index(period, day, lesson, subjectProfessor, group))
+			period, day, lesson, subjectProfessor, group, room := indexer.Attributes(index)
+			assert.Equal(t, index, indexer.Index(period, day, lesson, subjectProfessor, group, room))
 		}
 	}
 }
@@ -93,9 +99,10 @@ func TestIntegerConstraints(t *testing.T) {
 		var Lessons uint64 = uint64(rand.Intn(10) + 1)
 		var SubjectProfessors uint64 = uint64(rand.Intn(50) + 1)
 		var Groups uint64 = uint64(rand.Intn(20) + 1)
+		var Rooms uint64 = uint64(rand.Intn(50) + 1)
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups)
+		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
 
 		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 
@@ -104,7 +111,9 @@ func TestIntegerConstraints(t *testing.T) {
 				for lesson := uint64(0); lesson < Lessons; lesson++ {
 					for subjectProfessor := uint64(0); subjectProfessor < SubjectProfessors; subjectProfessor++ {
 						for group := uint64(0); group < Groups; group++ {
-							indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group))
+							for room := uint64(0); room < Rooms; room++ {
+								indices = append(indices, indexer.Index(period, day, lesson, subjectProfessor, group, room))
+							}
 						}
 					}
 				}
