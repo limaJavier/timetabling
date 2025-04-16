@@ -129,6 +129,13 @@ func (timetabler *satTimetabler) Verify(
 	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
 ) bool {
+	//** Initialize dependencies
+	timetabler.evaluator = NewPredicateEvaluator(
+		modelInput,
+		curriculum,
+		groups,
+		groupsGraph,
+	)
 
 	//** Extract attributes's domains
 	timetabler.getAttributes(modelInput, curriculum)
@@ -157,17 +164,25 @@ func (timetabler *satTimetabler) Verify(
 	lessonTaught := make(map[[3]uint64]bool)
 
 	for _, positive := range timetable {
-		period, day, subjectProfessorId, group := positive[0], positive[1], positive[3], positive[4]
+		period, day, subjectProfessorId, group, room := positive[0], positive[1], positive[3], positive[4], positive[5]
 		professor := modelInput.SubjectProfessors[subjectProfessorId].Professor
-		_, alreadyTaught := lessonTaught[[3]uint64{group, subjectProfessorId, day}]
 
+		_, alreadyTaught := lessonTaught[[3]uint64{group, subjectProfessorId, day}]
 		// Check that:
 		// - SubjectProfessor is allowed to teach (or to be taught) in the period and day
 		// - Professor is available in the period and day
 		// - Professor is not already assisting in the period and day
 		// - A group with a common class is not already scheduled in the period and day (no collision)
 		// - A subjectProfessor can only teach (or be taught) a group once a day
-		if !modelInput.SubjectProfessors[subjectProfessorId].Permissibility[period][day] || !modelInput.Professors[professor].Availability[period][day] || professorAssistance[professor][period][day] || collide(groupsGraph, groupAssistance, group, period, day) || alreadyTaught {
+		// - Room is not assigned to subjectProfessor
+		// - Group does not fit in room
+		if !modelInput.SubjectProfessors[subjectProfessorId].Permissibility[period][day] ||
+			!timetabler.evaluator.ProfessorAvailable(subjectProfessorId, day, period) ||
+			professorAssistance[professor][period][day] ||
+			collide(groupsGraph, groupAssistance, group, period, day) ||
+			alreadyTaught ||
+			!timetabler.evaluator.Assigned(room, subjectProfessorId) ||
+			!timetabler.evaluator.Fits(group, room) {
 			return false
 		}
 
@@ -422,8 +437,6 @@ func (timetabler *satTimetabler) professorAvailabilityConstraints() [][]int64 {
 
 	return clauses
 }
-
-// TODO: Generate similar constraints of that of professorAvailabilityConstraints but for rooms
 
 func (timetabler *satTimetabler) lessonConstraints() [][]int64 {
 	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
