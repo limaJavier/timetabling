@@ -46,8 +46,6 @@ func (timetabler *satTimetabler) Build(
 		groupsGraph,
 	)
 
-	const Rooms = 20         // Fixme
-	timetabler.rooms = Rooms // Fixme
 	timetabler.indexer = NewIndexer(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups, timetabler.rooms)
 	timetabler.generator = NewPermutationGenerator(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups, timetabler.rooms)
 
@@ -618,8 +616,11 @@ func (timetabler *satTimetabler) completenessConstraints() [][]int64 {
 		for period := range timetabler.periods {
 			for day := range timetabler.days {
 				for room := range timetabler.rooms {
-					// Allowed(i, d, t) = 1, ProfessorAvailable(i, d, t) = 1
-					if timetabler.evaluator.Allowed(subjectProfessor, day, period) && timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period) {
+					// Allowed(i, d, t) = 1, ProfessorAvailable(i, d, t) = 1, Assigned(r, i) = 1, Fits(k, r) = 1
+					if timetabler.evaluator.Allowed(subjectProfessor, day, period) &&
+						timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period) &&
+						timetabler.evaluator.Assigned(room, subjectProfessor) &&
+						timetabler.evaluator.Fits(group, room) {
 						index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group, room)
 						clause = append(clause, int64(index))
 					}
@@ -786,6 +787,7 @@ func (timetabler *satTimetabler) getAttributes(modelInput ModelInput, curriculum
 	timetabler.days = uint64(len(modelInput.Professors[0].Availability[0]))
 	timetabler.subjectProfessors = uint64(len(modelInput.Professors))
 	timetabler.groups = uint64(len(curriculum))
+	timetabler.rooms = uint64(len(modelInput.Rooms))
 
 	timetabler.lessons = lo.Max(lo.Map(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor, _ int) uint64 {
 		return subjectProfessor.Lessons

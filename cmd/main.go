@@ -55,13 +55,14 @@ func main() {
 		dayId := positive[1]
 		subjectProfessorId := positive[3]
 		groupId := positive[4]
+		roomId := positive[5]
 
 		dayName := Days[dayId]
-
 		subjectProfessorName := fmt.Sprintf("%v~%v",
 			input.Subjects[input.SubjectProfessors[subjectProfessorId].Subject].Name,
 			input.Professors[input.SubjectProfessors[subjectProfessorId].Professor].Name,
 		)
+		roomName := input.Rooms[roomId].Name
 
 		if !strings.Contains(subjectProfessorName, "_cc_") || !strings.Contains(subjectProfessorName, "_1_") {
 			continue
@@ -70,7 +71,7 @@ func main() {
 		for _, class := range groups[groupId] {
 			className := input.Classes[class].Name
 
-			fmt.Printf("Period: %v, Day: %v, Lesson: %v, SubjectProfessor: %v, Class: %v \n", positive[0], dayName, positive[2], subjectProfessorName, className)
+			fmt.Printf("Period: %v, Day: %v, Lesson: %v, SubjectProfessor: %v, Class: %v, Room: %v \n", positive[0], dayName, positive[2], subjectProfessorName, className, roomName)
 		}
 	}
 
