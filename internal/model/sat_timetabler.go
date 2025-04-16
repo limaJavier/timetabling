@@ -2,9 +2,10 @@ package model
 
 import (
 	"log"
-	"maps"
 	"math"
 	"timetabling/internal/sat"
+
+	"github.com/samber/lo"
 )
 
 type satTimetabler struct {
@@ -28,27 +29,19 @@ func newSatTimetabler(solver sat.SATSolver) *satTimetabler {
 }
 
 func (timetabler *satTimetabler) Build(
+	modelInput ModelInput,
 	curriculum [][]bool,
 	groupsGraph [][]bool,
-	lessons map[uint64]uint64,
-	permissibility map[uint64][][]bool,
-	availability map[uint64][][]bool,
-	rooms map[uint64]uint64,
-	professors map[uint64]uint64,
 ) ([][6]uint64, error) {
 
 	//** Extract attributes's domains
-	timetabler.getAttributes(curriculum, lessons, permissibility)
+	timetabler.getAttributes(modelInput, curriculum)
 
 	//** Initialize dependencies
 	timetabler.evaluator = NewPredicateEvaluator(
+		modelInput,
 		curriculum,
 		groupsGraph,
-		lessons,
-		permissibility,
-		availability,
-		rooms,
-		professors,
 	)
 
 	const Rooms = 20         // Fixme
@@ -130,25 +123,20 @@ func (timetabler *satTimetabler) Build(
 
 func (timetabler *satTimetabler) Verify(
 	timetable [][6]uint64,
+	modelInput ModelInput,
 	curriculum [][]bool,
 	groupsGraph [][]bool,
-	lessons map[uint64]uint64,
-	permissibility map[uint64][][]bool,
-	availability map[uint64][][]bool,
-	rooms map[uint64]uint64,
-	professors map[uint64]uint64,
-	groupsPerSubjectProfessor map[uint64][][]uint64,
 ) bool {
 
 	//** Extract attributes's domains
-	timetabler.getAttributes(curriculum, lessons, availability)
+	timetabler.getAttributes(modelInput, curriculum)
 
 	//** Initialize derived-lessons
 	derivedLessons := make(map[uint64]uint64)
 
 	//** Initialize professor-assistance
 	professorAssistance := make(map[uint64][][]bool)
-	for professor := range len(professors) {
+	for professor := range len(modelInput.Professors) {
 		professorAssistance[uint64(professor)] = make([][]bool, timetabler.periods)
 		for i := range professorAssistance[uint64(professor)] {
 			professorAssistance[uint64(professor)][i] = make([]bool, timetabler.days)
@@ -167,9 +155,9 @@ func (timetabler *satTimetabler) Verify(
 	lessonTaught := make(map[[3]uint64]bool)
 
 	for _, positive := range timetable {
-		period, day, subjectProfessor, group := positive[0], positive[1], positive[3], positive[4]
-		professor := professors[subjectProfessor]
-		_, alreadyTaught := lessonTaught[[3]uint64{group, subjectProfessor, day}]
+		period, day, subjectProfessorId, group := positive[0], positive[1], positive[3], positive[4]
+		professor := modelInput.SubjectProfessors[subjectProfessorId].Professor
+		_, alreadyTaught := lessonTaught[[3]uint64{group, subjectProfessorId, day}]
 
 		// Check that:
 		// - SubjectProfessor is allowed to teach (or to be taught) in the period and day
@@ -177,21 +165,25 @@ func (timetabler *satTimetabler) Verify(
 		// - Professor is not already assisting in the period and day
 		// - A group with a common class is not already scheduled in the period and day (no collision)
 		// - A subjectProfessor can only teach (or be taught) a group once a day
-		if !permissibility[subjectProfessor][period][day] || !availability[professor][period][day] || professorAssistance[professor][period][day] || collide(groupsGraph, groupAssistance, group, period, day) || alreadyTaught {
+		if !modelInput.SubjectProfessors[subjectProfessorId].Permissibility[period][day] || !modelInput.Professors[professor].Availability[period][day] || professorAssistance[professor][period][day] || collide(groupsGraph, groupAssistance, group, period, day) || alreadyTaught {
 			return false
 		}
 
-		professorAssistance[professor][period][day] = true           // Store professor assistance
-		groupAssistance[group][period][day] = true                   // Store group assistance
-		derivedLessons[subjectProfessor]++                           // Store lesson taught
-		lessonTaught[[3]uint64{group, subjectProfessor, day}] = true // Store lesson taught
+		professorAssistance[professor][period][day] = true             // Store professor assistance
+		groupAssistance[group][period][day] = true                     // Store group assistance
+		derivedLessons[subjectProfessorId]++                           // Store lesson taught
+		lessonTaught[[3]uint64{group, subjectProfessorId, day}] = true // Store lesson taught
 	}
 
-	for subjectProfessor, associatedGroups := range groupsPerSubjectProfessor {
-		derivedLessons[subjectProfessor] /= uint64(len(associatedGroups))
+	for _, subjectProfessor := range modelInput.SubjectProfessors {
+		subjectProfessorId, groups := subjectProfessor.Id, subjectProfessor.Groups
+		derivedLessons[subjectProfessorId] /= uint64(len(groups))
 	}
 
-	return maps.Equal(lessons, derivedLessons)
+	// Check whether the number of lessons taught for each subjectProfessor is equal to the number of lessons assigned in the curriculum
+	return !lo.SomeBy(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor) bool {
+		return derivedLessons[subjectProfessor.Id] != subjectProfessor.Lessons
+	})
 }
 
 func (timetabler *satTimetabler) professorConstraints() [][]int64 {
@@ -786,19 +778,15 @@ func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
 	return clauses
 }
 
-func (timetabler *satTimetabler) getAttributes(curriculum [][]bool, lessons map[uint64]uint64, permissibility map[uint64][][]bool) {
-	timetabler.periods = uint64(len(permissibility[0]))
-	timetabler.days = uint64(len(permissibility[0][0]))
-	timetabler.subjectProfessors = uint64(len(curriculum[0]))
+func (timetabler *satTimetabler) getAttributes(modelInput ModelInput, curriculum [][]bool) {
+	timetabler.periods = uint64(len(modelInput.Professors[0].Availability))
+	timetabler.days = uint64(len(modelInput.Professors[0].Availability[0]))
+	timetabler.subjectProfessors = uint64(len(modelInput.Professors))
 	timetabler.groups = uint64(len(curriculum))
 
-	// TODO: (Optional) Refactor into a oneliner, too much to find the max
-	timetabler.lessons = 0
-	for _, associatedLessons := range lessons {
-		if associatedLessons > timetabler.lessons {
-			timetabler.lessons = associatedLessons
-		}
-	}
+	timetabler.lessons = lo.Max(lo.Map(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor, _ int) uint64 {
+		return subjectProfessor.Lessons
+	}))
 }
 
 // Checks whether two groups sharing a common class (or classes) are scheduled in the same period and day

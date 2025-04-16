@@ -10,20 +10,22 @@ import (
 type preprocessorImplementation struct {
 }
 
-func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(groupsPerSubjectProfessor map[uint64][][]uint64) ([][]bool, map[uint64][]uint64) {
-	subjectProfessors := len(groupsPerSubjectProfessor)
+func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(modelInput ModelInput) ([][]bool, map[uint64][]uint64) {
+	subjectProfessors := len(modelInput.SubjectProfessors)
 	curriculum := make([][]bool, 0)
 	groups := make(map[uint64][]uint64)
 
 	currentId := uint64(0)
-	for subjectProfessor, associatedGroups := range groupsPerSubjectProfessor {
-		associatedClasses := make(map[uint64]bool)
+	for _, subjectProfessor := range modelInput.SubjectProfessors {
+		subjectProfessorId, associatedGroups := subjectProfessor.Id, subjectProfessor.Groups
+		subjectProfessorName := fmt.Sprintf("%v~%v", modelInput.Subjects[subjectProfessor.Subject], modelInput.Professors[subjectProfessor.Professor])
 
+		associatedClasses := make(map[uint64]bool)
 		for _, group := range associatedGroups {
 			// Verify associated groups are disjoint
 			lo.ForEach(group, func(class uint64, _ int) {
 				if _, ok := associatedClasses[class]; ok {
-					panic(fmt.Sprintf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessor, class, group))
+					panic(fmt.Sprintf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessorName, class, group))
 				}
 				associatedClasses[class] = true
 			})
@@ -35,7 +37,7 @@ func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(group
 			exists := false
 			for groupId, group := range groups {
 				if slices.Equal(group, groupCopy) {
-					curriculum[groupId][subjectProfessor] = true
+					curriculum[groupId][subjectProfessorId] = true
 					exists = true
 					break
 				}
@@ -46,7 +48,7 @@ func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(group
 				currentId++
 
 				row := make([]bool, subjectProfessors)
-				row[subjectProfessor] = true
+				row[subjectProfessorId] = true
 				curriculum = append(curriculum, row)
 			}
 		}
