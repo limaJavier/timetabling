@@ -1,6 +1,7 @@
 package model
 
 import (
+	"log"
 	"maps"
 	"math"
 	"timetabling/internal/sat"
@@ -12,11 +13,12 @@ type satTimetabler struct {
 	generator PermutationGenerator
 	solver    sat.SATSolver
 
-	periods           uint64
-	days              uint64
-	lessons           uint64
-	subjectProfessors uint64
-	groups            uint64
+	periods,
+	days,
+	lessons,
+	subjectProfessors,
+	groups,
+	rooms uint64
 }
 
 func newSatTimetabler(solver sat.SATSolver) *satTimetabler {
@@ -33,7 +35,7 @@ func (timetabler *satTimetabler) Build(
 	availability map[uint64][][]bool,
 	rooms map[uint64]uint64,
 	professors map[uint64]uint64,
-) ([][5]uint64, error) {
+) ([][6]uint64, error) {
 
 	//** Extract attributes's domains
 	timetabler.getAttributes(curriculum, lessons, permissibility)
@@ -48,12 +50,15 @@ func (timetabler *satTimetabler) Build(
 		rooms,
 		professors,
 	)
-	timetabler.indexer = NewIndexer(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups)
-	timetabler.generator = NewPermutationGenerator(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups)
+
+	const Rooms = 20         // Fixme
+	timetabler.rooms = Rooms // Fixme
+	timetabler.indexer = NewIndexer(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups, timetabler.rooms)
+	timetabler.generator = NewPermutationGenerator(timetabler.periods, timetabler.days, timetabler.lessons, timetabler.subjectProfessors, timetabler.groups, timetabler.rooms)
 
 	//** Build SAT instance
 	satInstance := sat.SAT{
-		Variables: timetabler.periods * timetabler.days * timetabler.lessons * timetabler.subjectProfessors * timetabler.groups,
+		Variables: timetabler.periods * timetabler.days * timetabler.lessons * timetabler.subjectProfessors * timetabler.groups * timetabler.rooms,
 		Clauses:   [][]int64{},
 	}
 
@@ -67,7 +72,7 @@ func (timetabler *satTimetabler) Build(
 		timetabler.subjectPermissibilityConstraints,
 		timetabler.professorAvailabilityConstraints,
 		timetabler.lessonConstraints,
-		timetabler.roomCompatibilityConstraints,
+		timetabler.roomConstraints,
 		timetabler.completenessConstraints,
 		timetabler.negationConstraints,
 		timetabler.uniquenessConstraints,
@@ -101,19 +106,21 @@ func (timetabler *satTimetabler) Build(
 	}
 
 	//** Solve SAT instance
+	log.Println("Start solver")
 	solution, err := timetabler.solver.Solve(satInstance)
+	log.Println("Solver done")
 	if err != nil {
 		return nil, err
 	} else if solution == nil { // Return nil if the SAT instance is not satisfiable
 		return nil, nil
 	}
 
-	timetable := [][5]uint64{}
+	timetable := [][6]uint64{}
 	for _, variable := range solution {
 		// Acknowledge only positive variables that are explicitly stated in the clauses
 		if variable > 0 && explicitVariables[variable] {
-			positive := [5]uint64{}
-			positive[0], positive[1], positive[2], positive[3], positive[4] = timetabler.indexer.Attributes(uint64(variable))
+			positive := [6]uint64{}
+			positive[0], positive[1], positive[2], positive[3], positive[4], positive[5] = timetabler.indexer.Attributes(uint64(variable))
 			timetable = append(timetable, positive)
 		}
 	}
@@ -122,7 +129,7 @@ func (timetabler *satTimetabler) Build(
 }
 
 func (timetabler *satTimetabler) Verify(
-	timetable [][5]uint64,
+	timetable [][6]uint64,
 	curriculum [][]bool,
 	groupsGraph [][]bool,
 	lessons map[uint64]uint64,
@@ -222,25 +229,41 @@ func (timetabler *satTimetabler) professorConstraints() [][]int64 {
 				// Actual predicate
 				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
 		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, room := permutation[3], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Assigned(room, subjectProfessor)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Fits(group, room)
+		},
 	})
 
-	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+	clauses := make([][]int64, 0)
 
 	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
-			period1, period2 := permutation1[0], permutation2[0]
-			day1, day2 := permutation1[1], permutation2[1]
-			subjectProfessor1, subjectProfessor2 := permutation1[3], permutation2[3]
+			period1, day1, lesson1, subjectProfessor1, group1, room1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4], permutation1[5]
+			period2, day2, lesson2, subjectProfessor2, group2, room2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4], permutation2[5]
 
 			// d == d', t == t', SameProfessor(i, i') = 1
 			if period1 == period2 && day1 == day2 && timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) {
-				lesson1, group1 := permutation1[2], permutation1[4]
-				lesson2, group2 := permutation2[2], permutation2[4]
-
-				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1)
-				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2)
+				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1, room1)
+				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2, room2)
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
 			}
 		}
@@ -284,26 +307,41 @@ func (timetabler *satTimetabler) studentConstraints() [][]int64 {
 				// Actual predicate
 				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
 		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, room := permutation[3], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Assigned(room, subjectProfessor)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Fits(group, room)
+		},
 	})
 
-	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+	clauses := make([][]int64, 0)
 
 	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
-			period1, period2 := permutation1[0], permutation2[0]
-			day1, day2 := permutation1[1], permutation2[1]
-			subjectProfessor1, subjectProfessor2 := permutation1[3], permutation2[3]
-			group1, group2 := permutation1[4], permutation2[4]
+			period1, day1, lesson1, subjectProfessor1, group1, room1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4], permutation1[5]
+			period2, day2, lesson2, subjectProfessor2, group2, room2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4], permutation2[5]
 
 			// Disjoint(k, k') = 0, d = d', t = t', SameProfessor(i, i') = 0
 			if period1 == period2 && day1 == day2 && !timetabler.evaluator.Disjoint(group1, group2) && !timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) {
-				lesson1 := permutation1[2]
-				lesson2 := permutation2[2]
-
-				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1)
-				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2)
+				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1, room1)
+				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2, room2)
 
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
 			}
@@ -339,12 +377,12 @@ func (timetabler *satTimetabler) subjectPermissibilityConstraints() [][]int64 {
 		},
 	})
 
-	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+	clauses := make([][]int64, 0)
 
 	for _, permutation := range permutations {
-		period, day, lesson, subjectProfessor, group := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4]
+		period, day, lesson, subjectProfessor, group, room := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4], permutation[5]
 
-		index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group)
+		index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group, room)
 
 		clauses = append(clauses, []int64{-int64(index)})
 	}
@@ -378,18 +416,20 @@ func (timetabler *satTimetabler) professorAvailabilityConstraints() [][]int64 {
 		},
 	})
 
-	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+	clauses := make([][]int64, 0)
 
 	for _, permutation := range permutations {
-		period, day, lesson, subjectProfessor, group := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4]
+		period, day, lesson, subjectProfessor, group, room := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4], permutation[5]
 
-		index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group)
+		index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group, room)
 
 		clauses = append(clauses, []int64{-int64(index)})
 	}
 
 	return clauses
 }
+
+// TODO: Generate similar constraints of that of professorAvailabilityConstraints but for rooms
 
 func (timetabler *satTimetabler) lessonConstraints() [][]int64 {
 	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
@@ -426,21 +466,41 @@ func (timetabler *satTimetabler) lessonConstraints() [][]int64 {
 				// Actual predicate
 				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
 		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, room := permutation[3], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Assigned(room, subjectProfessor)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Fits(group, room)
+		},
 	})
 
-	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+	clauses := make([][]int64, 0)
 
 	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
-			period1, day1, lesson1, subjectProfessor1, group1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4]
-			period2, day2, lesson2, subjectProfessor2, group2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4]
+			period1, day1, lesson1, subjectProfessor1, group1, room1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4], permutation1[5]
+			period2, day2, lesson2, subjectProfessor2, group2, room2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4], permutation2[5]
 
 			// k = k', i = i', d = d', j != j'
 			if group1 == group2 && subjectProfessor1 == subjectProfessor2 && day1 == day2 && lesson1 != lesson2 {
-				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1)
-				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2)
+				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1, room1)
+				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2, room2)
 
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
 			}
@@ -450,7 +510,7 @@ func (timetabler *satTimetabler) lessonConstraints() [][]int64 {
 	return clauses
 }
 
-func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
+func (timetabler *satTimetabler) roomConstraints() [][]int64 {
 	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -485,25 +545,41 @@ func (timetabler *satTimetabler) roomCompatibilityConstraints() [][]int64 {
 				// Actual predicate
 				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
 		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, room := permutation[3], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Assigned(room, subjectProfessor)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Fits(group, room)
+		},
 	})
 
-	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+	clauses := make([][]int64, 0)
 
 	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
-			period1, period2 := permutation1[0], permutation2[0]
-			day1, day2 := permutation1[1], permutation2[1]
-			subjectProfessor1, subjectProfessor2 := permutation1[3], permutation2[3]
+			period1, day1, lesson1, subjectProfessor1, group1, room1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4], permutation1[5]
+			period2, day2, lesson2, subjectProfessor2, group2, room2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4], permutation2[5]
 
-			// d == d', t == t', SameRoom(i, i') = 1
-			if period1 == period2 && day1 == day2 && timetabler.evaluator.SameRoom(subjectProfessor1, subjectProfessor2) {
-				lesson1, group1 := permutation1[2], permutation1[4]
-				lesson2, group2 := permutation2[2], permutation2[4]
-
-				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1)
-				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2)
+			// d == d', t == t', r == r', SameProfessor(i, i') = 0, k != k'
+			if period1 == period2 && day1 == day2 && room1 == room2 && !timetabler.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) && group1 != group2 {
+				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1, room1)
+				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2, room2)
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
 			}
 		}
@@ -539,17 +615,19 @@ func (timetabler *satTimetabler) completenessConstraints() [][]int64 {
 		},
 	})
 
-	clauses := make([][]int64, 0, len(triplets)*int(timetabler.periods)*int(timetabler.days))
+	clauses := make([][]int64, 0)
 
 	for _, triplet := range triplets {
 		lesson, subjectProfessor, group := triplet[0], triplet[1], triplet[2]
 		clause := []int64{}
 		for period := range timetabler.periods {
 			for day := range timetabler.days {
-				// Allowed(i, d, t) = 1, ProfessorAvailable(i, d, t) = 1
-				if timetabler.evaluator.Allowed(subjectProfessor, day, period) && timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period) {
-					index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group)
-					clause = append(clause, int64(index))
+				for room := range timetabler.rooms {
+					// Allowed(i, d, t) = 1, ProfessorAvailable(i, d, t) = 1
+					if timetabler.evaluator.Allowed(subjectProfessor, day, period) && timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period) {
+						index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group, room)
+						clause = append(clause, int64(index))
+					}
 				}
 			}
 		}
@@ -594,14 +672,34 @@ func (timetabler *satTimetabler) negationConstraints() [][]int64 {
 				// Actual predicate
 				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
 		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, room := permutation[3], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Assigned(room, subjectProfessor)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Fits(group, room)
+		},
 	})
 
 	clauses := make([][]int64, 0)
 
 	for _, permutation := range permutations {
-		period, day, lesson, subjectProfessor, group := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4]
+		period, day, lesson, subjectProfessor, group, room := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4], permutation[5]
 
-		index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group)
+		index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group, room)
 
 		clauses = append(clauses, []int64{-int64(index)})
 	}
@@ -609,7 +707,7 @@ func (timetabler *satTimetabler) negationConstraints() [][]int64 {
 	return clauses
 }
 
-// TODO: This method can be performance-optimized by a triple for loop instead of going through all permutations
+// TODO: (Optional) This method can be performance-optimized by a triple for loop instead of going through all permutations
 func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
 	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
@@ -645,21 +743,41 @@ func (timetabler *satTimetabler) uniquenessConstraints() [][]int64 {
 				// Actual predicate
 				timetabler.evaluator.ProfessorAvailable(subjectProfessor, day, period)
 		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, room := permutation[3], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Assigned(room, subjectProfessor)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Fits(group, room)
+		},
 	})
 
-	clauses := make([][]int64, 0, len(permutations)*len(permutations))
+	clauses := make([][]int64, 0)
 
 	// Due to the nature of the iteration we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
 	for i := range len(permutations) - 1 {
 		for j := i + 1; j < len(permutations); j++ {
 			permutation1, permutation2 := permutations[i], permutations[j]
-			period1, day1, lesson1, subjectProfessor1, group1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4]
-			period2, day2, lesson2, subjectProfessor2, group2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4]
+			period1, day1, lesson1, subjectProfessor1, group1, room1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4], permutation1[5]
+			period2, day2, lesson2, subjectProfessor2, group2, room2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4], permutation2[5]
 
 			// k == k', i == i', j == j'
 			if group1 == group2 && subjectProfessor1 == subjectProfessor2 && lesson1 == lesson2 {
-				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1)
-				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2)
+				index1 := timetabler.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1, room1)
+				index2 := timetabler.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2, room2)
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
 			}
 		}

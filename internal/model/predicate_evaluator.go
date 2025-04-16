@@ -16,8 +16,14 @@ type PredicateEvaluator interface {
 	// Checks whether group1 and group2 do not share any common class (they're disjoint)
 	Disjoint(group1, group2 uint64) bool
 
-	// Check whether subjectProfessor is allowed to teach (or be taught) on that given period and day
+	// Checks whether subjectProfessor is allowed to teach (or be taught) on that given period and day
 	Allowed(subjectProfessor, day, period uint64) bool
+
+	// Checks whether the room is assigned to the subjectProfessor
+	Assigned(room, subjectProfessor uint64) bool
+
+	// Checks whether the group's size is smaller than or equal to the room's capacity (i.e. the group fits in the room)
+	Fits(group, room uint64) bool
 }
 
 func NewPredicateEvaluator(

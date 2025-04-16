@@ -3,16 +3,16 @@ package model
 import "math"
 
 type permutationGeneratorImplementation struct {
-	periods, days, lessons, subjectProfessors, groups uint64
+	periods, days, lessons, subjectProfessors, groups, rooms uint64
 }
 
 func (generator permutationGeneratorImplementation) ConstrainedPermutations(constraints []func(permutation []uint64) bool) [][]uint64 {
-	permutations := make([][]uint64, 0, generator.periods*generator.days*generator.lessons*generator.subjectProfessors*generator.groups)
+	permutations := make([][]uint64, 0)
 	generator.constrainedPermutations(
 		constraints,
-		[]uint64{generator.periods, generator.days, generator.lessons, generator.subjectProfessors, generator.groups},
+		[]uint64{generator.periods, generator.days, generator.lessons, generator.subjectProfessors, generator.groups, generator.rooms},
 		0,
-		[]uint64{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
+		[]uint64{math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64, math.MaxUint64},
 		&permutations,
 	)
 	return permutations

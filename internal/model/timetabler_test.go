@@ -11,7 +11,6 @@ import (
 
 const TestDirectory = "../../test/out/"
 
-// TODO: Change test into a file containing multiple test cases for different scenarios
 func TestBuild(t *testing.T) {
 	testFiles, err := os.ReadDir(TestDirectory)
 	if err != nil {

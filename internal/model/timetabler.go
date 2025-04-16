@@ -11,10 +11,10 @@ type Timetabler interface {
 		availability map[uint64][][]bool,
 		rooms map[uint64]uint64,
 		professors map[uint64]uint64,
-	) ([][5]uint64, error)
+	) ([][6]uint64, error)
 
 	Verify(
-		timetable [][5]uint64,
+		timetable [][6]uint64,
 		curriculum [][]bool,
 		groupsGraph [][]bool,
 		lessons map[uint64]uint64,

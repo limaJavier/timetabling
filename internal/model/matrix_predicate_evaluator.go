@@ -108,3 +108,11 @@ func (evaluator *matrixPredicateEvaluator) Allowed(subjectProfessor, day, period
 
 	return distribution[period][day]
 }
+
+func (evaluator *matrixPredicateEvaluator) Assigned(room, subjectProfessor uint64) bool {
+	return true
+}
+
+func (evaluator *matrixPredicateEvaluator) Fits(group, room uint64) bool {
+	return true
+}
