@@ -6,29 +6,25 @@ import (
 	"github.com/samber/lo"
 )
 
-// Curriculum matrix
-// Professor available matrix
-// Allocation matrix can be built from the curriculum matrix
-
-type matrixPredicateEvaluator struct {
+type predicateEvaluatorStandard struct {
 	modelInput  ModelInput
 	allocations map[uint64][][]bool // Allocation matrix per group
 	groups      map[uint64][]uint64 // Classes per group
 	groupsGraph [][]bool            // Groups matrix' coordinate (i, j) = true if and only if group_i and group_j have at least one class in common (i.e. it represents an undirected graph where an edge indicate that two groups share a common class). For completeness we assume that groups[i][i] = true for all i
 }
 
-func newMatrixPredicateEvaluator(
+func NewPredicateEvaluator(
 	modelInput ModelInput,
 	curriculum [][]bool,
 	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
-) *matrixPredicateEvaluator {
+) PredicateEvaluator {
 	subjectProfessors := uint64(len(modelInput.SubjectProfessors))
 	maxLessons := lo.Max(lo.Map(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor, _ int) uint64 {
 		return subjectProfessor.Lessons
 	}))
 
-	evaluator := matrixPredicateEvaluator{
+	evaluator := predicateEvaluatorStandard{
 		modelInput:  modelInput,
 		groups:      groups,
 		groupsGraph: groupsGraph,
@@ -51,25 +47,25 @@ func newMatrixPredicateEvaluator(
 	return &evaluator
 }
 
-func (evaluator *matrixPredicateEvaluator) SameProfessor(subjectProfessor1, subjectProfessor2 uint64) bool {
+func (evaluator *predicateEvaluatorStandard) SameProfessor(subjectProfessor1, subjectProfessor2 uint64) bool {
 	professor1 := evaluator.modelInput.SubjectProfessors[subjectProfessor1].Professor
 	professor2 := evaluator.modelInput.SubjectProfessors[subjectProfessor2].Professor
 	return professor1 == professor2
 }
 
-func (evaluator *matrixPredicateEvaluator) ProfessorAvailable(subjectProfessor, day, period uint64) bool {
+func (evaluator *predicateEvaluatorStandard) ProfessorAvailable(subjectProfessor, day, period uint64) bool {
 	professorId := evaluator.modelInput.SubjectProfessors[subjectProfessor].Professor
 	distribution := evaluator.modelInput.Professors[professorId].Availability
 	return distribution[period][day]
 }
 
-func (evaluator *matrixPredicateEvaluator) SameRoom(subjectProfessor1, subjectProfessor2 uint64) bool {
+func (evaluator *predicateEvaluatorStandard) SameRoom(subjectProfessor1, subjectProfessor2 uint64) bool {
 	rooms1 := evaluator.modelInput.SubjectProfessors[subjectProfessor1].Rooms
 	rooms2 := evaluator.modelInput.SubjectProfessors[subjectProfessor2].Rooms
 	return slices.Equal(rooms1, rooms2)
 }
 
-func (evaluator *matrixPredicateEvaluator) Teaches(group, subjectProfessor, lesson uint64) bool {
+func (evaluator *predicateEvaluatorStandard) Teaches(group, subjectProfessor, lesson uint64) bool {
 	allocation, ok := evaluator.allocations[group]
 	if !ok {
 		panic("group not found")
@@ -77,20 +73,20 @@ func (evaluator *matrixPredicateEvaluator) Teaches(group, subjectProfessor, less
 	return allocation[subjectProfessor][lesson]
 }
 
-func (evaluator *matrixPredicateEvaluator) Disjoint(group1, group2 uint64) bool {
+func (evaluator *predicateEvaluatorStandard) Disjoint(group1, group2 uint64) bool {
 	return !evaluator.groupsGraph[group1][group2]
 }
 
-func (evaluator *matrixPredicateEvaluator) Allowed(subjectProfessor, day, period uint64) bool {
+func (evaluator *predicateEvaluatorStandard) Allowed(subjectProfessor, day, period uint64) bool {
 	distribution := evaluator.modelInput.SubjectProfessors[subjectProfessor].Permissibility
 	return distribution[period][day]
 }
 
-func (evaluator *matrixPredicateEvaluator) Assigned(room, subjectProfessor uint64) bool {
+func (evaluator *predicateEvaluatorStandard) Assigned(room, subjectProfessor uint64) bool {
 	return slices.Contains(evaluator.modelInput.SubjectProfessors[subjectProfessor].Rooms, room)
 }
 
-func (evaluator *matrixPredicateEvaluator) Fits(group, room uint64) bool {
+func (evaluator *predicateEvaluatorStandard) Fits(group, room uint64) bool {
 	classes, ok := evaluator.groups[group]
 	if !ok {
 		panic("group not found")

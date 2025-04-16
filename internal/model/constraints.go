@@ -1,8 +1,6 @@
 package model
 
-import (
-	"math"
-)
+import "math"
 
 type ConstraintState struct {
 	evaluator PredicateEvaluator
