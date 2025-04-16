@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"slices"
+	"strings"
 	"timetabling/internal/model"
 	"timetabling/internal/sat"
 )
@@ -27,16 +28,13 @@ func main() {
 		log.Fatalf("cannot parse input file: %v", err)
 	}
 
-	groupsPerSubjectProfessor, lessons, rooms, professors, permissibility, availability := input.GetGroupsPerSubjectProfessors(), input.GetLessons(), input.GetRooms(), input.GetProfessors(), input.GetPermissibility(), input.GetAvailability()
-
-	curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
-
+	curriculum, groups := preprocessor.ExtractCurriculumAndGroups(input)
 	groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
 	solver := sat.NewKissatSolver()
 	timetabler := model.NewTimetabler(solver)
 
-	timetable, err := timetabler.Build(curriculum, groupsGraph, lessons, permissibility, availability, rooms, professors)
+	timetable, err := timetabler.Build(input, curriculum, groupsGraph)
 	if err != nil {
 		log.Fatal(err)
 	} else if timetable == nil {
@@ -54,18 +52,29 @@ func main() {
 	})
 
 	for _, positive := range timetable {
-		day := Days[positive[1]]
-		// day := positive[1]
+		dayId := positive[1]
+		subjectProfessorId := positive[3]
+		groupId := positive[4]
 
-		subjectProfessor := fmt.Sprintf("%v~%v", input.Metadata.SubjectProfessors[positive[3]], input.Metadata.Professors[professors[positive[3]]])
-		// subjectProfessor := positive[3]
+		dayName := Days[dayId]
 
-		for _, class := range groups[positive[4]] {
-			fmt.Printf("Period: %v, Day: %v, Lesson: %v, SubjectProfessor: %v, Class: %v \n", positive[0], day, positive[2], subjectProfessor, class)
+		subjectProfessorName := fmt.Sprintf("%v~%v",
+			input.Subjects[input.SubjectProfessors[subjectProfessorId].Subject].Name,
+			input.Professors[input.SubjectProfessors[subjectProfessorId].Professor].Name,
+		)
+
+		if !strings.Contains(subjectProfessorName, "_cc_") || !strings.Contains(subjectProfessorName, "_1_") {
+			continue
+		}
+
+		for _, class := range groups[groupId] {
+			className := input.Classes[class].Name
+
+			fmt.Printf("Period: %v, Day: %v, Lesson: %v, SubjectProfessor: %v, Class: %v \n", positive[0], dayName, positive[2], subjectProfessorName, className)
 		}
 	}
 
-	if !timetabler.Verify(timetable, curriculum, groupsGraph, lessons, permissibility, availability, rooms, professors, groupsPerSubjectProfessor) {
+	if !timetabler.Verify(timetable, input, curriculum, groupsGraph) {
 		log.Fatal("Verification failed")
 	}
 

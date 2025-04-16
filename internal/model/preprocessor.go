@@ -1,7 +1,7 @@
 package model
 
 type Preprocessor interface {
-	ExtractCurriculumAndGroups(groupsPerSubjectProfessor map[uint64][][]uint64) ([][]bool, map[uint64][]uint64)
+	ExtractCurriculumAndGroups(modelInput ModelInput) ([][]bool, map[uint64][]uint64)
 	BuildGroupsGraph(groups map[uint64][]uint64) [][]bool
 }
 
