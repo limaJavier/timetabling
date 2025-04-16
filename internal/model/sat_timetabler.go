@@ -66,6 +66,7 @@ func (timetabler *satTimetabler) Build(
 		timetabler.professorAvailabilityConstraints,
 		timetabler.lessonConstraints,
 		timetabler.roomConstraints,
+		timetabler.roomNegationConstraints,
 		timetabler.completenessConstraints,
 		timetabler.negationConstraints,
 		timetabler.uniquenessConstraints,
@@ -576,6 +577,46 @@ func (timetabler *satTimetabler) roomConstraints() [][]int64 {
 				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
 			}
 		}
+	}
+
+	return clauses
+}
+
+func (timetabler *satTimetabler) roomNegationConstraints() [][]int64 {
+	permutations := timetabler.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
+		// A_k(i,j) = 1
+		func(permutation []uint64) bool {
+			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
+
+			return lesson == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
+
+				// Actual predicate
+				timetabler.evaluator.Teaches(group, subjectProfessor, lesson)
+		},
+		// Assigned(r, i) = 0 or Fits(k, r) = 0
+		func(permutation []uint64) bool {
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				!timetabler.evaluator.Assigned(room, subjectProfessor) ||
+				!timetabler.evaluator.Fits(group, room)
+		},
+	})
+
+	clauses := make([][]int64, 0)
+
+	for _, permutation := range permutations {
+		period, day, lesson, subjectProfessor, group, room := permutation[0], permutation[1], permutation[2], permutation[3], permutation[4], permutation[5]
+
+		index := timetabler.indexer.Index(period, day, lesson, subjectProfessor, group, room)
+
+		clauses = append(clauses, []int64{-int64(index)})
 	}
 
 	return clauses
