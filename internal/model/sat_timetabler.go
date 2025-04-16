@@ -31,6 +31,7 @@ func newSatTimetabler(solver sat.SATSolver) *satTimetabler {
 func (timetabler *satTimetabler) Build(
 	modelInput ModelInput,
 	curriculum [][]bool,
+	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
 ) ([][6]uint64, error) {
 
@@ -41,6 +42,7 @@ func (timetabler *satTimetabler) Build(
 	timetabler.evaluator = NewPredicateEvaluator(
 		modelInput,
 		curriculum,
+		groups,
 		groupsGraph,
 	)
 
@@ -125,6 +127,7 @@ func (timetabler *satTimetabler) Verify(
 	timetable [][6]uint64,
 	modelInput ModelInput,
 	curriculum [][]bool,
+	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
 ) bool {
 

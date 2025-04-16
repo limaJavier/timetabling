@@ -29,12 +29,14 @@ type PredicateEvaluator interface {
 func NewPredicateEvaluator(
 	modelInput ModelInput,
 	curriculum [][]bool,
+	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
 ) PredicateEvaluator {
 
 	return newMatrixPredicateEvaluator(
 		modelInput,
 		curriculum,
+		groups,
 		groupsGraph,
 	)
 }

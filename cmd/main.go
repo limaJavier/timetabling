@@ -34,7 +34,7 @@ func main() {
 	solver := sat.NewKissatSolver()
 	timetabler := model.NewTimetabler(solver)
 
-	timetable, err := timetabler.Build(input, curriculum, groupsGraph)
+	timetable, err := timetabler.Build(input, curriculum, groups, groupsGraph)
 	if err != nil {
 		log.Fatal(err)
 	} else if timetable == nil {
@@ -74,7 +74,7 @@ func main() {
 		}
 	}
 
-	if !timetabler.Verify(timetable, input, curriculum, groupsGraph) {
+	if !timetabler.Verify(timetable, input, curriculum, groups, groupsGraph) {
 		log.Fatal("Verification failed")
 	}
 

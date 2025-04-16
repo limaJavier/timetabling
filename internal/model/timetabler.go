@@ -6,6 +6,7 @@ type Timetabler interface {
 	Build(
 		modelInput ModelInput,
 		curriculum [][]bool,
+		groups map[uint64][]uint64,
 		groupsGraph [][]bool,
 	) ([][6]uint64, error)
 
@@ -13,6 +14,7 @@ type Timetabler interface {
 		timetable [][6]uint64,
 		modelInput ModelInput,
 		curriculum [][]bool,
+		groups map[uint64][]uint64,
 		groupsGraph [][]bool,
 	) bool
 }
