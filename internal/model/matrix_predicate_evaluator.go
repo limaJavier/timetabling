@@ -13,12 +13,14 @@ import (
 type matrixPredicateEvaluator struct {
 	modelInput  ModelInput
 	allocations map[uint64][][]bool // Allocation matrix per group
+	groups      map[uint64][]uint64 // Classes per group
 	groupsGraph [][]bool            // Groups matrix' coordinate (i, j) = true if and only if group_i and group_j have at least one class in common (i.e. it represents an undirected graph where an edge indicate that two groups share a common class). For completeness we assume that groups[i][i] = true for all i
 }
 
 func newMatrixPredicateEvaluator(
 	modelInput ModelInput,
 	curriculum [][]bool,
+	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
 ) *matrixPredicateEvaluator {
 	subjectProfessors := uint64(len(modelInput.SubjectProfessors))
@@ -28,6 +30,7 @@ func newMatrixPredicateEvaluator(
 
 	evaluator := matrixPredicateEvaluator{
 		modelInput:  modelInput,
+		groups:      groups,
 		groupsGraph: groupsGraph,
 	}
 
@@ -81,4 +84,21 @@ func (evaluator *matrixPredicateEvaluator) Disjoint(group1, group2 uint64) bool 
 func (evaluator *matrixPredicateEvaluator) Allowed(subjectProfessor, day, period uint64) bool {
 	distribution := evaluator.modelInput.SubjectProfessors[subjectProfessor].Permissibility
 	return distribution[period][day]
+}
+
+func (evaluator *matrixPredicateEvaluator) Assigned(room, subjectProfessor uint64) bool {
+	return slices.Contains(evaluator.modelInput.SubjectProfessors[subjectProfessor].Rooms, room)
+}
+
+func (evaluator *matrixPredicateEvaluator) Fits(group, room uint64) bool {
+	classes, ok := evaluator.groups[group]
+	if !ok {
+		panic("group not found")
+	}
+
+	groupSize := uint64(0)
+	for _, class := range classes {
+		groupSize += evaluator.modelInput.Classes[class].Size
+	}
+	return evaluator.modelInput.Rooms[room].Capacity >= groupSize
 }

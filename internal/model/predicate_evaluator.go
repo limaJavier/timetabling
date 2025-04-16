@@ -18,17 +18,25 @@ type PredicateEvaluator interface {
 
 	// Check whether subjectProfessor is allowed to teach (or be taught) on that given period and day
 	Allowed(subjectProfessor, day, period uint64) bool
+
+	// Checks whether the room is assigned to the subjectProfessor
+	Assigned(room, subjectProfessor uint64) bool
+
+	// Checks whether the group's size is smaller than or equal to the room's capacity (i.e. the group fits in the room)
+	Fits(group, room uint64) bool
 }
 
 func NewPredicateEvaluator(
 	modelInput ModelInput,
 	curriculum [][]bool,
+	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
 ) PredicateEvaluator {
 
 	return newMatrixPredicateEvaluator(
 		modelInput,
 		curriculum,
+		groups,
 		groupsGraph,
 	)
 }
