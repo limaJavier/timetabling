@@ -22,7 +22,7 @@ func verify(
 	)
 
 	//** Extract attributes's domains
-	totalPeriods, totalDays, _, _, totalGroups, _ := getAttributes(modelInput, curriculum)
+	totalPeriods, totalDays, _, _, totalGroups, totalRooms := getAttributes(modelInput, curriculum)
 
 	//** Initialize derived-lessons
 	derivedLessons := make(map[uint64]uint64)
@@ -45,6 +45,15 @@ func verify(
 		}
 	}
 
+	//** Initialize room-assistance
+	roomAssistance := make(map[uint64][][]bool)
+	for room := range totalRooms {
+		roomAssistance[room] = make([][]bool, totalPeriods)
+		for i := range roomAssistance[room] {
+			roomAssistance[room][i] = make([]bool, totalDays)
+		}
+	}
+
 	lessonTaught := make(map[[3]uint64]bool)
 
 	for _, positive := range timetable {
@@ -57,21 +66,24 @@ func verify(
 		// - Professor is available in the period and day
 		// - Professor is not already assisting in the period and day
 		// - A group with a common class is not already scheduled in the period and day (no collision)
-		// - A subjectProfessor can only teach (or be taught) a group once a day
+		// - A subjectProfessor can only teach (or be taught to) a group once a day
 		// - Room is not assigned to subjectProfessor
 		// - Group does not fit in room
+		// - Room must not be already assigned in the period and day
 		if !modelInput.SubjectProfessors[subjectProfessorId].Permissibility[period][day] ||
 			!evaluator.ProfessorAvailable(subjectProfessorId, day, period) ||
 			professorAssistance[professor][period][day] ||
 			collide(groupsGraph, groupAssistance, group, period, day) ||
 			alreadyTaught ||
 			!evaluator.Assigned(room, subjectProfessorId) ||
-			!evaluator.Fits(group, room) {
+			!evaluator.Fits(group, room) ||
+			roomAssistance[room][period][day] {
 			return false
 		}
 
 		professorAssistance[professor][period][day] = true             // Store professor assistance
 		groupAssistance[group][period][day] = true                     // Store group assistance
+		roomAssistance[room][period][day] = true                       // Store room assistance
 		derivedLessons[subjectProfessorId]++                           // Store lesson taught
 		lessonTaught[[3]uint64{group, subjectProfessorId, day}] = true // Store lesson taught
 	}
