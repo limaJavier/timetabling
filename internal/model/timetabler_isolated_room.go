@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"slices"
+	"strings"
 	"timetabling/internal/sat"
 
 	"github.com/onsi/gomega/matchers/support/goraph/bipartitegraph"
@@ -138,7 +139,20 @@ func (timetabler *isolatedRoomTimetabler) assignRooms(solution sat.SATSolution, 
 
 		assignments, err := assignRooms(variables, rooms, relationships)
 		if err != nil {
-			return nil, err
+			var builder strings.Builder
+			for _, variable := range variables {
+				_, _, _, subjectProfessor, _, _ := indexer.Attributes(uint64(variable))
+
+				subject := modelInput.Subjects[modelInput.SubjectProfessors[subjectProfessor].Subject].Name
+				fmt.Fprintf(&builder, "subject: %v -> { ", subject)
+
+				for _, room := range modelInput.SubjectProfessors[subjectProfessor].Rooms {
+					roomName := modelInput.Rooms[room].Name
+					fmt.Fprintf(&builder, "%v, ", roomName)
+				}
+				builder.WriteString("}\n")
+			}
+			return nil, fmt.Errorf("cannot assign rooms: \n%v%v", builder.String(), err)
 		}
 
 		for _, assignment := range assignments {
