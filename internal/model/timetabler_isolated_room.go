@@ -1,7 +1,6 @@
 package model
 
 import (
-	"log"
 	"timetabling/internal/sat"
 
 	"github.com/samber/lo"
@@ -80,10 +79,8 @@ func (timetabler *isolatedRoomTimetabler) Build(
 
 	satInstance, explicitVariables := buildSat(variables, constraints, state)
 
-	log.Println("Start solver") // TODO: Remove when done debugging
 	//** Solve SAT instance
 	solution, err := timetabler.solver.Solve(satInstance)
-	log.Println("Solver done") // TODO: Remove when done debugging
 	if err != nil {
 		return nil, err
 	} else if solution == nil { // Return nil if the SAT instance is not satisfiable

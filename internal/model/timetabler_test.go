@@ -9,38 +9,34 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const TestDirectory = "../../test/out/"
+func TestKissatBasedEmbeddedRoomTimetabler(t *testing.T) {
+	preprocessor := NewPreprocessor()
+	solver := sat.NewKissatSolver()
+	timetabler := NewEmbeddedRoomTimetabler(solver)
 
-func TestBuild(t *testing.T) {
-	testFiles, err := os.ReadDir(TestDirectory)
-	if err != nil {
-		log.Fatalf("cannot read directory: %v", err)
-	}
-
-	for _, file := range testFiles {
-		//** Arrange
-		filename := TestDirectory + file.Name()
-		preprocessor := NewPreprocessor()
-		input, err := InputFromJson(filename)
+	t.Run("Satisfiable instances", func(t *testing.T) {
+		testFiles, err := os.ReadDir(satisfiableTestDirectory)
 		if err != nil {
-			log.Fatalf("cannot parse input file: %v", err)
+			log.Fatalf("cannot read directory: %v", err)
 		}
 
-		groupsPerSubjectProfessor, lessons, rooms, professors, permissibility, availability := input.GetGroupsPerSubjectProfessors(), input.GetLessons(), input.GetRooms(), input.GetProfessors(), input.GetPermissibility(), input.GetAvailability()
+		for _, file := range testFiles {
+			//** Arrange
+			filename := satisfiableTestDirectory + file.Name()
+			input, err := InputFromJson(filename)
+			if err != nil {
+				log.Fatalf("cannot parse input file: %v", err)
+			}
+			curriculum, groups := preprocessor.ExtractCurriculumAndGroups(input)
+			groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
-		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(groupsPerSubjectProfessor)
+			//** Act
+			timetable, err := timetabler.Build(input, curriculum, groups, groupsGraph)
 
-		groupsGraph := preprocessor.BuildGroupsGraph(groups)
-
-		solver := sat.NewKissatSolver()
-		timetabler := NewTimetabler(solver)
-
-		//** Act
-		timetable, err := timetabler.Build(curriculum, groupsGraph, lessons, permissibility, availability, rooms, professors)
-
-		//** Assert
-		assert.Nil(t, err)
-		assert.NotNil(t, timetable)
-		assert.True(t, timetabler.Verify(timetable, curriculum, groupsGraph, lessons, permissibility, availability, rooms, professors, groupsPerSubjectProfessor))
-	}
+			//** Assert
+			assert.Nil(t, err)
+			assert.NotNil(t, timetable)
+			assert.True(t, timetabler.Verify(timetable, input, curriculum, groups, groupsGraph))
+		}
+	})
 }
