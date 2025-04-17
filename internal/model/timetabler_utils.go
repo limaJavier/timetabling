@@ -1,6 +1,10 @@
 package model
 
-import "github.com/samber/lo"
+import (
+	"timetabling/internal/sat"
+
+	"github.com/samber/lo"
+)
 
 func verify(
 	timetable [][6]uint64,
@@ -81,6 +85,45 @@ func verify(
 	return !lo.SomeBy(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor) bool {
 		return derivedLessons[subjectProfessor.Id] != subjectProfessor.Lessons
 	})
+}
+
+func buildSat(variables uint64, constraints []func(state ConstraintState) [][]int64, state ConstraintState) (satInstance sat.SAT, explicitVariables map[int64]bool) {
+	satInstance = sat.SAT{
+		Variables: variables,
+		Clauses:   [][]int64{},
+	}
+
+	explicitVariables = make(map[int64]bool)   // Variables that are explicitly stated in the clauses
+	constraintsChannel := make(chan [][]int64) // Channel to collect constraints
+
+	// Execute constraints functions on different goroutines to improve performance
+	for _, constraint := range constraints {
+		go func(constraint func(state ConstraintState) [][]int64) {
+			constraintsChannel <- constraint(state)
+		}(constraint)
+	}
+
+	// Collect generated constraints
+	collectedConstraints := 0
+	for clauses := range constraintsChannel {
+		for _, clause := range clauses {
+			for _, variable := range clause {
+				// Check whether the variable is positive, since required explicit variables ought to be positive
+				if variable > 0 {
+					explicitVariables[variable] = true
+				}
+			}
+		}
+		// Append clauses to the SAT instance
+		satInstance.Clauses = append(satInstance.Clauses, clauses...)
+
+		// Check whether all constraints have been collected to properly close the channel
+		if collectedConstraints++; collectedConstraints == len(constraints) {
+			close(constraintsChannel)
+		}
+	}
+
+	return satInstance, explicitVariables
 }
 
 func getAttributes(modelInput ModelInput, curriculum [][]bool) (periods, days, lessons, subjectProfessors, groups, rooms uint64) {
