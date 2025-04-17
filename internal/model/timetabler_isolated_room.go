@@ -34,7 +34,13 @@ func (timetabler *isolatedRoomTimetabler) Build(
 	totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, _ := getAttributes(modelInput, curriculum)
 
 	//** Initialize dependencies
-	evaluator := NewPredicateEvaluatorIsolatedRoom(
+	isolatedEvaluator := NewPredicateEvaluatorIsolatedRoom(
+		modelInput,
+		curriculum,
+		groups,
+		groupsGraph,
+	)
+	standardEvaluator := NewPredicateEvaluator(
 		modelInput,
 		curriculum,
 		groups,
@@ -59,7 +65,7 @@ func (timetabler *isolatedRoomTimetabler) Build(
 	}
 
 	state := ConstraintState{
-		evaluator:         evaluator,
+		evaluator:         isolatedEvaluator,
 		indexer:           indexer,
 		generator:         generator,
 		periods:           totalPeriods,
@@ -87,7 +93,7 @@ func (timetabler *isolatedRoomTimetabler) Build(
 		return variable > 0 && explicitVariables[variable]
 	})
 
-	return timetabler.assignRooms(solution, indexer, modelInput)
+	return timetabler.assignRooms(solution, indexer, standardEvaluator, modelInput)
 }
 
 func (timetabler *isolatedRoomTimetabler) Verify(
@@ -100,11 +106,11 @@ func (timetabler *isolatedRoomTimetabler) Verify(
 	return verify(timetable, modelInput, curriculum, groups, groupsGraph)
 }
 
-func (timetabler *isolatedRoomTimetabler) assignRooms(solution sat.SATSolution, indexer Indexer, modelInput ModelInput) ([][6]uint64, error) {
+func (timetabler *isolatedRoomTimetabler) assignRooms(solution sat.SATSolution, indexer Indexer, evaluator PredicateEvaluator, modelInput ModelInput) ([][6]uint64, error) {
 	simultaneousVariables, simultaneousRooms, simultaneousRelationships := make(map[[2]uint64][]int64), make(map[[2]uint64][]uint64), make(map[[2]uint64]map[[2]uint64]bool)
 
 	for _, variable := range solution {
-		period, day, _, subjectProfessor, _, _ := indexer.Attributes(uint64(variable))
+		period, day, _, subjectProfessor, group, _ := indexer.Attributes(uint64(variable))
 		key := [2]uint64{period, day}
 
 		// Initialize for each new key
@@ -118,17 +124,19 @@ func (timetabler *isolatedRoomTimetabler) assignRooms(solution sat.SATSolution, 
 		simultaneousVariables[key] = append(simultaneousVariables[key], variable)
 
 		for _, room := range modelInput.SubjectProfessors[subjectProfessor].Rooms {
-			// Add simultaneous room
-			if !slices.Contains(simultaneousRooms[key], room) {
+			// Add simultaneous room after verifying it fits the group
+			if !slices.Contains(simultaneousRooms[key], room) && evaluator.Fits(group, room) {
 				simultaneousRooms[key] = append(simultaneousRooms[key], room)
 			}
 
-			// Add simultaneous relationship
 			pair := [2]uint64{uint64(variable), room}
 			if _, ok := simultaneousRelationships[key][pair]; ok {
 				panic(fmt.Sprintf("variable-room pair %v~%v must be added only once", variable, room))
 			}
-			simultaneousRelationships[key][pair] = true
+			// Add simultaneous relationship after verifying room fits group
+			if evaluator.Fits(group, room) {
+				simultaneousRelationships[key][pair] = true
+			}
 		}
 	}
 
@@ -141,14 +149,16 @@ func (timetabler *isolatedRoomTimetabler) assignRooms(solution sat.SATSolution, 
 		if err != nil {
 			var builder strings.Builder
 			for _, variable := range variables {
-				_, _, _, subjectProfessor, _, _ := indexer.Attributes(uint64(variable))
+				_, _, _, subjectProfessor, group, _ := indexer.Attributes(uint64(variable))
 
 				subject := modelInput.Subjects[modelInput.SubjectProfessors[subjectProfessor].Subject].Name
 				fmt.Fprintf(&builder, "subject: %v -> { ", subject)
 
 				for _, room := range modelInput.SubjectProfessors[subjectProfessor].Rooms {
-					roomName := modelInput.Rooms[room].Name
-					fmt.Fprintf(&builder, "%v, ", roomName)
+					if evaluator.Fits(group, room) {
+						roomName := modelInput.Rooms[room].Name
+						fmt.Fprintf(&builder, "%v, ", roomName)
+					}
 				}
 				builder.WriteString("}\n")
 			}
