@@ -11,6 +11,10 @@ const kissatPath = "kissat"
 
 type kissatSolver struct{}
 
+func NewKissatSolver() SATSolver {
+	return &kissatSolver{}
+}
+
 func (solver *kissatSolver) Solve(sat SAT) (SATSolution, error) {
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
