@@ -19,6 +19,8 @@ var Days = map[uint64]string{
 	6: "Sunday",
 }
 
+const RoomSimilarityThreshold = 0.51
+
 func main() {
 	const File string = "../test/out/1.json"
 	preprocessor := model.NewPreprocessor()
@@ -32,7 +34,9 @@ func main() {
 	groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
 	solver := sat.NewKissatSolver()
-	timetabler := model.NewTimetabler(solver)
+	timetabler := model.NewEmbeddedRoomTimetabler(solver)
+	// timetabler := model.NewIsolatedRoomTimetabler(solver, false, RoomSimilarityThreshold)
+	// timetabler := model.NewIsolatedRoomTimetabler(solver, true, RoomSimilarityThreshold)
 
 	timetable, err := timetabler.Build(input, curriculum, groups, groupsGraph)
 	if err != nil {
@@ -42,13 +46,21 @@ func main() {
 		return
 	}
 
-	slices.SortFunc(timetable, func(a, b [6]uint64) int {
-		if a[1] < b[1] {
+	compare := func(a, b [6]uint64, i int) int {
+		if a[i] < b[i] {
 			return -1
-		} else if a[1] > b[1] {
+		} else if a[i] > b[i] {
 			return 1
 		}
 		return 0
+	}
+
+	slices.SortFunc(timetable, func(a, b [6]uint64) int {
+		dayComparison := compare(a, b, 1)
+		if dayComparison != 0 {
+			return dayComparison
+		}
+		return compare(a, b, 0)
 	})
 
 	for _, positive := range timetable {
@@ -64,7 +76,7 @@ func main() {
 		)
 		roomName := input.Rooms[roomId].Name
 
-		if !strings.Contains(subjectProfessorName, "_cc_") || !strings.Contains(subjectProfessorName, "_1_") {
+		if !strings.Contains(subjectProfessorName, "_cc_") || !strings.Contains(subjectProfessorName, "_3_") {
 			continue
 		}
 

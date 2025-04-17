@@ -21,4 +21,7 @@ type PredicateEvaluator interface {
 
 	// Checks whether the group's size is smaller than or equal to the room's capacity (i.e. the group fits in the room)
 	Fits(group, room uint64) bool
+
+	// Checks whether two subject-professor are similar according to their assigned-rooms
+	RoomSimilar(subjectProfessor1, subjectProfessor2, group1, group2 uint64) bool
 }

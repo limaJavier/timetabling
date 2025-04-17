@@ -1,16 +1,19 @@
 package model
 
 import (
+	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/samber/lo"
 )
 
 type predicateEvaluatorStandard struct {
-	modelInput  ModelInput
-	allocations map[uint64][][]bool // Allocation matrix per group
-	groups      map[uint64][]uint64 // Classes per group
-	groupsGraph [][]bool            // Groups matrix' coordinate (i, j) = true if and only if group_i and group_j have at least one class in common (i.e. it represents an undirected graph where an edge indicate that two groups share a common class). For completeness we assume that groups[i][i] = true for all i
+	modelInput              ModelInput
+	allocations             map[uint64][][]bool // Allocation matrix per group
+	groups                  map[uint64][]uint64 // Classes per group
+	groupsGraph             [][]bool            // Groups matrix' coordinate (i, j) = true if and only if group_i and group_j have at least one class in common (i.e. it represents an undirected graph where an edge indicate that two groups share a common class). For completeness we assume that groups[i][i] = true for all i
+	roomSimilarityThreshold float32             // Threshold for room similarity
 }
 
 func NewPredicateEvaluator(
@@ -18,6 +21,7 @@ func NewPredicateEvaluator(
 	curriculum [][]bool,
 	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
+	roomSimilarityThreshold float32,
 ) PredicateEvaluator {
 	subjectProfessors := uint64(len(modelInput.SubjectProfessors))
 	maxLessons := lo.Max(lo.Map(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor, _ int) uint64 {
@@ -25,9 +29,10 @@ func NewPredicateEvaluator(
 	}))
 
 	evaluator := predicateEvaluatorStandard{
-		modelInput:  modelInput,
-		groups:      groups,
-		groupsGraph: groupsGraph,
+		modelInput:              modelInput,
+		groups:                  groups,
+		groupsGraph:             groupsGraph,
+		roomSimilarityThreshold: roomSimilarityThreshold,
 	}
 
 	evaluator.allocations = make(map[uint64][][]bool) // Initialize dictionary
@@ -57,12 +62,6 @@ func (evaluator *predicateEvaluatorStandard) ProfessorAvailable(subjectProfessor
 	professorId := evaluator.modelInput.SubjectProfessors[subjectProfessor].Professor
 	distribution := evaluator.modelInput.Professors[professorId].Availability
 	return distribution[period][day]
-}
-
-func (evaluator *predicateEvaluatorStandard) SameRoom(subjectProfessor1, subjectProfessor2 uint64) bool {
-	rooms1 := evaluator.modelInput.SubjectProfessors[subjectProfessor1].Rooms
-	rooms2 := evaluator.modelInput.SubjectProfessors[subjectProfessor2].Rooms
-	return slices.Equal(rooms1, rooms2)
 }
 
 func (evaluator *predicateEvaluatorStandard) Teaches(group, subjectProfessor, lesson uint64) bool {
@@ -97,4 +96,61 @@ func (evaluator *predicateEvaluatorStandard) Fits(group, room uint64) bool {
 		groupSize += evaluator.modelInput.Classes[class].Size
 	}
 	return evaluator.modelInput.Rooms[room].Capacity >= groupSize
+}
+
+func (evaluator *predicateEvaluatorStandard) RoomSimilar(subjectProfessor1, subjectProfessor2, group1, group2 uint64) bool {
+	rooms1 := evaluator.modelInput.SubjectProfessors[subjectProfessor1].Rooms
+	rooms2 := evaluator.modelInput.SubjectProfessors[subjectProfessor2].Rooms
+
+	// Filter rooms based on group-size and room-capacity
+	rooms1 = lo.Filter(rooms1, func(room uint64, _ int) bool {
+		return evaluator.Fits(group1, room)
+	})
+	rooms2 = lo.Filter(rooms2, func(room uint64, _ int) bool {
+		return evaluator.Fits(group2, room)
+	})
+
+	// If there are no rooms for one of the subject-professors and its current group, panic with a descriptive error message
+	if len(rooms1) == 0 {
+		panic(evaluator.noRoomsErrorMessage(subjectProfessor1, group1))
+	} else if len(rooms2) == 0 {
+		panic(evaluator.noRoomsErrorMessage(subjectProfessor2, group2))
+	}
+
+	// Union set
+	union := make(map[uint64]bool)
+	lo.ForEach(slices.Concat(rooms1, rooms2), func(room uint64, _ int) {
+		union[room] = true
+	})
+
+	// Intersection set
+	intersection := make(map[uint64]bool)
+	lo.ForEach(rooms1, func(room uint64, _ int) {
+		if slices.Contains(rooms2, room) {
+			intersection[room] = true
+		}
+	})
+	lo.ForEach(rooms2, func(room uint64, _ int) {
+		if slices.Contains(rooms1, room) {
+			intersection[room] = true
+		}
+	})
+
+	// Calculate Jaccard similarity
+	jaccardSimilarity := float32(len(intersection)) / float32(len(union))
+
+	return jaccardSimilarity >= evaluator.roomSimilarityThreshold
+}
+
+func (evaluator *predicateEvaluatorStandard) noRoomsErrorMessage(subjectProfessor, group uint64) string {
+	var builder strings.Builder
+	subjectName := evaluator.modelInput.Subjects[evaluator.modelInput.SubjectProfessors[subjectProfessor].Subject].Name
+	professorName := evaluator.modelInput.Professors[evaluator.modelInput.SubjectProfessors[subjectProfessor].Professor].Name
+
+	fmt.Fprintf(&builder, "There are not fitting rooms for: %v~%v to { ", subjectName, professorName)
+	for _, class := range evaluator.groups[group] {
+		fmt.Fprintf(&builder, "%s, ", evaluator.modelInput.Classes[class].Name)
+	}
+	builder.WriteString("}")
+	return builder.String()
 }

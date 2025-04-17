@@ -9,9 +9,10 @@ func NewPredicateEvaluatorIsolatedRoom(
 	curriculum [][]bool,
 	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
+	roomSimilarityThreshold float32,
 ) PredicateEvaluator {
 	evaluator := predicateEvaluatorIsolatedRoom{
-		e: NewPredicateEvaluator(modelInput, curriculum, groups, groupsGraph),
+		e: NewPredicateEvaluator(modelInput, curriculum, groups, groupsGraph, roomSimilarityThreshold),
 	}
 	return &evaluator
 }
@@ -42,4 +43,8 @@ func (evaluator *predicateEvaluatorIsolatedRoom) Assigned(room, subjectProfessor
 
 func (evaluator *predicateEvaluatorIsolatedRoom) Fits(group, room uint64) bool {
 	return true
+}
+
+func (evaluator *predicateEvaluatorIsolatedRoom) RoomSimilar(subjectProfessor1, subjectProfessor2, group1, group2 uint64) bool {
+	return evaluator.e.RoomSimilar(subjectProfessor1, subjectProfessor2, group1, group2)
 }

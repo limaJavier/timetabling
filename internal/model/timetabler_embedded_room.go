@@ -31,6 +31,7 @@ func (timetabler *embeddedRoomTimetabler) Build(
 		curriculum,
 		groups,
 		groupsGraph,
+		0,
 	)
 	indexer := NewIndexer(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 	generator := NewPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)

@@ -407,6 +407,84 @@ func roomConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
+func roomSimilarityConstraints(state ConstraintState) [][]int64 {
+	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
+		// A_k(i,j) = 1
+		func(permutation []uint64) bool {
+			lesson, subjectProfessor, group := permutation[2], permutation[3], permutation[4]
+
+			return lesson == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Teaches(group, subjectProfessor, lesson)
+		},
+		// Allowed(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Allowed(subjectProfessor, day, period)
+		},
+		// ProfessorAvailable(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, room := permutation[3], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Assigned(room, subjectProfessor)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Fits(group, room)
+		},
+	})
+
+	clauses := make([][]int64, 0)
+
+	// Due to the nature of the iteration process we're are certain that we won't find the case where: k = k', i = i', j = j', d = d', t = t'
+	for i := range len(permutations) - 1 {
+		for j := i + 1; j < len(permutations); j++ {
+			permutation1, permutation2 := permutations[i], permutations[j]
+			period1, day1, lesson1, subjectProfessor1, group1, room1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4], permutation1[5]
+			period2, day2, lesson2, subjectProfessor2, group2, room2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4], permutation2[5]
+
+			// d == d', t == t', RoomSimilar(i, i') = 1 , SameProfessor(i, i') = 0, k != k'
+			if period1 == period2 && day1 == day2 && state.evaluator.RoomSimilar(subjectProfessor1, subjectProfessor2, group1, group2) && !state.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) && group1 != group2 {
+				index1 := state.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1, room1)
+				index2 := state.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2, room2)
+				clauses = append(clauses, []int64{-int64(index1), -int64(index2)})
+			}
+		}
+	}
+
+	return clauses
+}
+
 func roomNegationConstraints(state ConstraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1

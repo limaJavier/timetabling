@@ -1,22 +1,19 @@
 package model
 
 import (
-	"errors"
-	"fmt"
 	"log"
-	"slices"
-	"strings"
 	"timetabling/internal/sat"
 
-	"github.com/onsi/gomega/matchers/support/goraph/bipartitegraph"
 	"github.com/samber/lo"
 )
 
 type isolatedRoomTimetabler struct {
-	solver sat.SATSolver
+	solver                  sat.SATSolver
+	hybrid                  bool
+	roomSimilarityThreshold float32
 }
 
-func NewIsolatedRoomTimetabler(solver sat.SATSolver) Timetabler {
+func NewIsolatedRoomTimetabler(solver sat.SATSolver, hybrid bool, roomSimilarityThreshold float32) Timetabler {
 	return &isolatedRoomTimetabler{
 		solver: solver,
 	}
@@ -39,12 +36,14 @@ func (timetabler *isolatedRoomTimetabler) Build(
 		curriculum,
 		groups,
 		groupsGraph,
+		timetabler.roomSimilarityThreshold,
 	)
 	standardEvaluator := NewPredicateEvaluator(
 		modelInput,
 		curriculum,
 		groups,
 		groupsGraph,
+		timetabler.roomSimilarityThreshold,
 	)
 	indexer := NewIndexer(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 	generator := NewPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
@@ -62,6 +61,9 @@ func (timetabler *isolatedRoomTimetabler) Build(
 		completenessConstraints,
 		negationConstraints,
 		uniquenessConstraints,
+	}
+	if timetabler.hybrid {
+		constraints = append(constraints, roomSimilarityConstraints)
 	}
 
 	state := ConstraintState{
@@ -93,7 +95,7 @@ func (timetabler *isolatedRoomTimetabler) Build(
 		return variable > 0 && explicitVariables[variable]
 	})
 
-	return timetabler.assignRooms(solution, indexer, standardEvaluator, modelInput)
+	return roomAssignment(solution, indexer, standardEvaluator, modelInput)
 }
 
 func (timetabler *isolatedRoomTimetabler) Verify(
@@ -104,113 +106,4 @@ func (timetabler *isolatedRoomTimetabler) Verify(
 	groupsGraph [][]bool,
 ) bool {
 	return verify(timetable, modelInput, curriculum, groups, groupsGraph)
-}
-
-func (timetabler *isolatedRoomTimetabler) assignRooms(solution sat.SATSolution, indexer Indexer, evaluator PredicateEvaluator, modelInput ModelInput) ([][6]uint64, error) {
-	simultaneousVariables, simultaneousRooms, simultaneousRelationships := make(map[[2]uint64][]int64), make(map[[2]uint64][]uint64), make(map[[2]uint64]map[[2]uint64]bool)
-
-	for _, variable := range solution {
-		period, day, _, subjectProfessor, group, _ := indexer.Attributes(uint64(variable))
-		key := [2]uint64{period, day}
-
-		// Initialize for each new key
-		if _, ok := simultaneousVariables[key]; !ok {
-			simultaneousVariables[key] = make([]int64, 0)
-			simultaneousRooms[key] = make([]uint64, 0)
-			simultaneousRelationships[key] = make(map[[2]uint64]bool)
-		}
-
-		// Add simultaneous variable
-		simultaneousVariables[key] = append(simultaneousVariables[key], variable)
-
-		for _, room := range modelInput.SubjectProfessors[subjectProfessor].Rooms {
-			// Add simultaneous room after verifying it fits the group
-			if !slices.Contains(simultaneousRooms[key], room) && evaluator.Fits(group, room) {
-				simultaneousRooms[key] = append(simultaneousRooms[key], room)
-			}
-
-			pair := [2]uint64{uint64(variable), room}
-			if _, ok := simultaneousRelationships[key][pair]; ok {
-				panic(fmt.Sprintf("variable-room pair %v~%v must be added only once", variable, room))
-			}
-			// Add simultaneous relationship after verifying room fits group
-			if evaluator.Fits(group, room) {
-				simultaneousRelationships[key][pair] = true
-			}
-		}
-	}
-
-	timetable := make([][6]uint64, 0, len(solution))
-	for key, variables := range simultaneousVariables {
-		rooms := simultaneousRooms[key]
-		relationships := simultaneousRelationships[key]
-
-		assignments, err := assignRooms(variables, rooms, relationships)
-		if err != nil {
-			var builder strings.Builder
-			for _, variable := range variables {
-				_, _, _, subjectProfessor, group, _ := indexer.Attributes(uint64(variable))
-
-				subject := modelInput.Subjects[modelInput.SubjectProfessors[subjectProfessor].Subject].Name
-				fmt.Fprintf(&builder, "subject: %v -> { ", subject)
-
-				for _, room := range modelInput.SubjectProfessors[subjectProfessor].Rooms {
-					if evaluator.Fits(group, room) {
-						roomName := modelInput.Rooms[room].Name
-						fmt.Fprintf(&builder, "%v, ", roomName)
-					}
-				}
-				builder.WriteString("}\n")
-			}
-			return nil, fmt.Errorf("cannot assign rooms: \n%v%v", builder.String(), err)
-		}
-
-		for _, assignment := range assignments {
-			variable, room := assignment[0], assignment[1]
-
-			positive := [6]uint64{}
-			positive[5] = room
-			positive[0], positive[1], positive[2], positive[3], positive[4], _ = indexer.Attributes(variable)
-
-			timetable = append(timetable, positive)
-		}
-	}
-
-	return timetable, nil
-}
-
-func assignRooms(variables []int64, rooms []uint64, relationships map[[2]uint64]bool) ([][2]uint64, error) {
-	assignments := make([][2]uint64, 0, len(variables))
-
-	// Build neighbors predicate based on relationships
-	neighbors := func(variableAny any, roomAny any) (bool, error) {
-		variable := variableAny.(int64)
-		room := roomAny.(uint64)
-
-		return relationships[[2]uint64{uint64(variable), room}], nil
-	}
-
-	// Transform variables and rooms to slices of any
-	variablesAny, roomsAny := lo.Map(variables, func(variable int64, _ int) any { return variable }), lo.Map(rooms, func(room uint64, _ int) any { return room })
-
-	graph, err := bipartitegraph.NewBipartiteGraph(variablesAny, roomsAny, neighbors)
-	if err != nil {
-		return nil, err
-	}
-
-	matching := graph.LargestMatching()
-
-	// Check the matching is a maximum one
-	if len(matching) < len(variables) {
-		return nil, errors.New("not all variables can be assigned a room")
-	}
-
-	for _, edge := range matching {
-		variableIndex, roomIndex := edge.Node1, edge.Node2-len(variables)
-		variable, room := variables[variableIndex], rooms[roomIndex]
-
-		assignments = append(assignments, [2]uint64{uint64(variable), room})
-	}
-
-	return assignments, nil
 }
