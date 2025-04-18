@@ -15,7 +15,7 @@ func NewCadicalSolver() SATSolver {
 	return &cadicalSolver{}
 }
 
-func (solver *cadicalSolver) Solve(sat SAT) (SATSolution, error) {
+func (solver *cadicalSolver) Solve(sat *SAT) (SATSolution, error) {
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	cmd := exec.Command(cadicalPath, "-q")

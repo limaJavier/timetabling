@@ -59,7 +59,7 @@ func TestSlimeBasedEmbeddedRoomTimetabler(t *testing.T) {
 	})
 }
 
-var satisfiableExecution = func(t *testing.T, preprocessor Preprocessor, timetabler Timetabler) {
+func satisfiableExecution(t *testing.T, preprocessor Preprocessor, timetabler Timetabler) {
 	testFiles, err := os.ReadDir(satisfiableTestDirectory)
 	if err != nil {
 		log.Fatalf("cannot read directory: %v", err)

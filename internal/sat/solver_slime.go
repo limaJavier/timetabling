@@ -15,7 +15,7 @@ func NewSlimeSolver() SATSolver {
 	return &slimeSolver{}
 }
 
-func (solver *slimeSolver) Solve(sat SAT) (SATSolution, error) {
+func (solver *slimeSolver) Solve(sat *SAT) (SATSolution, error) {
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	// Create a temporary file to hold the DIMACS content
