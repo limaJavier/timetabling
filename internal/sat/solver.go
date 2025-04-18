@@ -25,8 +25,8 @@ func ParseSolution(solverOutput string) SATSolution {
 		),
 		func(valueStr string, _ int) int64 {
 			value, err := strconv.ParseInt(valueStr, 10, 64)
-			if err != nil {
-				log.Panicf("invalid literal in kissat output: %v", err)
+			if err != nil && valueStr != "" {
+				log.Panicf("invalid literal in solver output: %v", err)
 			}
 			return value
 		},

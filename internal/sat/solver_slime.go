@@ -40,10 +40,8 @@ func (solver *slimeSolver) Solve(sat SAT) (SATSolution, error) {
 	}()
 
 	cmd := exec.Command(slimePath)
-	// Set the temporary file as the input for the kissat command
+	// Set the temporary file as the input for the command
 	cmd.Args = append(cmd.Args, tmpFile.Name())
-
-	// cmd.Stdin = strings.NewReader(dimacs) // Feed dimacs into kissat's standard input
 
 	var stdOut bytes.Buffer
 	cmd.Stdout = &stdOut

@@ -19,10 +19,10 @@ var Days = map[uint64]string{
 	6: "Sunday",
 }
 
-const RoomSimilarityThreshold = 0.51
+const RoomSimilarityThreshold = 0.50
 
 func main() {
-	const File string = "../test/out/1.json"
+	const File string = "../test/out/satisfiable/1.json"
 	preprocessor := model.NewPreprocessor()
 
 	input, err := model.InputFromJson(File)
@@ -33,9 +33,12 @@ func main() {
 	curriculum, groups := preprocessor.ExtractCurriculumAndGroups(input)
 	groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
-	solver := sat.NewKissatSolver()
+	// solver := sat.NewKissatSolver()
+	// solver := sat.NewCadicalSolver()
+	solver := sat.NewCryptominisatSolver()
+	// solver := sat.NewSlimeSolver()
 	timetabler := model.NewEmbeddedRoomTimetabler(solver)
-	// timetabler := model.NewIsolatedRoomTimetabler(solver, false, RoomSimilarityThreshold)
+	// timetabler := model.NewIsolatedRoomTimetabler(solver, false, 0)
 	// timetabler := model.NewIsolatedRoomTimetabler(solver, true, RoomSimilarityThreshold)
 
 	timetable, err := timetabler.Build(input, curriculum, groups, groupsGraph)
