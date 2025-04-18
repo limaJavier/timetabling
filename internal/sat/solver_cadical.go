@@ -27,11 +27,12 @@ func (solver *cadicalSolver) Solve(sat SAT) (SATSolution, error) {
 	cmd.Stderr = &stderr
 
 	err := cmd.Run()
-	if err != nil && cmd.ProcessState.ExitCode() != 10 && cmd.ProcessState.ExitCode() != 20 { // Exit-code of 10 stands for satisfiable and exit-code 20 stands for unsatisfiable
+	// Exit-code of 10 stands for satisfiable and exit-code 20 stands for unsatisfiable
+	if err != nil && cmd.ProcessState.ExitCode() != 10 && cmd.ProcessState.ExitCode() != 20 {
 		return nil, fmt.Errorf("an occurred during cadical execution: %v : %v", err.Error(), stderr.String())
 	} else if cmd.ProcessState.ExitCode() == 20 {
 		return nil, nil
 	}
 
-	return ParseSolution(stdOut.String()), nil
+	return parseSolution(stdOut.String()), nil
 }

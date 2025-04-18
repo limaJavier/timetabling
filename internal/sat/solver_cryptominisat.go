@@ -27,7 +27,8 @@ func (solver *cryptominisatSolver) Solve(sat SAT) (SATSolution, error) {
 	cmd.Stderr = &stderr
 
 	err := cmd.Run()
-	if err != nil && cmd.ProcessState.ExitCode() != 10 && cmd.ProcessState.ExitCode() != 20 { // Exit-code of 10 stands for satisfiable and exit-code 20 stands for unsatisfiable
+	// Exit-code of 10 stands for satisfiable and exit-code 20 stands for unsatisfiable
+	if err != nil && cmd.ProcessState.ExitCode() != 10 && cmd.ProcessState.ExitCode() != 20 {
 		return nil, fmt.Errorf("an occurred during cryptominisat execution: %v : %v", err.Error(), stderr.String())
 	} else if cmd.ProcessState.ExitCode() == 20 {
 		return nil, nil
@@ -35,5 +36,5 @@ func (solver *cryptominisatSolver) Solve(sat SAT) (SATSolution, error) {
 
 	out := stdOut.String()
 
-	return ParseSolution(out), nil
+	return parseSolution(out), nil
 }

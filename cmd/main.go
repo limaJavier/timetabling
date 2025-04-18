@@ -35,11 +35,12 @@ func main() {
 
 	// solver := sat.NewKissatSolver()
 	// solver := sat.NewCadicalSolver()
-	solver := sat.NewCryptominisatSolver()
-	// solver := sat.NewSlimeSolver()
-	timetabler := model.NewEmbeddedRoomTimetabler(solver)
+	// solver := sat.NewCryptominisatSolver()
+	// solver := sat.NewMinisatSolver()
+	solver := sat.NewSlimeSolver()
+	// timetabler := model.NewEmbeddedRoomTimetabler(solver)
 	// timetabler := model.NewIsolatedRoomTimetabler(solver, false, 0)
-	// timetabler := model.NewIsolatedRoomTimetabler(solver, true, RoomSimilarityThreshold)
+	timetabler := model.NewIsolatedRoomTimetabler(solver, true, RoomSimilarityThreshold)
 
 	timetable, err := timetabler.Build(input, curriculum, groups, groupsGraph)
 	if err != nil {
