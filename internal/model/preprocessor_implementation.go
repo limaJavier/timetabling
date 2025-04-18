@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"log"
 	"slices"
 
 	"github.com/samber/lo"
@@ -25,7 +26,7 @@ func (preprocessor *preprocessorImplementation) ExtractCurriculumAndGroups(model
 			// Verify associated groups are disjoint
 			lo.ForEach(group, func(class uint64, _ int) {
 				if _, ok := associatedClasses[class]; ok {
-					panic(fmt.Sprintf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessorName, class, group))
+					log.Panicf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessorName, class, group)
 				}
 				associatedClasses[class] = true
 			})

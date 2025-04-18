@@ -1,8 +1,8 @@
 package model
 
 import (
-	"errors"
 	"fmt"
+	"log"
 	"slices"
 	"strings"
 	"timetabling/internal/sat"
@@ -10,6 +10,13 @@ import (
 	"github.com/onsi/gomega/matchers/support/goraph/bipartitegraph"
 	"github.com/samber/lo"
 )
+
+type unassignableError struct {
+}
+
+func (err unassignableError) Error() string {
+	return "not all variables can be assigned a room"
+}
 
 func verify(
 	timetable [][6]uint64,
@@ -169,7 +176,7 @@ func roomAssignment(solution sat.SATSolution, indexer Indexer, evaluator Predica
 
 			pair := [2]uint64{uint64(variable), room}
 			if _, ok := simultaneousRelationships[key][pair]; ok {
-				panic(fmt.Sprintf("variable-room pair %v~%v must be added only once", variable, room))
+				log.Panicf("variable-room pair %v~%v must be added only once", variable, room)
 			}
 			// Add simultaneous relationship after verifying room fits group
 			if evaluator.Fits(group, room) {
@@ -184,13 +191,13 @@ func roomAssignment(solution sat.SATSolution, indexer Indexer, evaluator Predica
 		relationships := simultaneousRelationships[key]
 
 		assignments, err := assignRooms(variables, rooms, relationships)
-		if err != nil {
+		if _, ok := err.(unassignableError); ok {
 			var builder strings.Builder
 			for _, variable := range variables {
 				_, _, _, subjectProfessor, group, _ := indexer.Attributes(uint64(variable))
 
 				subject := modelInput.Subjects[modelInput.SubjectProfessors[subjectProfessor].Subject].Name
-				fmt.Fprintf(&builder, "subject: %v -> { ", subject)
+				fmt.Fprintf(&builder, "\tsubject: %v -> { ", subject)
 
 				for _, room := range modelInput.SubjectProfessors[subjectProfessor].Rooms {
 					if evaluator.Fits(group, room) {
@@ -200,7 +207,10 @@ func roomAssignment(solution sat.SATSolution, indexer Indexer, evaluator Predica
 				}
 				builder.WriteString("}\n")
 			}
-			return nil, fmt.Errorf("cannot assign rooms: \n%v%v", builder.String(), err)
+			log.Printf("cannot assign rooms: \n%v\t%v", builder.String(), err)
+			return nil, nil
+		} else if err != nil {
+			return nil, err
 		}
 
 		for _, assignment := range assignments {
@@ -240,7 +250,7 @@ func assignRooms(variables []int64, rooms []uint64, relationships map[[2]uint64]
 
 	// Check the matching is a maximum one
 	if len(matching) < len(variables) {
-		return nil, errors.New("not all variables can be assigned a room")
+		return nil, unassignableError{}
 	}
 
 	for _, edge := range matching {
