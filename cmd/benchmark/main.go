@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"log"
 	"os"
@@ -141,16 +142,7 @@ func main() {
 		}
 	}
 
-	for _, result := range results {
-		fmt.Printf("Solver: %v, Timetabler: %v, Test: %v, Duration: %d ms, Memory: %d KB, Result: %v\n",
-			solverTypes[result.Solver],
-			timetablerTypes[result.Timetabler.Type],
-			result.Test.Name,
-			result.Duration,
-			result.Memory,
-			resultTypes[result.Result],
-		)
-	}
+	toCsv(results)
 }
 
 func getTests() []testMetadata {
@@ -272,4 +264,40 @@ func measure(
 		panic("timetable verification failed")
 	}
 	return duration, memory / KB, Solved
+}
+
+func toCsv(results []BenchmarkResult) {
+	file, err := os.Create("benchmark_results.csv")
+	if err != nil {
+		log.Panicf("cannot create CSV file: %v", err)
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	header := []string{"Solver", "Timetabler", "Test", "Satisfiable", "Subjects", "Professors", "SubjectProfessors", "Rooms", "Classes", "Duration(ms)", "Memory(KB)", "Result"}
+	if err := writer.Write(header); err != nil {
+		log.Panicf("cannot write CSV header: %v", err)
+	}
+
+	for _, result := range results {
+		record := []string{
+			solverTypes[result.Solver],
+			timetablerTypes[result.Timetabler.Type],
+			result.Test.Name,
+			fmt.Sprintf("%v", result.Test.Satisfiable),
+			fmt.Sprintf("%d", result.Test.Subjects),
+			fmt.Sprintf("%d", result.Test.Professors),
+			fmt.Sprintf("%d", result.Test.SubjectProfessors),
+			fmt.Sprintf("%d", result.Test.Rooms),
+			fmt.Sprintf("%d", result.Test.Classes),
+			fmt.Sprintf("%d", result.Duration),
+			fmt.Sprintf("%d", result.Memory),
+			resultTypes[result.Result],
+		}
+		if err := writer.Write(record); err != nil {
+			log.Panicf("cannot write CSV record: %v", err)
+		}
+	}
 }
