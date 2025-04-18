@@ -15,7 +15,7 @@ func NewKissatSolver() SATSolver {
 	return &kissatSolver{}
 }
 
-func (solver *kissatSolver) Solve(sat *SAT) (SATSolution, error) {
+func (solver *kissatSolver) Solve(sat SAT) (SATSolution, error) {
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	cmd := exec.Command(kissatPath, "-q", "--relaxed")

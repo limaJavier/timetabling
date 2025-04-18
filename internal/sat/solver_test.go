@@ -72,10 +72,10 @@ func satisfiableExecution(t *testing.T, solver SATSolver) {
 	}
 }
 
-func parseDIMACSFile(fileName string) (*SAT, error) {
+func parseDIMACSFile(fileName string) (SAT, error) {
 	file, err := os.Open(fileName)
 	if err != nil {
-		return nil, fmt.Errorf("could not open file: %w", err)
+		return SAT{}, fmt.Errorf("could not open file: %w", err)
 	}
 	defer file.Close()
 
@@ -92,11 +92,11 @@ func parseDIMACSFile(fileName string) (*SAT, error) {
 		if strings.HasPrefix(line, "p cnf") {
 			parts := strings.Fields(line)
 			if len(parts) != 4 {
-				return nil, fmt.Errorf("invalid problem line: %s", line)
+				return SAT{}, fmt.Errorf("invalid problem line: %s", line)
 			}
 			vars, err1 := strconv.ParseUint(parts[2], 10, 64)
 			if err1 != nil {
-				return nil, fmt.Errorf("invalid variable count: %w", err1)
+				return SAT{}, fmt.Errorf("invalid variable count: %w", err1)
 			}
 			sat.Variables = vars
 			continue
@@ -111,7 +111,7 @@ func parseDIMACSFile(fileName string) (*SAT, error) {
 		for _, litStr := range fields {
 			lit, err := strconv.ParseInt(litStr, 10, 64)
 			if err != nil {
-				return nil, fmt.Errorf("invalid literal '%s': %w", litStr, err)
+				return SAT{}, fmt.Errorf("invalid literal '%s': %w", litStr, err)
 			}
 			if lit == 0 {
 				break
@@ -124,13 +124,13 @@ func parseDIMACSFile(fileName string) (*SAT, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("error reading file: %w", err)
+		return SAT{}, fmt.Errorf("error reading file: %w", err)
 	}
 
-	return &sat, nil
+	return sat, nil
 }
 
-func assertSATSolution(satInstance *SAT, satSolution SATSolution) bool {
+func assertSATSolution(satInstance SAT, satSolution SATSolution) bool {
 	// Make sure there are no duplicates nor contradictions
 	literals := make(map[int64]bool)
 	for _, literal := range satSolution {

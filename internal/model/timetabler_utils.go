@@ -105,8 +105,8 @@ func verify(
 	})
 }
 
-func buildSat(variables uint64, constraints []func(state ConstraintState) [][]int64, state ConstraintState) (satInstance *sat.SAT, explicitVariables map[int64]bool) {
-	satInstance = &sat.SAT{
+func buildSat(variables uint64, constraints []func(state ConstraintState) [][]int64, state ConstraintState) (satInstance sat.SAT, explicitVariables map[int64]bool) {
+	satInstance = sat.SAT{
 		Variables: variables,
 		Clauses:   [][]int64{},
 	}

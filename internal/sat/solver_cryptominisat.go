@@ -15,7 +15,7 @@ func NewCryptominisatSolver() SATSolver {
 	return &cryptominisatSolver{}
 }
 
-func (solver *cryptominisatSolver) Solve(sat *SAT) (SATSolution, error) {
+func (solver *cryptominisatSolver) Solve(sat SAT) (SATSolution, error) {
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	cmd := exec.Command(cryptominisatPath, "--verb", "0")

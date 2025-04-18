@@ -12,7 +12,7 @@ type SAT struct {
 	Clauses   [][]int64
 }
 
-func (s *SAT) ToDIMACS() string {
+func (s SAT) ToDIMACS() string {
 	var builder strings.Builder
 	fmt.Fprintf(&builder, "p cnf %d %d\n", s.Variables, len(s.Clauses))
 	for _, clause := range s.Clauses {
