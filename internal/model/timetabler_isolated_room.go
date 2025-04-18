@@ -14,7 +14,9 @@ type isolatedRoomTimetabler struct {
 
 func NewIsolatedRoomTimetabler(solver sat.SATSolver, hybrid bool, roomSimilarityThreshold float32) Timetabler {
 	return &isolatedRoomTimetabler{
-		solver: solver,
+		solver:                  solver,
+		hybrid:                  hybrid,
+		roomSimilarityThreshold: roomSimilarityThreshold,
 	}
 }
 
