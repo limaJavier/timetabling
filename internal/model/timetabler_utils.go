@@ -266,7 +266,7 @@ func assignRooms(variables []int64, rooms []uint64, relationships map[[2]uint64]
 func getAttributes(modelInput ModelInput, curriculum [][]bool) (periods, days, lessons, subjectProfessors, groups, rooms uint64) {
 	periods = uint64(len(modelInput.Professors[0].Availability))
 	days = uint64(len(modelInput.Professors[0].Availability[0]))
-	subjectProfessors = uint64(len(modelInput.Professors))
+	subjectProfessors = uint64(len(modelInput.SubjectProfessors))
 	groups = uint64(len(curriculum))
 	rooms = uint64(len(modelInput.Rooms))
 
