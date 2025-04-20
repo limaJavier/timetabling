@@ -276,7 +276,7 @@ func toCsv(results []BenchmarkResult) {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	header := []string{"Solver", "Timetabler", "Test", "Satisfiable", "Subjects", "Professors", "SubjectProfessors", "Rooms", "Classes", "Duration(ms)", "Memory(KB)", "Result"}
+	header := []string{"Solver", "Timetabler", "Room-Similarity Threshold", "Test", "Satisfiable", "Subjects", "Professors", "SubjectProfessors", "Rooms", "Classes", "Duration(ms)", "Memory(KB)", "Result"}
 	if err := writer.Write(header); err != nil {
 		log.Panicf("cannot write CSV header: %v", err)
 	}
@@ -285,6 +285,7 @@ func toCsv(results []BenchmarkResult) {
 		record := []string{
 			solverTypes[result.Solver],
 			timetablerTypes[result.Timetabler.Type],
+			fmt.Sprintf("%f", result.Timetabler.RoomSimilarityThreshold),
 			result.Test.Name,
 			fmt.Sprintf("%v", result.Test.Satisfiable),
 			fmt.Sprintf("%d", result.Test.Subjects),
