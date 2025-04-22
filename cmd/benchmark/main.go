@@ -16,6 +16,7 @@ import (
 const satisfiableTestDirectory = "../../test/out/satisfiable/"
 const unsatisfiableTestDirectory = "../../test/out/unsatisfiable/"
 const KB = 1024
+const MB float32 = 1024 * 1024
 
 type TimetablerType int
 
@@ -83,7 +84,7 @@ type BenchmarkResult struct {
 	Timetabler TimetablerMetadata
 	Test       TestMetadata
 	Duration   int64
-	Memory     uint64
+	Memory     float32
 	Result     ResultType
 }
 
@@ -222,10 +223,30 @@ func getTimetablers() []timetablerMetadata {
 		{
 			TimetablerMetadata: TimetablerMetadata{
 				Type:                    HybridIsolated,
+				RoomSimilarityThreshold: 0.35,
+			},
+			Constructor: func(solver sat.SATSolver) model.Timetabler {
+				return model.NewIsolatedRoomTimetabler(solver, true, 0.35)
+			},
+		},
+
+		{
+			TimetablerMetadata: TimetablerMetadata{
+				Type:                    HybridIsolated,
 				RoomSimilarityThreshold: 0.5,
 			},
 			Constructor: func(solver sat.SATSolver) model.Timetabler {
 				return model.NewIsolatedRoomTimetabler(solver, true, 0.5)
+			},
+		},
+
+		{
+			TimetablerMetadata: TimetablerMetadata{
+				Type:                    HybridIsolated,
+				RoomSimilarityThreshold: 0.75,
+			},
+			Constructor: func(solver sat.SATSolver) model.Timetabler {
+				return model.NewIsolatedRoomTimetabler(solver, true, 0.75)
 			},
 		},
 	}
@@ -243,7 +264,7 @@ func measure(
 	curriculum [][]bool,
 	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
-) (duration int64, memory uint64, result ResultType) {
+) (duration int64, memory float32, result ResultType) {
 
 	var memoryStart, memoryEnd runtime.MemStats
 	runtime.GC() // Clean up before measuring
@@ -253,7 +274,7 @@ func measure(
 	timetable, err := timetabler.Build(input, curriculum, groups, groupsGraph)
 	duration = time.Since(start).Milliseconds()
 	runtime.ReadMemStats(&memoryEnd)
-	memory = memoryEnd.Alloc - memoryStart.Alloc
+	memory = float32(memoryEnd.Alloc-memoryStart.Alloc) / MB
 	if err != nil {
 		panic("an error occurred during timetable-building: " + err.Error())
 	} else if timetable == nil {
@@ -263,7 +284,7 @@ func measure(
 	if !timetabler.Verify(timetable, input, curriculum, groups, groupsGraph) {
 		panic("timetable verification failed")
 	}
-	return duration, memory / KB, Solved
+	return duration, memory, Solved
 }
 
 func toCsv(results []BenchmarkResult) {
@@ -276,7 +297,7 @@ func toCsv(results []BenchmarkResult) {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	header := []string{"Solver", "Timetabler", "Room-Similarity Threshold", "Test", "Satisfiable", "Subjects", "Professors", "SubjectProfessors", "Rooms", "Classes", "Duration(ms)", "Memory(KB)", "Result"}
+	header := []string{"Solver", "Timetabler", "Room-Similarity Threshold", "Test", "Satisfiable", "Subjects", "Professors", "SubjectProfessors", "Rooms", "Classes", "Duration(ms)", "Memory(MB)", "Result"}
 	if err := writer.Write(header); err != nil {
 		log.Panicf("cannot write CSV header: %v", err)
 	}
@@ -294,7 +315,7 @@ func toCsv(results []BenchmarkResult) {
 			fmt.Sprintf("%d", result.Test.Rooms),
 			fmt.Sprintf("%d", result.Test.Classes),
 			fmt.Sprintf("%d", result.Duration),
-			fmt.Sprintf("%d", result.Memory),
+			fmt.Sprintf("%.1f", result.Memory),
 			resultTypes[result.Result],
 		}
 		if err := writer.Write(record); err != nil {
