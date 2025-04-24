@@ -1,4 +1,4 @@
-module timetabling
+module github.com/limaJavier/timetabling
 
 go 1.24.0
 

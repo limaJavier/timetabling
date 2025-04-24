@@ -1,7 +1,7 @@
 package model
 
 import (
-	"timetabling/pkg/sat"
+	"github.com/limaJavier/timetabling/pkg/sat"
 
 	"github.com/samber/lo"
 )

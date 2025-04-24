@@ -1,6 +1,6 @@
 package model
 
-import "timetabling/pkg/sat"
+import "github.com/limaJavier/timetabling/pkg/sat"
 
 type embeddedRoomTimetabler struct {
 	solver sat.SATSolver

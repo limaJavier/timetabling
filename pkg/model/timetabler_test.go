@@ -4,7 +4,8 @@ import (
 	"log"
 	"os"
 	"testing"
-	"timetabling/pkg/sat"
+
+	"github.com/limaJavier/timetabling/pkg/sat"
 
 	"github.com/stretchr/testify/assert"
 )

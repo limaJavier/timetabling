@@ -5,7 +5,8 @@ import (
 	"log"
 	"slices"
 	"strings"
-	"timetabling/pkg/sat"
+
+	"github.com/limaJavier/timetabling/pkg/sat"
 
 	"github.com/onsi/gomega/matchers/support/goraph/bipartitegraph"
 	"github.com/samber/lo"
