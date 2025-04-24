@@ -1,18 +1,18 @@
 package model
 
 type predicateEvaluatorIsolatedRoom struct {
-	e PredicateEvaluator
+	e predicateEvaluator
 }
 
-func NewPredicateEvaluatorIsolatedRoom(
+func newPredicateEvaluatorIsolatedRoom(
 	modelInput ModelInput,
 	curriculum [][]bool,
 	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
 	roomSimilarityThreshold float32,
-) PredicateEvaluator {
+) predicateEvaluator {
 	evaluator := predicateEvaluatorIsolatedRoom{
-		e: NewPredicateEvaluator(modelInput, curriculum, groups, groupsGraph, roomSimilarityThreshold),
+		e: newPredicateEvaluator(modelInput, curriculum, groups, groupsGraph, roomSimilarityThreshold),
 	}
 	return &evaluator
 }

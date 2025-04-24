@@ -1,6 +1,6 @@
 package model
 
-type PredicateEvaluator interface {
+type predicateEvaluator interface {
 	// Checks whether the subjectProfessor1 and subjectProfessor2 share the same professor
 	SameProfessor(subjectProfessor1, subjectProfessor2 uint64) bool
 

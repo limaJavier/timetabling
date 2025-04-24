@@ -20,40 +20,37 @@ func NewIsolatedRoomTimetabler(solver sat.SATSolver, hybrid bool, roomSimilarity
 	}
 }
 
-func (timetabler *isolatedRoomTimetabler) Build(
-	modelInput ModelInput,
-	curriculum [][]bool,
-	groups map[uint64][]uint64,
-	groupsGraph [][]bool,
-) ([][6]uint64, error) {
+func (timetabler *isolatedRoomTimetabler) Build(modelInput ModelInput) ([][6]uint64, error) {
+	//** Preprocess input
+	curriculum, groups, groupsGraph := preprocessInput(modelInput)
 
 	//** Extract attributes's domains
 	totalRooms := uint64(1)
 	totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, _ := getAttributes(modelInput, curriculum)
 
 	//** Initialize dependencies
-	isolatedEvaluator := NewPredicateEvaluatorIsolatedRoom(
+	isolatedEvaluator := newPredicateEvaluatorIsolatedRoom(
 		modelInput,
 		curriculum,
 		groups,
 		groupsGraph,
 		timetabler.roomSimilarityThreshold,
 	)
-	standardEvaluator := NewPredicateEvaluator(
+	standardEvaluator := newPredicateEvaluator(
 		modelInput,
 		curriculum,
 		groups,
 		groupsGraph,
 		timetabler.roomSimilarityThreshold,
 	)
-	indexer := NewIndexer(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
-	generator := NewPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
+	indexer := newIndexer(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
+	generator := newPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 
 	//** Build SAT instance
 	variables := totalPeriods * totalDays * totalLessons * totalSubjectProfessors * totalGroups * totalRooms
 
 	// Constraints functions
-	constraints := []func(state ConstraintState) [][]int64{
+	constraints := []func(state constraintState) [][]int64{
 		professorConstraints,
 		studentConstraints,
 		subjectPermissibilityConstraints,
@@ -67,7 +64,7 @@ func (timetabler *isolatedRoomTimetabler) Build(
 		constraints = append(constraints, roomSimilarityConstraints)
 	}
 
-	state := ConstraintState{
+	state := constraintState{
 		evaluator:         isolatedEvaluator,
 		indexer:           indexer,
 		generator:         generator,
@@ -97,12 +94,6 @@ func (timetabler *isolatedRoomTimetabler) Build(
 	return roomAssignment(solution, indexer, standardEvaluator, modelInput)
 }
 
-func (timetabler *isolatedRoomTimetabler) Verify(
-	timetable [][6]uint64,
-	modelInput ModelInput,
-	curriculum [][]bool,
-	groups map[uint64][]uint64,
-	groupsGraph [][]bool,
-) bool {
-	return verify(timetable, modelInput, curriculum, groups, groupsGraph)
+func (timetabler *isolatedRoomTimetabler) Verify(timetable [][6]uint64, modelInput ModelInput) bool {
+	return verify(timetable, modelInput)
 }

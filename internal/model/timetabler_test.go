@@ -10,56 +10,51 @@ import (
 )
 
 func TestKissatBasedEmbeddedRoomTimetabler(t *testing.T) {
-	preprocessor := NewPreprocessor()
 	solver := sat.NewKissatSolver()
 	timetabler := NewEmbeddedRoomTimetabler(solver)
 
 	t.Run("Satisfiable instances", func(t *testing.T) {
-		satisfiableExecution(t, preprocessor, timetabler)
+		satisfiableExecution(t, timetabler)
 	})
 }
 
 func TestCadicalBasedEmbeddedRoomTimetabler(t *testing.T) {
-	preprocessor := NewPreprocessor()
 	solver := sat.NewCadicalSolver()
 	timetabler := NewEmbeddedRoomTimetabler(solver)
 
 	t.Run("Satisfiable instances", func(t *testing.T) {
-		satisfiableExecution(t, preprocessor, timetabler)
+		satisfiableExecution(t, timetabler)
 	})
 }
 
 func TestMinisatBasedEmbeddedRoomTimetabler(t *testing.T) {
-	preprocessor := NewPreprocessor()
 	solver := sat.NewCryptominisatSolver()
 	timetabler := NewEmbeddedRoomTimetabler(solver)
 
 	t.Run("Satisfiable instances", func(t *testing.T) {
-		satisfiableExecution(t, preprocessor, timetabler)
+		satisfiableExecution(t, timetabler)
 	})
 }
 
 func TestCryptominisatBasedEmbeddedRoomTimetabler(t *testing.T) {
-	preprocessor := NewPreprocessor()
 	solver := sat.NewCryptominisatSolver()
 	timetabler := NewEmbeddedRoomTimetabler(solver)
 
 	t.Run("Satisfiable instances", func(t *testing.T) {
-		satisfiableExecution(t, preprocessor, timetabler)
+		satisfiableExecution(t, timetabler)
 	})
 }
 
 func TestSlimeBasedEmbeddedRoomTimetabler(t *testing.T) {
-	preprocessor := NewPreprocessor()
 	solver := sat.NewSlimeSolver()
 	timetabler := NewEmbeddedRoomTimetabler(solver)
 
 	t.Run("Satisfiable instances", func(t *testing.T) {
-		satisfiableExecution(t, preprocessor, timetabler)
+		satisfiableExecution(t, timetabler)
 	})
 }
 
-func satisfiableExecution(t *testing.T, preprocessor Preprocessor, timetabler Timetabler) {
+func satisfiableExecution(t *testing.T, timetabler Timetabler) {
 	testFiles, err := os.ReadDir(satisfiableTestDirectory)
 	if err != nil {
 		log.Fatalf("cannot read directory: %v", err)
@@ -72,15 +67,13 @@ func satisfiableExecution(t *testing.T, preprocessor Preprocessor, timetabler Ti
 		if err != nil {
 			log.Fatalf("cannot parse input file: %v", err)
 		}
-		curriculum, groups := preprocessor.ExtractCurriculumAndGroups(input)
-		groupsGraph := preprocessor.BuildGroupsGraph(groups)
 
 		//** Act
-		timetable, err := timetabler.Build(input, curriculum, groups, groupsGraph)
+		timetable, err := timetabler.Build(input)
 
 		//** Assert
 		assert.Nil(t, err)
 		assert.NotNil(t, timetable)
-		assert.True(t, timetabler.Verify(timetable, input, curriculum, groups, groupsGraph))
+		assert.True(t, timetabler.Verify(timetable, input))
 	}
 }

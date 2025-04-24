@@ -105,8 +105,6 @@ type testMetadata struct {
 }
 
 func main() {
-	preprocessor := model.NewPreprocessor()
-
 	tests := getTests()
 	timetablers := getTimetablers()
 	solvers := getSolvers()
@@ -114,14 +112,13 @@ func main() {
 
 	for _, test := range tests {
 		input := test.Input
-		curriculum, groups, groupsGraph := preprocess(preprocessor, input)
 
 		for _, solverMeta := range solvers {
 			solver := solverMeta.Constructor()
 			for _, timetablerMeta := range timetablers {
 				timetabler := timetablerMeta.Constructor(solver)
 
-				duration, memory, result := measure(timetabler, input, curriculum, groups, groupsGraph)
+				duration, memory, result := measure(timetabler, input)
 
 				results = append(results, BenchmarkResult{
 					Solver:     solverMeta.Type,
@@ -252,26 +249,14 @@ func getTimetablers() []timetablerMetadata {
 	}
 }
 
-func preprocess(preprocessor model.Preprocessor, input model.ModelInput) (curriculum [][]bool, groups map[uint64][]uint64, groupsGraph [][]bool) {
-	curriculum, groups = preprocessor.ExtractCurriculumAndGroups(input)
-	groupsGraph = preprocessor.BuildGroupsGraph(groups)
-	return curriculum, groups, groupsGraph
-}
-
-func measure(
-	timetabler model.Timetabler,
-	input model.ModelInput,
-	curriculum [][]bool,
-	groups map[uint64][]uint64,
-	groupsGraph [][]bool,
-) (duration int64, memory float32, result ResultType) {
+func measure(timetabler model.Timetabler, input model.ModelInput) (duration int64, memory float32, result ResultType) {
 
 	var memoryStart, memoryEnd runtime.MemStats
 	runtime.GC() // Clean up before measuring
 	runtime.ReadMemStats(&memoryStart)
 
 	start := time.Now()
-	timetable, err := timetabler.Build(input, curriculum, groups, groupsGraph)
+	timetable, err := timetabler.Build(input)
 	duration = time.Since(start).Milliseconds()
 	runtime.ReadMemStats(&memoryEnd)
 	memory = float32(memoryEnd.Alloc-memoryStart.Alloc) / MB
@@ -281,7 +266,7 @@ func measure(
 		return duration, memory, Unsatisfiable
 	}
 
-	if !timetabler.Verify(timetable, input, curriculum, groups, groupsGraph) {
+	if !timetabler.Verify(timetable, input) {
 		panic("timetable verification failed")
 	}
 	return duration, memory, Solved

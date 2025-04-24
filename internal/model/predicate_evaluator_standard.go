@@ -16,13 +16,13 @@ type predicateEvaluatorStandard struct {
 	roomSimilarityThreshold float32             // Threshold for room similarity
 }
 
-func NewPredicateEvaluator(
+func newPredicateEvaluator(
 	modelInput ModelInput,
 	curriculum [][]bool,
 	groups map[uint64][]uint64,
 	groupsGraph [][]bool,
 	roomSimilarityThreshold float32,
-) PredicateEvaluator {
+) predicateEvaluator {
 	subjectProfessors := uint64(len(modelInput.SubjectProfessors))
 	maxLessons := lo.Max(lo.Map(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor, _ int) uint64 {
 		return subjectProfessor.Lessons

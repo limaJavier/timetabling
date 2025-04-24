@@ -28,7 +28,7 @@ func TestIndexAndAttributesDeterministic(t *testing.T) {
 		var Rooms uint64 = scenario[5]
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
+		indexer := newIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
 
 		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 
@@ -65,7 +65,7 @@ func TestIndexAndAttributesNonDeterministic(t *testing.T) {
 		var Rooms uint64 = uint64(rand.Intn(50) + 1)
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
+		indexer := newIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
 
 		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 
@@ -102,7 +102,7 @@ func TestIntegerConstraints(t *testing.T) {
 		var Rooms uint64 = uint64(rand.Intn(50) + 1)
 
 		// Act
-		indexer := NewIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
+		indexer := newIndexer(Periods, Days, Lessons, SubjectProfessors, Groups, Rooms)
 
 		indices := make([]uint64, 0, Periods*Days*Lessons*SubjectProfessors*Groups)
 

@@ -14,32 +14,29 @@ func NewEmbeddedRoomTimetabler(solver sat.SATSolver) Timetabler {
 	}
 }
 
-func (timetabler *embeddedRoomTimetabler) Build(
-	modelInput ModelInput,
-	curriculum [][]bool,
-	groups map[uint64][]uint64,
-	groupsGraph [][]bool,
-) ([][6]uint64, error) {
+func (timetabler *embeddedRoomTimetabler) Build(modelInput ModelInput) ([][6]uint64, error) {
+	//** Preprocess input
+	curriculum, groups, groupsGraph := preprocessInput(modelInput)
 
 	//** Extract attributes's domains
 	totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms := getAttributes(modelInput, curriculum)
 
 	//** Initialize dependencies
-	evaluator := NewPredicateEvaluator(
+	evaluator := newPredicateEvaluator(
 		modelInput,
 		curriculum,
 		groups,
 		groupsGraph,
 		0,
 	)
-	indexer := NewIndexer(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
-	generator := NewPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
+	indexer := newIndexer(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
+	generator := newPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 
 	//** Build SAT instance
 	variables := totalPeriods * totalDays * totalLessons * totalSubjectProfessors * totalGroups * totalRooms
 
 	// Constraints functions
-	constraints := []func(state ConstraintState) [][]int64{
+	constraints := []func(state constraintState) [][]int64{
 		professorConstraints,
 		studentConstraints,
 		subjectPermissibilityConstraints,
@@ -52,7 +49,7 @@ func (timetabler *embeddedRoomTimetabler) Build(
 		uniquenessConstraints,
 	}
 
-	state := ConstraintState{
+	state := constraintState{
 		evaluator:         evaluator,
 		indexer:           indexer,
 		generator:         generator,
@@ -87,12 +84,6 @@ func (timetabler *embeddedRoomTimetabler) Build(
 	return timetable, nil
 }
 
-func (timetabler *embeddedRoomTimetabler) Verify(
-	timetable [][6]uint64,
-	modelInput ModelInput,
-	curriculum [][]bool,
-	groups map[uint64][]uint64,
-	groupsGraph [][]bool,
-) bool {
-	return verify(timetable, modelInput, curriculum, groups, groupsGraph)
+func (timetabler *embeddedRoomTimetabler) Verify(timetable [][6]uint64, modelInput ModelInput) bool {
+	return verify(timetable, modelInput)
 }

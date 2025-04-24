@@ -18,15 +18,12 @@ func (err unassignableError) Error() string {
 	return "not all variables can be assigned a room"
 }
 
-func verify(
-	timetable [][6]uint64,
-	modelInput ModelInput,
-	curriculum [][]bool,
-	groups map[uint64][]uint64,
-	groupsGraph [][]bool,
-) bool {
+func verify(timetable [][6]uint64, modelInput ModelInput) bool {
+	//** Preprocess input
+	curriculum, groups, groupsGraph := preprocessInput(modelInput)
+
 	//** Initialize dependencies
-	evaluator := NewPredicateEvaluator(
+	evaluator := newPredicateEvaluator(
 		modelInput,
 		curriculum,
 		groups,
@@ -112,7 +109,7 @@ func verify(
 	})
 }
 
-func buildSat(variables uint64, constraints []func(state ConstraintState) [][]int64, state ConstraintState) (satInstance sat.SAT, explicitVariables map[int64]bool) {
+func buildSat(variables uint64, constraints []func(state constraintState) [][]int64, state constraintState) (satInstance sat.SAT, explicitVariables map[int64]bool) {
 	satInstance = sat.SAT{
 		Variables: variables,
 		Clauses:   [][]int64{},
@@ -123,7 +120,7 @@ func buildSat(variables uint64, constraints []func(state ConstraintState) [][]in
 
 	// Execute constraints functions on different goroutines to improve performance
 	for _, constraint := range constraints {
-		go func(constraint func(state ConstraintState) [][]int64) {
+		go func(constraint func(state constraintState) [][]int64) {
 			constraintsChannel <- constraint(state)
 		}(constraint)
 	}
@@ -151,7 +148,7 @@ func buildSat(variables uint64, constraints []func(state ConstraintState) [][]in
 	return satInstance, explicitVariables
 }
 
-func roomAssignment(solution sat.SATSolution, indexer Indexer, evaluator PredicateEvaluator, modelInput ModelInput) ([][6]uint64, error) {
+func roomAssignment(solution sat.SATSolution, indexer indexer, evaluator predicateEvaluator, modelInput ModelInput) ([][6]uint64, error) {
 	simultaneousVariables, simultaneousRooms, simultaneousRelationships := make(map[[2]uint64][]int64), make(map[[2]uint64][]uint64), make(map[[2]uint64]map[[2]uint64]bool)
 
 	for _, variable := range solution {
@@ -285,4 +282,86 @@ func collide(groupsGraph [][]bool, groupAssistance map[uint64][][]bool, group, p
 		}
 	}
 	return false
+}
+
+func preprocessInput(modelInput ModelInput) (curriculum [][]bool, groups map[uint64][]uint64, groupsGraph [][]bool) {
+	curriculum, groups = extractCurriculumAndGroups(modelInput)
+	groupsGraph = buildGroupsGraph(groups)
+	return curriculum, groups, groupsGraph
+}
+
+func extractCurriculumAndGroups(modelInput ModelInput) ([][]bool, map[uint64][]uint64) {
+	subjectProfessors := len(modelInput.SubjectProfessors)
+	curriculum := make([][]bool, 0)
+	groups := make(map[uint64][]uint64)
+
+	currentId := uint64(0)
+	for _, subjectProfessor := range modelInput.SubjectProfessors {
+		subjectProfessorId, associatedGroups := subjectProfessor.Id, subjectProfessor.Groups
+		subjectProfessorName := fmt.Sprintf("%v~%v", modelInput.Subjects[subjectProfessor.Subject], modelInput.Professors[subjectProfessor.Professor])
+
+		associatedClasses := make(map[uint64]bool)
+		for _, group := range associatedGroups {
+			// Verify associated groups are disjoint
+			lo.ForEach(group, func(class uint64, _ int) {
+				if _, ok := associatedClasses[class]; ok {
+					log.Panicf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessorName, class, group)
+				}
+				associatedClasses[class] = true
+			})
+
+			groupCopy := make([]uint64, len(group))
+			copy(groupCopy, group)
+			slices.Sort(groupCopy)
+
+			exists := false
+			for groupId, group := range groups {
+				if slices.Equal(group, groupCopy) {
+					curriculum[groupId][subjectProfessorId] = true
+					exists = true
+					break
+				}
+			}
+
+			if !exists {
+				groups[currentId] = groupCopy
+				currentId++
+
+				row := make([]bool, subjectProfessors)
+				row[subjectProfessorId] = true
+				curriculum = append(curriculum, row)
+			}
+		}
+	}
+
+	return curriculum, groups
+}
+
+func buildGroupsGraph(groups map[uint64][]uint64) [][]bool {
+	groupsGraph := make([][]bool, len(groups))
+
+	groupsIds := make([]uint64, 0, len(groups))
+	for id := range groups {
+		groupsIds = append(groupsIds, id)
+		groupsGraph[id] = make([]bool, len(groups)) // Initialize each row
+	}
+
+	for i := range len(groupsIds) - 1 {
+		groupsGraph[i][i] = true // For completeness we assume that groups[i][i] = true for all i
+		for j := i + 1; j < len(groupsIds); j++ {
+			id1, id2 := groupsIds[i], groupsIds[j]
+			group1, group2 := groups[id1], groups[id2]
+
+			// Verify group1 and group2 have a class in common
+			if lo.SomeBy(group1, func(class uint64) bool {
+				return slices.Contains(group2, class)
+			}) {
+				groupsGraph[id1][id2] = true
+				groupsGraph[id2][id1] = true
+			}
+		}
+	}
+	groupsGraph[len(groups)-1][len(groups)-1] = true // Set last index from diagonal to true since the previous iteration does not account for it
+
+	return groupsGraph
 }

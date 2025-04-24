@@ -2,10 +2,10 @@ package model
 
 import "math"
 
-type ConstraintState struct {
-	evaluator PredicateEvaluator
-	indexer   Indexer
-	generator PermutationGenerator
+type constraintState struct {
+	evaluator predicateEvaluator
+	indexer   indexer
+	generator permutationGenerator
 
 	periods,
 	days,
@@ -15,7 +15,7 @@ type ConstraintState struct {
 	rooms uint64
 }
 
-func professorConstraints(state ConstraintState) [][]int64 {
+func professorConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -93,7 +93,7 @@ func professorConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func studentConstraints(state ConstraintState) [][]int64 {
+func studentConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -172,7 +172,7 @@ func studentConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func subjectPermissibilityConstraints(state ConstraintState) [][]int64 {
+func subjectPermissibilityConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -211,7 +211,7 @@ func subjectPermissibilityConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func professorAvailabilityConstraints(state ConstraintState) [][]int64 {
+func professorAvailabilityConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -250,7 +250,7 @@ func professorAvailabilityConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func lessonConstraints(state ConstraintState) [][]int64 {
+func lessonConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -329,7 +329,7 @@ func lessonConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func roomConstraints(state ConstraintState) [][]int64 {
+func roomConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -407,7 +407,7 @@ func roomConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func roomSimilarityConstraints(state ConstraintState) [][]int64 {
+func roomSimilarityConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -485,7 +485,7 @@ func roomSimilarityConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func roomNegationConstraints(state ConstraintState) [][]int64 {
+func roomNegationConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
@@ -525,7 +525,7 @@ func roomNegationConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func completenessConstraints(state ConstraintState) [][]int64 {
+func completenessConstraints(state constraintState) [][]int64 {
 	// <Lesson, SubjectProfessor, Group> triplets
 	triplets := make([][3]uint64, 0)
 	_ = state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
@@ -577,7 +577,7 @@ func completenessConstraints(state ConstraintState) [][]int64 {
 	return clauses
 }
 
-func negationConstraints(state ConstraintState) [][]int64 {
+func negationConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 0
 		func(permutation []uint64) bool {
@@ -648,7 +648,7 @@ func negationConstraints(state ConstraintState) [][]int64 {
 }
 
 // TODO: (Optional) This method can be performance-optimized by a triple for loop instead of going through all permutations
-func uniquenessConstraints(state ConstraintState) [][]int64 {
+func uniquenessConstraints(state constraintState) [][]int64 {
 	permutations := state.generator.ConstrainedPermutations([]func(permutation []uint64) bool{
 		// A_k(i,j) = 1
 		func(permutation []uint64) bool {
