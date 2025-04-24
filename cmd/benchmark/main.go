@@ -7,8 +7,8 @@ import (
 	"os"
 	"runtime"
 	"time"
-	"timetabling/internal/model"
-	"timetabling/internal/sat"
+	"timetabling/pkg/model"
+	"timetabling/pkg/sat"
 
 	"github.com/samber/lo"
 )

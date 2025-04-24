@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 	"testing"
-	"timetabling/internal/sat"
+	"timetabling/pkg/sat"
 
 	"github.com/stretchr/testify/assert"
 )
