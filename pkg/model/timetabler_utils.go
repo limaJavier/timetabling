@@ -36,7 +36,7 @@ func verify(timetable [][6]uint64, modelInput ModelInput) bool {
 	totalPeriods, totalDays, _, _, totalGroups, totalRooms := getAttributes(modelInput, curriculum)
 
 	//** Initialize derived-lessons
-	derivedLessons := make(map[uint64]uint64)
+	derivedLessons := make(map[[2]uint64]uint64)
 
 	//** Initialize professor-assistance
 	professorAssistance := make(map[uint64][][]bool)
@@ -68,10 +68,11 @@ func verify(timetable [][6]uint64, modelInput ModelInput) bool {
 	lessonTaught := make(map[[3]uint64]bool)
 
 	for _, positive := range timetable {
-		period, day, subjectProfessorId, group, room := positive[0], positive[1], positive[3], positive[4], positive[5]
-		professor := modelInput.SubjectProfessors[subjectProfessorId].Professor
+		period, day, subjectProfessor, group, room := positive[0], positive[1], positive[3], positive[4], positive[5]
+		professor := modelInput.SubjectProfessors[subjectProfessor].Professor
+		entryKey := [2]uint64{subjectProfessor, group}
 
-		_, alreadyTaught := lessonTaught[[3]uint64{group, subjectProfessorId, day}]
+		_, alreadyTaught := lessonTaught[[3]uint64{group, subjectProfessor, day}]
 		// Check that:
 		// - SubjectProfessor is allowed to teach (or to be taught) in the period and day
 		// - Professor is available in the period and day
@@ -81,33 +82,31 @@ func verify(timetable [][6]uint64, modelInput ModelInput) bool {
 		// - Room is not assigned to subjectProfessor
 		// - Group does not fit in room
 		// - Room must not be already assigned in the period and day
-		if !modelInput.SubjectProfessors[subjectProfessorId].Permissibility[period][day] ||
-			!evaluator.ProfessorAvailable(subjectProfessorId, day, period) ||
+		if !modelInput.Entries[entryKey].Permissibility[period][day] ||
+			!evaluator.ProfessorAvailable(subjectProfessor, day, period) ||
 			professorAssistance[professor][period][day] ||
 			collide(groupsGraph, groupAssistance, group, period, day) ||
 			alreadyTaught ||
-			!evaluator.Assigned(room, subjectProfessorId) ||
+			!evaluator.Assigned(room, subjectProfessor, group) ||
 			!evaluator.Fits(group, room) ||
 			roomAssistance[room][period][day] {
 			return false
 		}
 
-		professorAssistance[professor][period][day] = true             // Store professor assistance
-		groupAssistance[group][period][day] = true                     // Store group assistance
-		roomAssistance[room][period][day] = true                       // Store room assistance
-		derivedLessons[subjectProfessorId]++                           // Store lesson taught
-		lessonTaught[[3]uint64{group, subjectProfessorId, day}] = true // Store lesson taught
-	}
-
-	for _, subjectProfessor := range modelInput.SubjectProfessors {
-		subjectProfessorId, groups := subjectProfessor.Id, subjectProfessor.Groups
-		derivedLessons[subjectProfessorId] /= uint64(len(groups))
+		professorAssistance[professor][period][day] = true           // Store professor assistance
+		groupAssistance[group][period][day] = true                   // Store group assistance
+		roomAssistance[room][period][day] = true                     // Store room assistance
+		derivedLessons[entryKey]++                                   // Store lesson taught
+		lessonTaught[[3]uint64{group, subjectProfessor, day}] = true // Store lesson taught
 	}
 
 	// Check whether the number of lessons taught for each subjectProfessor is equal to the number of lessons assigned in the curriculum
-	return !lo.SomeBy(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor) bool {
-		return derivedLessons[subjectProfessor.Id] != subjectProfessor.Lessons
-	})
+	for key, value := range modelInput.Entries {
+		if derivedLessons[key] != value.Lessons {
+			return false
+		}
+	}
+	return true
 }
 
 func buildSat(variables uint64, constraints []func(state constraintState) [][]int64, state constraintState) (satInstance sat.SAT, explicitVariables map[int64]bool) {
@@ -155,6 +154,7 @@ func roomAssignment(solution sat.SATSolution, indexer indexer, evaluator predica
 	for _, variable := range solution {
 		period, day, _, subjectProfessor, group, _ := indexer.Attributes(uint64(variable))
 		key := [2]uint64{period, day}
+		entryKey := [2]uint64{subjectProfessor, group}
 
 		// Initialize for each new key
 		if _, ok := simultaneousVariables[key]; !ok {
@@ -166,7 +166,7 @@ func roomAssignment(solution sat.SATSolution, indexer indexer, evaluator predica
 		// Add simultaneous variable
 		simultaneousVariables[key] = append(simultaneousVariables[key], variable)
 
-		for _, room := range modelInput.SubjectProfessors[subjectProfessor].Rooms {
+		for _, room := range modelInput.Entries[entryKey].Rooms {
 			// Add simultaneous room after verifying it fits the group
 			if !slices.Contains(simultaneousRooms[key], room) && evaluator.Fits(group, room) {
 				simultaneousRooms[key] = append(simultaneousRooms[key], room)
@@ -193,11 +193,12 @@ func roomAssignment(solution sat.SATSolution, indexer indexer, evaluator predica
 			var builder strings.Builder
 			for _, variable := range variables {
 				_, _, _, subjectProfessor, group, _ := indexer.Attributes(uint64(variable))
+				entryKey := [2]uint64{subjectProfessor, group}
 
 				subject := modelInput.Subjects[modelInput.SubjectProfessors[subjectProfessor].Subject].Name
 				fmt.Fprintf(&builder, "\tsubject: %v -> { ", subject)
 
-				for _, room := range modelInput.SubjectProfessors[subjectProfessor].Rooms {
+				for _, room := range modelInput.Entries[entryKey].Rooms {
 					if evaluator.Fits(group, room) {
 						roomName := modelInput.Rooms[room].Name
 						fmt.Fprintf(&builder, "%v, ", roomName)
@@ -265,12 +266,15 @@ func getAttributes(modelInput ModelInput, curriculum [][]bool) (periods, days, l
 	periods = uint64(len(modelInput.Professors[0].Availability))
 	days = uint64(len(modelInput.Professors[0].Availability[0]))
 	subjectProfessors = uint64(len(modelInput.SubjectProfessors))
-	groups = uint64(len(curriculum))
+	groups = uint64(len(modelInput.Groups))
 	rooms = uint64(len(modelInput.Rooms))
 
-	lessons = lo.Max(lo.Map(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor, _ int) uint64 {
-		return subjectProfessor.Lessons
-	}))
+	lessons = 0
+	for _, value := range modelInput.Entries {
+		if value.Lessons > lessons {
+			lessons = value.Lessons
+		}
+	}
 
 	return periods, days, lessons, subjectProfessors, groups, rooms
 }
@@ -302,17 +306,17 @@ func extractCurriculumAndGroups(modelInput ModelInput) ([][]bool, map[uint64][]u
 		subjectProfessorName := fmt.Sprintf("%v~%v", modelInput.Subjects[subjectProfessor.Subject], modelInput.Professors[subjectProfessor.Professor])
 
 		associatedClasses := make(map[uint64]bool)
-		for _, group := range associatedGroups {
+		for _, associatedGroup := range associatedGroups {
 			// Verify associated groups are disjoint
-			lo.ForEach(group, func(class uint64, _ int) {
+			lo.ForEach(associatedGroup, func(class uint64, _ int) {
 				if _, ok := associatedClasses[class]; ok {
-					log.Panicf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessorName, class, group)
+					log.Panicf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessorName, class, associatedGroup)
 				}
 				associatedClasses[class] = true
 			})
 
-			groupCopy := make([]uint64, len(group))
-			copy(groupCopy, group)
+			groupCopy := make([]uint64, len(associatedGroup))
+			copy(groupCopy, associatedGroup)
 			slices.Sort(groupCopy)
 
 			exists := false

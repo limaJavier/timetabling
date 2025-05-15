@@ -14,10 +14,10 @@ type predicateEvaluator interface {
 	Disjoint(group1, group2 uint64) bool
 
 	// Checks whether subjectProfessor is allowed to teach (or be taught) on that given period and day
-	Allowed(subjectProfessor, day, period uint64) bool
+	Allowed(subjectProfessor, group, day, period uint64) bool
 
 	// Checks whether the room is assigned to the subjectProfessor
-	Assigned(room, subjectProfessor uint64) bool
+	Assigned(room, subjectProfessor, group uint64) bool
 
 	// Checks whether the group's size is smaller than or equal to the room's capacity (i.e. the group fits in the room)
 	Fits(group, room uint64) bool

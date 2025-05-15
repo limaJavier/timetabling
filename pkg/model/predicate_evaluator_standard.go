@@ -24,9 +24,12 @@ func newPredicateEvaluator(
 	roomSimilarityThreshold float32,
 ) predicateEvaluator {
 	subjectProfessors := uint64(len(modelInput.SubjectProfessors))
-	maxLessons := lo.Max(lo.Map(modelInput.SubjectProfessors, func(subjectProfessor SubjectProfessor, _ int) uint64 {
-		return subjectProfessor.Lessons
-	}))
+	maxLessons := uint64(0)
+	for _, value := range modelInput.Entries {
+		if value.Lessons > maxLessons {
+			maxLessons = value.Lessons
+		}
+	}
 
 	evaluator := predicateEvaluatorStandard{
 		modelInput:              modelInput,
@@ -41,7 +44,9 @@ func newPredicateEvaluator(
 
 		for subjectProfessor := range curriculum[group] { // For each subjectProfessor
 			evaluator.allocations[uint64(group)][subjectProfessor] = make([]bool, maxLessons) // Initialize subjectProfessor row
-			for i := range modelInput.SubjectProfessors[subjectProfessor].Lessons {
+			entryKey := [2]uint64{uint64(subjectProfessor), uint64(group)}
+
+			for i := range modelInput.Entries[entryKey].Lessons {
 				if curriculum[group][subjectProfessor] {
 					evaluator.allocations[uint64(group)][subjectProfessor][i] = true // Set to true the first j lessons where j is the number of lessons assigned for "subjectProfessor" to teach to "group" (i.e. curriculum[group][subjectProfessor])
 				}
@@ -76,31 +81,30 @@ func (evaluator *predicateEvaluatorStandard) Disjoint(group1, group2 uint64) boo
 	return !evaluator.groupsGraph[group1][group2]
 }
 
-func (evaluator *predicateEvaluatorStandard) Allowed(subjectProfessor, day, period uint64) bool {
-	distribution := evaluator.modelInput.SubjectProfessors[subjectProfessor].Permissibility
+func (evaluator *predicateEvaluatorStandard) Allowed(subjectProfessor, group, day, period uint64) bool {
+	entryKey := [2]uint64{subjectProfessor, group}
+	distribution := evaluator.modelInput.Entries[entryKey].Permissibility
 	return distribution[period][day]
 }
 
-func (evaluator *predicateEvaluatorStandard) Assigned(room, subjectProfessor uint64) bool {
-	return slices.Contains(evaluator.modelInput.SubjectProfessors[subjectProfessor].Rooms, room)
+func (evaluator *predicateEvaluatorStandard) Assigned(room, subjectProfessor, group uint64) bool {
+	entryKey := [2]uint64{subjectProfessor, group}
+	return slices.Contains(evaluator.modelInput.Entries[entryKey].Rooms, room)
 }
 
 func (evaluator *predicateEvaluatorStandard) Fits(group, room uint64) bool {
-	classes, ok := evaluator.groups[group]
-	if !ok {
-		panic("group not found")
-	}
-
-	groupSize := uint64(0)
-	for _, class := range classes {
-		groupSize += evaluator.modelInput.Classes[class].Size
-	}
+	groupSize := lo.Sum(
+		lo.Map(evaluator.modelInput.Groups[group].Classes, func(class uint64, _ int) uint64 {
+			return evaluator.modelInput.Classes[class].Size
+		}),
+	)
 	return evaluator.modelInput.Rooms[room].Capacity >= groupSize
 }
 
 func (evaluator *predicateEvaluatorStandard) RoomSimilar(subjectProfessor1, subjectProfessor2, group1, group2 uint64) bool {
-	rooms1 := evaluator.modelInput.SubjectProfessors[subjectProfessor1].Rooms
-	rooms2 := evaluator.modelInput.SubjectProfessors[subjectProfessor2].Rooms
+	entryKey1, entryKey2 := [2]uint64{subjectProfessor1, group1}, [2]uint64{subjectProfessor2, group2}
+	rooms1 := evaluator.modelInput.Entries[entryKey1].Rooms
+	rooms2 := evaluator.modelInput.Entries[entryKey2].Rooms
 
 	// Filter rooms based on group-size and room-capacity
 	rooms1 = lo.Filter(rooms1, func(room uint64, _ int) bool {

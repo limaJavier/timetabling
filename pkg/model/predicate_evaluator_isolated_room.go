@@ -33,11 +33,11 @@ func (evaluator *predicateEvaluatorIsolatedRoom) Disjoint(group1, group2 uint64)
 	return evaluator.e.Disjoint(group1, group2)
 }
 
-func (evaluator *predicateEvaluatorIsolatedRoom) Allowed(subjectProfessor, day, period uint64) bool {
-	return evaluator.e.Allowed(subjectProfessor, day, period)
+func (evaluator *predicateEvaluatorIsolatedRoom) Allowed(subjectProfessor, group, day, period uint64) bool {
+	return evaluator.e.Allowed(subjectProfessor, group, day, period)
 }
 
-func (evaluator *predicateEvaluatorIsolatedRoom) Assigned(room, subjectProfessor uint64) bool {
+func (evaluator *predicateEvaluatorIsolatedRoom) Assigned(room, subjectProfessor, group uint64) bool {
 	return true
 }
 
