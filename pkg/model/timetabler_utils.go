@@ -20,20 +20,14 @@ func (err unassignableError) Error() string {
 }
 
 func verify(timetable [][6]uint64, modelInput ModelInput) bool {
-	//** Preprocess input
-	curriculum, groups, groupsGraph := preprocessInput(modelInput)
-
 	//** Initialize dependencies
 	evaluator := newPredicateEvaluator(
 		modelInput,
-		curriculum,
-		groups,
-		groupsGraph,
 		0,
 	)
 
 	//** Extract attributes's domains
-	totalPeriods, totalDays, _, _, totalGroups, totalRooms := getAttributes(modelInput, curriculum)
+	totalPeriods, totalDays, _, _, totalGroups, totalRooms := getAttributes(modelInput)
 
 	//** Initialize derived-lessons
 	derivedLessons := make(map[[2]uint64]uint64)
@@ -85,7 +79,7 @@ func verify(timetable [][6]uint64, modelInput ModelInput) bool {
 		if !modelInput.Entries[entryKey].Permissibility[period][day] ||
 			!evaluator.ProfessorAvailable(subjectProfessor, day, period) ||
 			professorAssistance[professor][period][day] ||
-			collide(groupsGraph, groupAssistance, group, period, day) ||
+			collide(modelInput.GroupsGraph, groupAssistance, group, period, day) ||
 			alreadyTaught ||
 			!evaluator.Assigned(room, subjectProfessor, group) ||
 			!evaluator.Fits(group, room) ||
@@ -262,7 +256,7 @@ func assignRooms(variables []int64, rooms []uint64, relationships map[[2]uint64]
 	return assignments, nil
 }
 
-func getAttributes(modelInput ModelInput, curriculum [][]bool) (periods, days, lessons, subjectProfessors, groups, rooms uint64) {
+func getAttributes(modelInput ModelInput) (periods, days, lessons, subjectProfessors, groups, rooms uint64) {
 	periods = uint64(len(modelInput.Professors[0].Availability))
 	days = uint64(len(modelInput.Professors[0].Availability[0]))
 	subjectProfessors = uint64(len(modelInput.SubjectProfessors))
@@ -287,86 +281,4 @@ func collide(groupsGraph [][]bool, groupAssistance map[uint64][][]bool, group, p
 		}
 	}
 	return false
-}
-
-func preprocessInput(modelInput ModelInput) (curriculum [][]bool, groups map[uint64][]uint64, groupsGraph [][]bool) {
-	curriculum, groups = extractCurriculumAndGroups(modelInput)
-	groupsGraph = buildGroupsGraph(groups)
-	return curriculum, groups, groupsGraph
-}
-
-func extractCurriculumAndGroups(modelInput ModelInput) ([][]bool, map[uint64][]uint64) {
-	subjectProfessors := len(modelInput.SubjectProfessors)
-	curriculum := make([][]bool, 0)
-	groups := make(map[uint64][]uint64)
-
-	currentId := uint64(0)
-	for _, subjectProfessor := range modelInput.SubjectProfessors {
-		subjectProfessorId, associatedGroups := subjectProfessor.Id, subjectProfessor.Groups
-		subjectProfessorName := fmt.Sprintf("%v~%v", modelInput.Subjects[subjectProfessor.Subject], modelInput.Professors[subjectProfessor.Professor])
-
-		associatedClasses := make(map[uint64]bool)
-		for _, associatedGroup := range associatedGroups {
-			// Verify associated groups are disjoint
-			lo.ForEach(associatedGroup, func(class uint64, _ int) {
-				if _, ok := associatedClasses[class]; ok {
-					log.Panicf("groups associated to the same subjectProfessor \"%v\" must be disjoint sets: class \"%v\" is present in more than one group or group \"%v\" is not a set", subjectProfessorName, class, associatedGroup)
-				}
-				associatedClasses[class] = true
-			})
-
-			groupCopy := make([]uint64, len(associatedGroup))
-			copy(groupCopy, associatedGroup)
-			slices.Sort(groupCopy)
-
-			exists := false
-			for groupId, group := range groups {
-				if slices.Equal(group, groupCopy) {
-					curriculum[groupId][subjectProfessorId] = true
-					exists = true
-					break
-				}
-			}
-
-			if !exists {
-				groups[currentId] = groupCopy
-				currentId++
-
-				row := make([]bool, subjectProfessors)
-				row[subjectProfessorId] = true
-				curriculum = append(curriculum, row)
-			}
-		}
-	}
-
-	return curriculum, groups
-}
-
-func buildGroupsGraph(groups map[uint64][]uint64) [][]bool {
-	groupsGraph := make([][]bool, len(groups))
-
-	groupsIds := make([]uint64, 0, len(groups))
-	for id := range groups {
-		groupsIds = append(groupsIds, id)
-		groupsGraph[id] = make([]bool, len(groups)) // Initialize each row
-	}
-
-	for i := range len(groupsIds) - 1 {
-		groupsGraph[i][i] = true // For completeness we assume that groups[i][i] = true for all i
-		for j := i + 1; j < len(groupsIds); j++ {
-			id1, id2 := groupsIds[i], groupsIds[j]
-			group1, group2 := groups[id1], groups[id2]
-
-			// Verify group1 and group2 have a class in common
-			if lo.SomeBy(group1, func(class uint64) bool {
-				return slices.Contains(group2, class)
-			}) {
-				groupsGraph[id1][id2] = true
-				groupsGraph[id2][id1] = true
-			}
-		}
-	}
-	groupsGraph[len(groups)-1][len(groups)-1] = true // Set last index from diagonal to true since the previous iteration does not account for it
-
-	return groupsGraph
 }

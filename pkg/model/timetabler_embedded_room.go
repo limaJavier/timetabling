@@ -13,20 +13,11 @@ func NewEmbeddedRoomTimetabler(solver sat.SATSolver) Timetabler {
 }
 
 func (timetabler *embeddedRoomTimetabler) Build(modelInput ModelInput) ([][6]uint64, error) {
-	//** Preprocess input
-	curriculum, groups, groupsGraph := preprocessInput(modelInput)
-
 	//** Extract attributes's domains
-	totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms := getAttributes(modelInput, curriculum)
+	totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms := getAttributes(modelInput)
 
 	//** Initialize dependencies
-	evaluator := newPredicateEvaluator(
-		modelInput,
-		curriculum,
-		groups,
-		groupsGraph,
-		0,
-	)
+	evaluator := newPredicateEvaluator(modelInput, 0)
 	indexer := newIndexer(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 	generator := newPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 

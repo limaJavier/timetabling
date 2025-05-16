@@ -11,18 +11,10 @@ import (
 type predicateEvaluatorStandard struct {
 	modelInput              ModelInput
 	allocations             map[uint64][][]bool // Allocation matrix per group
-	groups                  map[uint64][]uint64 // Classes per group
-	groupsGraph             [][]bool            // Groups matrix' coordinate (i, j) = true if and only if group_i and group_j have at least one class in common (i.e. it represents an undirected graph where an edge indicate that two groups share a common class). For completeness we assume that groups[i][i] = true for all i
 	roomSimilarityThreshold float32             // Threshold for room similarity
 }
 
-func newPredicateEvaluator(
-	modelInput ModelInput,
-	curriculum [][]bool,
-	groups map[uint64][]uint64,
-	groupsGraph [][]bool,
-	roomSimilarityThreshold float32,
-) predicateEvaluator {
+func newPredicateEvaluator(modelInput ModelInput, roomSimilarityThreshold float32) predicateEvaluator {
 	subjectProfessors := uint64(len(modelInput.SubjectProfessors))
 	maxLessons := uint64(0)
 	for _, value := range modelInput.Entries {
@@ -33,21 +25,19 @@ func newPredicateEvaluator(
 
 	evaluator := predicateEvaluatorStandard{
 		modelInput:              modelInput,
-		groups:                  groups,
-		groupsGraph:             groupsGraph,
 		roomSimilarityThreshold: roomSimilarityThreshold,
 	}
 
 	evaluator.allocations = make(map[uint64][][]bool) // Initialize dictionary
-	for group := range curriculum {                   // For each group
+	for group := range modelInput.Curriculum {        // For each group
 		evaluator.allocations[uint64(group)] = make([][]bool, subjectProfessors) // Initialize allocation per group
 
-		for subjectProfessor := range curriculum[group] { // For each subjectProfessor
+		for subjectProfessor := range modelInput.Curriculum[group] { // For each subjectProfessor
 			evaluator.allocations[uint64(group)][subjectProfessor] = make([]bool, maxLessons) // Initialize subjectProfessor row
 			entryKey := [2]uint64{uint64(subjectProfessor), uint64(group)}
 
 			for i := range modelInput.Entries[entryKey].Lessons {
-				if curriculum[group][subjectProfessor] {
+				if modelInput.Curriculum[group][subjectProfessor] {
 					evaluator.allocations[uint64(group)][subjectProfessor][i] = true // Set to true the first j lessons where j is the number of lessons assigned for "subjectProfessor" to teach to "group" (i.e. curriculum[group][subjectProfessor])
 				}
 			}
@@ -78,7 +68,7 @@ func (evaluator *predicateEvaluatorStandard) Teaches(group, subjectProfessor, le
 }
 
 func (evaluator *predicateEvaluatorStandard) Disjoint(group1, group2 uint64) bool {
-	return !evaluator.groupsGraph[group1][group2]
+	return !evaluator.modelInput.GroupsGraph[group1][group2]
 }
 
 func (evaluator *predicateEvaluatorStandard) Allowed(subjectProfessor, group, day, period uint64) bool {
@@ -152,7 +142,7 @@ func (evaluator *predicateEvaluatorStandard) noRoomsErrorMessage(subjectProfesso
 	professorName := evaluator.modelInput.Professors[evaluator.modelInput.SubjectProfessors[subjectProfessor].Professor].Name
 
 	fmt.Fprintf(&builder, "There are not fitting rooms for: %v~%v to { ", subjectName, professorName)
-	for _, class := range evaluator.groups[group] {
+	for _, class := range evaluator.modelInput.Groups[group].Classes {
 		fmt.Fprintf(&builder, "%s, ", evaluator.modelInput.Classes[class].Name)
 	}
 	builder.WriteString("}")

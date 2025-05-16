@@ -4,15 +4,9 @@ type predicateEvaluatorIsolatedRoom struct {
 	e predicateEvaluator
 }
 
-func newPredicateEvaluatorIsolatedRoom(
-	modelInput ModelInput,
-	curriculum [][]bool,
-	groups map[uint64][]uint64,
-	groupsGraph [][]bool,
-	roomSimilarityThreshold float32,
-) predicateEvaluator {
+func newPredicateEvaluatorIsolatedRoom(modelInput ModelInput, roomSimilarityThreshold float32) predicateEvaluator {
 	evaluator := predicateEvaluatorIsolatedRoom{
-		e: newPredicateEvaluator(modelInput, curriculum, groups, groupsGraph, roomSimilarityThreshold),
+		e: newPredicateEvaluator(modelInput, roomSimilarityThreshold),
 	}
 	return &evaluator
 }

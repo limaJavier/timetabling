@@ -21,28 +21,13 @@ func NewIsolatedRoomTimetabler(solver sat.SATSolver, hybrid bool, roomSimilarity
 }
 
 func (timetabler *isolatedRoomTimetabler) Build(modelInput ModelInput) ([][6]uint64, error) {
-	//** Preprocess input
-	curriculum, groups, groupsGraph := preprocessInput(modelInput)
-
 	//** Extract attributes's domains
 	totalRooms := uint64(1)
-	totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, _ := getAttributes(modelInput, curriculum)
+	totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, _ := getAttributes(modelInput)
 
 	//** Initialize dependencies
-	isolatedEvaluator := newPredicateEvaluatorIsolatedRoom(
-		modelInput,
-		curriculum,
-		groups,
-		groupsGraph,
-		timetabler.roomSimilarityThreshold,
-	)
-	standardEvaluator := newPredicateEvaluator(
-		modelInput,
-		curriculum,
-		groups,
-		groupsGraph,
-		timetabler.roomSimilarityThreshold,
-	)
+	isolatedEvaluator := newPredicateEvaluatorIsolatedRoom(modelInput, timetabler.roomSimilarityThreshold)
+	standardEvaluator := newPredicateEvaluator(modelInput, timetabler.roomSimilarityThreshold)
 	indexer := newIndexer(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 	generator := newPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 
