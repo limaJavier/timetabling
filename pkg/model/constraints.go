@@ -200,6 +200,38 @@ func subjectPermissibilityConstraints(state constraintState) [][]int64 {
 				// Actual predicate
 				!state.evaluator.Allowed(subjectProfessor, group, day, period)
 		},
+		// ProfessorAvailable(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Assigned(room, subjectProfessor, group)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Fits(group, room)
+		},
 	})
 
 	clauses := make([][]int64, 0)
@@ -228,6 +260,18 @@ func professorAvailabilityConstraints(state constraintState) [][]int64 {
 				// Actual predicate
 				state.evaluator.Teaches(group, subjectProfessor, lesson)
 		},
+		// Allowed(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
+		},
 		// ProfessorAvailable(i, d, t) = 0
 		func(permutation []uint64) bool {
 			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
@@ -238,6 +282,27 @@ func professorAvailabilityConstraints(state constraintState) [][]int64 {
 
 				// Actual predicate
 				!state.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+		},
+		// Assigned(r, i) = 1
+		func(permutation []uint64) bool {
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
+
+			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Assigned(room, subjectProfessor, group)
+		},
+		// Fits(k, r) = 1
+		func(permutation []uint64) bool {
+			group, room := permutation[4], permutation[5]
+
+			return group == math.MaxUint64 ||
+				room == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Fits(group, room)
 		},
 	})
 
@@ -508,6 +573,29 @@ func roomNegationConstraints(state constraintState) [][]int64 {
 				// Actual predicate
 				state.evaluator.Teaches(group, subjectProfessor, lesson)
 		},
+		// Allowed(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
+		},
+		// ProfessorAvailable(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+
+				// Actual predicate
+				state.evaluator.ProfessorAvailable(subjectProfessor, day, period)
+		},
 		// Assigned(r, i) = 0 or Fits(k, r) = 0
 		func(permutation []uint64) bool {
 			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
@@ -600,18 +688,18 @@ func negationConstraints(state constraintState) [][]int64 {
 				// Actual predicate
 				!state.evaluator.Teaches(group, subjectProfessor, lesson)
 		},
-		// // Allowed(i, d, t) = 1
-		// func(permutation []uint64) bool {
-		// 	period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
+		// Allowed(i, d, t) = 1
+		func(permutation []uint64) bool {
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
-		// 	return period == math.MaxUint64 ||
-		// 		day == math.MaxUint64 ||
-		// 		subjectProfessor == math.MaxUint64 ||
-		// 		group == math.MaxUint64 ||
+			return period == math.MaxUint64 ||
+				day == math.MaxUint64 ||
+				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 
-		// 		// Actual predicate
-		// 		state.evaluator.Allowed(subjectProfessor, group, day, period)
-		// },
+				// Actual predicate
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
+		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
 			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]

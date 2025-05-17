@@ -73,6 +73,12 @@ func (evaluator *predicateEvaluatorStandard) Disjoint(group1, group2 uint64) boo
 
 func (evaluator *predicateEvaluatorStandard) Allowed(subjectProfessor, group, day, period uint64) bool {
 	entryKey := [2]uint64{subjectProfessor, group}
+
+	// Check if the pair subject-professor and group has an entry, if not then it's not allowed
+	if _, ok := evaluator.modelInput.Entries[entryKey]; !ok {
+		return false
+	}
+
 	distribution := evaluator.modelInput.Entries[entryKey].Permissibility
 	return distribution[period][day]
 }
