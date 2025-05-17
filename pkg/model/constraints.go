@@ -30,14 +30,15 @@ func professorConstraints(state constraintState) [][]int64 {
 		},
 		// Allowed(i, d, t) = 1
 		func(permutation []uint64) bool {
-			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
 			return period == math.MaxUint64 ||
 				day == math.MaxUint64 ||
 				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Allowed(subjectProfessor, day, period)
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
 		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
@@ -52,13 +53,14 @@ func professorConstraints(state constraintState) [][]int64 {
 		},
 		// Assigned(r, i) = 1
 		func(permutation []uint64) bool {
-			subjectProfessor, room := permutation[3], permutation[5]
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
 
 			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 				room == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Assigned(room, subjectProfessor)
+				state.evaluator.Assigned(room, subjectProfessor, group)
 		},
 		// Fits(k, r) = 1
 		func(permutation []uint64) bool {
@@ -108,14 +110,15 @@ func studentConstraints(state constraintState) [][]int64 {
 		},
 		// Allowed(i, d, t) = 1
 		func(permutation []uint64) bool {
-			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
 			return period == math.MaxUint64 ||
 				day == math.MaxUint64 ||
 				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Allowed(subjectProfessor, day, period)
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
 		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
@@ -130,13 +133,13 @@ func studentConstraints(state constraintState) [][]int64 {
 		},
 		// Assigned(r, i) = 1
 		func(permutation []uint64) bool {
-			subjectProfessor, room := permutation[3], permutation[5]
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
 
 			return subjectProfessor == math.MaxUint64 ||
 				room == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Assigned(room, subjectProfessor)
+				state.evaluator.Assigned(room, subjectProfessor, group)
 		},
 		// Fits(k, r) = 1
 		func(permutation []uint64) bool {
@@ -187,14 +190,15 @@ func subjectPermissibilityConstraints(state constraintState) [][]int64 {
 		},
 		// Allowed(i, d, t) = 0
 		func(permutation []uint64) bool {
-			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
 			return period == math.MaxUint64 ||
 				day == math.MaxUint64 ||
 				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 
 				// Actual predicate
-				!state.evaluator.Allowed(subjectProfessor, day, period)
+				!state.evaluator.Allowed(subjectProfessor, group, day, period)
 		},
 	})
 
@@ -265,14 +269,15 @@ func lessonConstraints(state constraintState) [][]int64 {
 		},
 		// Allowed(i, d, t) = 1
 		func(permutation []uint64) bool {
-			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
 			return period == math.MaxUint64 ||
 				day == math.MaxUint64 ||
 				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Allowed(subjectProfessor, day, period)
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
 		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
@@ -287,13 +292,14 @@ func lessonConstraints(state constraintState) [][]int64 {
 		},
 		// Assigned(r, i) = 1
 		func(permutation []uint64) bool {
-			subjectProfessor, room := permutation[3], permutation[5]
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
 
 			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 				room == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Assigned(room, subjectProfessor)
+				state.evaluator.Assigned(room, subjectProfessor, group)
 		},
 		// Fits(k, r) = 1
 		func(permutation []uint64) bool {
@@ -344,14 +350,15 @@ func roomConstraints(state constraintState) [][]int64 {
 		},
 		// Allowed(i, d, t) = 1
 		func(permutation []uint64) bool {
-			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
 			return period == math.MaxUint64 ||
 				day == math.MaxUint64 ||
 				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Allowed(subjectProfessor, day, period)
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
 		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
@@ -366,13 +373,14 @@ func roomConstraints(state constraintState) [][]int64 {
 		},
 		// Assigned(r, i) = 1
 		func(permutation []uint64) bool {
-			subjectProfessor, room := permutation[3], permutation[5]
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
 
 			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 				room == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Assigned(room, subjectProfessor)
+				state.evaluator.Assigned(room, subjectProfessor, group)
 		},
 		// Fits(k, r) = 1
 		func(permutation []uint64) bool {
@@ -422,14 +430,15 @@ func roomSimilarityConstraints(state constraintState) [][]int64 {
 		},
 		// Allowed(i, d, t) = 1
 		func(permutation []uint64) bool {
-			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
 			return period == math.MaxUint64 ||
 				day == math.MaxUint64 ||
 				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Allowed(subjectProfessor, day, period)
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
 		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
@@ -444,13 +453,14 @@ func roomSimilarityConstraints(state constraintState) [][]int64 {
 		},
 		// Assigned(r, i) = 1
 		func(permutation []uint64) bool {
-			subjectProfessor, room := permutation[3], permutation[5]
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
 
 			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 				room == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Assigned(room, subjectProfessor)
+				state.evaluator.Assigned(room, subjectProfessor, group)
 		},
 		// Fits(k, r) = 1
 		func(permutation []uint64) bool {
@@ -507,7 +517,7 @@ func roomNegationConstraints(state constraintState) [][]int64 {
 				room == math.MaxUint64 ||
 
 				// Actual predicate
-				!state.evaluator.Assigned(room, subjectProfessor) ||
+				!state.evaluator.Assigned(room, subjectProfessor, group) ||
 				!state.evaluator.Fits(group, room)
 		},
 	})
@@ -561,9 +571,9 @@ func completenessConstraints(state constraintState) [][]int64 {
 			for day := range state.days {
 				for room := range state.rooms {
 					// Allowed(i, d, t) = 1, ProfessorAvailable(i, d, t) = 1, Assigned(r, i) = 1, Fits(k, r) = 1
-					if state.evaluator.Allowed(subjectProfessor, day, period) &&
+					if state.evaluator.Allowed(subjectProfessor, group, day, period) &&
 						state.evaluator.ProfessorAvailable(subjectProfessor, day, period) &&
-						state.evaluator.Assigned(room, subjectProfessor) &&
+						state.evaluator.Assigned(room, subjectProfessor, group) &&
 						state.evaluator.Fits(group, room) {
 						index := state.indexer.Index(period, day, lesson, subjectProfessor, group, room)
 						clause = append(clause, int64(index))
@@ -590,17 +600,18 @@ func negationConstraints(state constraintState) [][]int64 {
 				// Actual predicate
 				!state.evaluator.Teaches(group, subjectProfessor, lesson)
 		},
-		// Allowed(i, d, t) = 1
-		func(permutation []uint64) bool {
-			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+		// // Allowed(i, d, t) = 1
+		// func(permutation []uint64) bool {
+		// 	period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
-			return period == math.MaxUint64 ||
-				day == math.MaxUint64 ||
-				subjectProfessor == math.MaxUint64 ||
+		// 	return period == math.MaxUint64 ||
+		// 		day == math.MaxUint64 ||
+		// 		subjectProfessor == math.MaxUint64 ||
+		// 		group == math.MaxUint64 ||
 
-				// Actual predicate
-				state.evaluator.Allowed(subjectProfessor, day, period)
-		},
+		// 		// Actual predicate
+		// 		state.evaluator.Allowed(subjectProfessor, group, day, period)
+		// },
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
 			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
@@ -614,13 +625,14 @@ func negationConstraints(state constraintState) [][]int64 {
 		},
 		// Assigned(r, i) = 1
 		func(permutation []uint64) bool {
-			subjectProfessor, room := permutation[3], permutation[5]
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
 
 			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 				room == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Assigned(room, subjectProfessor)
+				state.evaluator.Assigned(room, subjectProfessor, group)
 		},
 		// Fits(k, r) = 1
 		func(permutation []uint64) bool {
@@ -663,14 +675,15 @@ func uniquenessConstraints(state constraintState) [][]int64 {
 		},
 		// Allowed(i, d, t) = 1
 		func(permutation []uint64) bool {
-			period, day, subjectProfessor := permutation[0], permutation[1], permutation[3]
+			period, day, subjectProfessor, group := permutation[0], permutation[1], permutation[3], permutation[4]
 
 			return period == math.MaxUint64 ||
 				day == math.MaxUint64 ||
 				subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Allowed(subjectProfessor, day, period)
+				state.evaluator.Allowed(subjectProfessor, group, day, period)
 		},
 		// ProfessorAvailable(i, d, t) = 1
 		func(permutation []uint64) bool {
@@ -685,13 +698,14 @@ func uniquenessConstraints(state constraintState) [][]int64 {
 		},
 		// Assigned(r, i) = 1
 		func(permutation []uint64) bool {
-			subjectProfessor, room := permutation[3], permutation[5]
+			subjectProfessor, group, room := permutation[3], permutation[4], permutation[5]
 
 			return subjectProfessor == math.MaxUint64 ||
+				group == math.MaxUint64 ||
 				room == math.MaxUint64 ||
 
 				// Actual predicate
-				state.evaluator.Assigned(room, subjectProfessor)
+				state.evaluator.Assigned(room, subjectProfessor, group)
 		},
 		// Fits(k, r) = 1
 		func(permutation []uint64) bool {

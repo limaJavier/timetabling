@@ -122,7 +122,7 @@ func ProcessRawInput(rawInput RawModelInput) (ModelInput, error) {
 			}
 			subjectProfessors = append(subjectProfessors, subjectProfessor)
 		}
-		subjectProfessorName := fmt.Sprintf("%v~%v", rawInput.Subjects[subjectProfessor.Subject], rawInput.Professors[subjectProfessor.Professor])
+		subjectProfessorName := fmt.Sprintf("%v~%v", rawInput.Subjects[subjectProfessor.Subject].Name, rawInput.Professors[subjectProfessor.Professor].Name)
 		subjectProfessorKey := [2]uint64{subjectProfessor.Subject, subjectProfessor.Professor}
 
 		// Initialize associated-classes for subject-professor if it does not exist
@@ -196,6 +196,10 @@ func ProcessRawInput(rawInput RawModelInput) (ModelInput, error) {
 
 func buildGroupsGraph(groups []Group) [][]bool {
 	groupsGraph := make([][]bool, len(groups))
+
+	for i := range len(groups) {
+		groupsGraph[i] = make([]bool, len(groups))
+	}
 
 	for i := range len(groups) - 1 {
 		groupsGraph[i][i] = true // For completeness we assume that groups[i][i] = true for all i
