@@ -35,6 +35,7 @@ const (
 	Minisat
 	Cryptominisat
 	Slime
+	Ortoolsat
 )
 
 type ResultType int
@@ -57,6 +58,7 @@ var (
 		Minisat:       "Minisat",
 		Cryptominisat: "Cryptominisat",
 		Slime:         "Slime",
+		Ortoolsat:     "Ortoolsat",
 	}
 	resultTypes = map[ResultType]string{
 		Solved:        "Solved",
@@ -111,12 +113,22 @@ func main() {
 	solvers := getSolvers()
 	results := make([]BenchmarkResult, 0, len(tests)*len(timetablers)*len(solvers))
 
+	var testName, solverName, timetablerName string
+
+	defer func() {
+		if panic := recover(); panic != nil {
+			fmt.Printf("a panic occurred with test \"%v\", solver \"%v\" and timetabler \"%v\": %v\n", testName, solverName, timetablerName, panic)
+		}
+	}()
 	for _, test := range tests {
+		testName = test.Name
 		input := test.Input
 
 		for _, solverMeta := range solvers {
+			solverName = solverTypes[solverMeta.Type]
 			solver := solverMeta.Constructor()
 			for _, timetablerMeta := range timetablers {
+				timetablerName = timetablerTypes[timetablerMeta.Type]
 				timetabler := timetablerMeta.Constructor(solver)
 
 				duration, memory, result := measure(timetabler, input)
@@ -196,6 +208,10 @@ func getSolvers() []solverMetadata {
 		{
 			Type:        Slime,
 			Constructor: sat.NewSlimeSolver,
+		},
+		{
+			Type:        Ortoolsat,
+			Constructor: sat.NewOrtoolsatSolver,
 		},
 	}
 }
