@@ -36,6 +36,8 @@ const (
 	Cryptominisat
 	Slime
 	Ortoolsat
+	GlucoseSimp
+	GlucoseSyrup
 )
 
 type ResultType int
@@ -59,6 +61,8 @@ var (
 		Cryptominisat: "Cryptominisat",
 		Slime:         "Slime",
 		Ortoolsat:     "Ortoolsat",
+		GlucoseSimp:   "GlucoseSimp",
+		GlucoseSyrup:  "GlucoseSyrup",
 	}
 	resultTypes = map[ResultType]string{
 		Solved:        "Solved",
@@ -212,6 +216,14 @@ func getSolvers() []solverMetadata {
 		{
 			Type:        Ortoolsat,
 			Constructor: sat.NewOrtoolsatSolver,
+		},
+		{
+			Type:        GlucoseSimp,
+			Constructor: sat.NewGlucoseSimpSolver,
+		},
+		{
+			Type:        GlucoseSyrup,
+			Constructor: sat.NewGlucoseSyrupSolver,
 		},
 	}
 }

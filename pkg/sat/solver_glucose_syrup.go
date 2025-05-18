@@ -7,15 +7,15 @@ import (
 	"os/exec"
 )
 
-const slimePath = "slime"
+const glucoseSyrupPath = "glucose-syrup"
 
-type slimeSolver struct{}
+type glucoseSyrupSolver struct{}
 
-func NewSlimeSolver() SATSolver {
-	return &slimeSolver{}
+func NewGlucoseSyrupSolver() SATSolver {
+	return &glucoseSyrupSolver{}
 }
 
-func (solver *slimeSolver) Solve(sat SAT) (SATSolution, error) {
+func (solver *glucoseSyrupSolver) Solve(sat SAT) (SATSolution, error) {
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	// Create a temporary file to hold the DIMACS content
@@ -39,9 +39,9 @@ func (solver *slimeSolver) Solve(sat SAT) (SATSolution, error) {
 		}
 	}()
 
-	cmd := exec.Command(slimePath)
+	cmd := exec.Command(glucoseSyrupPath)
 	// Set the temporary file as the input for the command
-	cmd.Args = append(cmd.Args, tmpFile.Name())
+	cmd.Args = append(cmd.Args, tmpFile.Name(), "-model", "-verb=0")
 
 	var stdOut bytes.Buffer
 	cmd.Stdout = &stdOut
@@ -51,7 +51,7 @@ func (solver *slimeSolver) Solve(sat SAT) (SATSolution, error) {
 	// Exit-code of 10 stands for satisfiable and exit-code 20 stands for unsatisfiable
 	err = cmd.Run()
 	if err != nil && cmd.ProcessState.ExitCode() != 10 && cmd.ProcessState.ExitCode() != 20 {
-		return nil, fmt.Errorf("an occurred during slime execution: %v : %v", err.Error(), stderr.String())
+		return nil, fmt.Errorf("an occurred during glucose-syrup execution: %v : %v", err.Error(), stderr.String())
 	} else if cmd.ProcessState.ExitCode() == 20 {
 		return nil, nil
 	}
