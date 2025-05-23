@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-const slimePath = "slime"
+var slimePath = Config["slimePath"]
 
 type slimeSolver struct{}
 

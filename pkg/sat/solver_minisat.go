@@ -13,7 +13,7 @@ import (
 	"github.com/samber/lo"
 )
 
-const minisatPath = "minisat"
+var minisatPath = Config["minisatPath"]
 
 type minisatSolver struct{}
 

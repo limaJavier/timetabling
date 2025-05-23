@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-const glucoseSyrupPath = "glucose-syrup"
+var glucoseSyrupPath = Config["glucoseSyrupPath"]
 
 type glucoseSyrupSolver struct{}
 

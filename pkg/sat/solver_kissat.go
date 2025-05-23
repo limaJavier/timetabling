@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const kissatPath = "kissat"
+var kissatPath = Config["kissatPath"]
 
 type kissatSolver struct{}
 

@@ -1,0 +1,10 @@
+{
+    "kissatPath": "kissat",
+    "cadicalPath": "cadical",
+    "minisatPath": "minisat",
+    "cryptominisatPath": "crytominisat",
+    "glucoseSimpPath": "glucose-simp",
+    "glucoseSyrupPath": "glucose-syrup",
+    "slimePath": "slime",
+    "ortoolsatPath": "ortoolsat"
+}

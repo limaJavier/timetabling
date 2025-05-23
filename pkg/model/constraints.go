@@ -548,7 +548,7 @@ func roomSimilarityConstraints(state constraintState) [][]int64 {
 			period1, day1, lesson1, subjectProfessor1, group1, room1 := permutation1[0], permutation1[1], permutation1[2], permutation1[3], permutation1[4], permutation1[5]
 			period2, day2, lesson2, subjectProfessor2, group2, room2 := permutation2[0], permutation2[1], permutation2[2], permutation2[3], permutation2[4], permutation2[5]
 
-			// d == d', t == t', RoomSimilar(i, i') = 1 , SameProfessor(i, i') = 0, k != k'
+			// d == d', t == t', RoomSimilar(i, i', k, k') = 1 , SameProfessor(i, i') = 0, k != k'
 			if period1 == period2 && day1 == day2 && state.evaluator.RoomSimilar(subjectProfessor1, subjectProfessor2, group1, group2) && !state.evaluator.SameProfessor(subjectProfessor1, subjectProfessor2) && group1 != group2 {
 				index1 := state.indexer.Index(period1, day1, lesson1, subjectProfessor1, group1, room1)
 				index2 := state.indexer.Index(period2, day2, lesson2, subjectProfessor2, group2, room2)
