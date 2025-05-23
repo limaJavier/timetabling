@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-const ortoolsatPath = "ortoolsat"
+var ortoolsatPath = Config["ortoolsatPath"]
 
 type ortoolsatSolver struct{}
 

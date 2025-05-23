@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const cadicalPath = "cadical"
+var cadicalPath = Config["cadicalPath"]
 
 type cadicalSolver struct{}
 

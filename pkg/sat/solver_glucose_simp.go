@@ -13,7 +13,7 @@ import (
 	"github.com/samber/lo"
 )
 
-const glucoseSimpPath = "glucose-simp"
+var glucoseSimpPath = Config["glucoseSimpPath"]
 
 type glucoseSimpSolver struct{}
 

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const cryptominisatPath = "cryptominisat"
+var cryptominisatPath = Config["cryptominisatPath"]
 
 type cryptominisatSolver struct{}
 

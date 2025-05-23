@@ -47,6 +47,27 @@ func TestSlime(t *testing.T) {
 	})
 }
 
+func TestOrtoolsat(t *testing.T) {
+	solver := NewOrtoolsatSolver()
+	t.Run("Satisfiable instances", func(t *testing.T) {
+		satisfiableExecution(t, solver)
+	})
+}
+
+func TestGlucoseSimp(t *testing.T) {
+	solver := NewGlucoseSimpSolver()
+	t.Run("Satisfiable instances", func(t *testing.T) {
+		satisfiableExecution(t, solver)
+	})
+}
+
+func TestGlucoseSyrup(t *testing.T) {
+	solver := NewGlucoseSyrupSolver()
+	t.Run("Satisfiable instances", func(t *testing.T) {
+		satisfiableExecution(t, solver)
+	})
+}
+
 func satisfiableExecution(t *testing.T, solver SATSolver) {
 	testFiles, err := os.ReadDir(testDirectory)
 	if err != nil {
