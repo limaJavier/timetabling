@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-var cryptominisatPath = Config["cryptominisatPath"]
-
 type cryptominisatSolver struct{}
 
 func NewCryptominisatSolver() SATSolver {
@@ -16,6 +14,7 @@ func NewCryptominisatSolver() SATSolver {
 }
 
 func (solver *cryptominisatSolver) Solve(sat SAT) (SATSolution, error) {
+	cryptominisatPath := getExecutablePath("cryptominisatPath")
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	cmd := exec.Command(cryptominisatPath, "--verb", "0")

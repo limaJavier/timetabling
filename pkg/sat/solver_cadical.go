@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-var cadicalPath = Config["cadicalPath"]
-
 type cadicalSolver struct{}
 
 func NewCadicalSolver() SATSolver {
@@ -16,6 +14,7 @@ func NewCadicalSolver() SATSolver {
 }
 
 func (solver *cadicalSolver) Solve(sat SAT) (SATSolution, error) {
+	cadicalPath := getExecutablePath("cadicalPath")
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	cmd := exec.Command(cadicalPath, "-q")

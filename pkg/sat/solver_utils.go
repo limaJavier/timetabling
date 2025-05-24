@@ -11,9 +11,7 @@ import (
 	"github.com/samber/lo"
 )
 
-const configPath = "../../config.json"
-
-var Config = getConfig()
+var ConfigPath = "../../config.json"
 
 func parseSolution(solverOutput string) SATSolution {
 	values := lo.Map(
@@ -37,14 +35,20 @@ func parseSolution(solverOutput string) SATSolution {
 	return values[:len(values)-1]
 }
 
-func getConfig() map[string]string {
-	bytes, _ := os.ReadFile(configPath)
+func getExecutablePath(solver string) string {
+	bytes, _ := os.ReadFile(ConfigPath)
 	var inputJson map[string]any
 	err := json.Unmarshal(bytes, &inputJson)
 	if err != nil {
 		log.Fatalf("cannot read config.json file: %v", err)
 	}
+
 	var config map[string]string
 	mapstructure.Decode(inputJson, &config)
-	return config
+
+	path, ok := config[solver]
+	if !ok {
+		log.Panicf("solver \"%v\" is not present in config", solver)
+	}
+	return path
 }

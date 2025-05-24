@@ -7,8 +7,6 @@ import (
 	"os/exec"
 )
 
-var glucoseSyrupPath = Config["glucoseSyrupPath"]
-
 type glucoseSyrupSolver struct{}
 
 func NewGlucoseSyrupSolver() SATSolver {
@@ -16,6 +14,7 @@ func NewGlucoseSyrupSolver() SATSolver {
 }
 
 func (solver *glucoseSyrupSolver) Solve(sat SAT) (SATSolution, error) {
+	glucoseSyrupPath := getExecutablePath("glucoseSyrupPath")
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	// Create a temporary file to hold the DIMACS content

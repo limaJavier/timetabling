@@ -7,8 +7,6 @@ import (
 	"os/exec"
 )
 
-var slimePath = Config["slimePath"]
-
 type slimeSolver struct{}
 
 func NewSlimeSolver() SATSolver {
@@ -16,6 +14,7 @@ func NewSlimeSolver() SATSolver {
 }
 
 func (solver *slimeSolver) Solve(sat SAT) (SATSolution, error) {
+	slimePath := getExecutablePath("slimePath")
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	// Create a temporary file to hold the DIMACS content

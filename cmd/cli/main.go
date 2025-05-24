@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"slices"
 	"strings"
 
 	"github.com/limaJavier/timetabling/pkg/model"
 	"github.com/limaJavier/timetabling/pkg/sat"
+	"github.com/samber/lo"
 )
 
 var Days = map[uint64]string{
@@ -49,8 +51,12 @@ var (
 )
 
 func main() {
+	setConfigPath()
 	// Define arguments
-	strategyPtr := flag.String("strategy", "pure", "Strategy to build the timetable. Allowed values are: \"pure\" (All restrictions and assigments are guarenteed by the SAT, therefore a solution will be found if it exists), \"postponed\"(Room assigment will be postponed. Correctness is not guaranteed) and \"hybrid\"(Room assignment is postponed, but similarity restriction are imposed in the SAT. Correctness is not guaranteed), where \"pure\" is the default")
+	strategyPtr := flag.String("strategy", "pure", `Strategy to build the timetable. Allowed values are: 
+- "pure" (All restrictions and assigments are guarenteed by the SAT, therefore a solution will be found if it exists), 
+- "postponed"(Room assigment will be postponed. Correctness is not guaranteed) and 
+- "hybrid"(Room assignment is postponed, but similarity restriction are imposed in the SAT. Correctness is not guaranteed), where \"pure\" is the default`)
 	solverPtr := flag.String("solver", "kissat", "SAT-Solver to use. Allowed values are: \"kissat\", \"cadical\", \"minisat\", \"cryptominisat\", \"glucosesimp\", \"glucosesyrup\", \"slime\", \"ortoolsat\", where \"kissat\" is the default")
 	roomSimilarityPtr := flag.Float64("similarity", 0.5, "Similarity threshold (between 0 and 1) used by the hybrid strategy, where 0.5 is the default")
 	filePathPtr := flag.String("file", "", "Path to the input file")
@@ -69,7 +75,7 @@ func main() {
 		log.Fatalf("%v is not a valid solver", solverStr)
 	} else if filePath == "" {
 		log.Fatal("an input file must be specified")
-	} else if roomSimilarity <= 0 || roomSimilarity >= 1 {
+	} else if strategy == "hybrid" && (roomSimilarity <= 0 || roomSimilarity >= 1) {
 		log.Fatalf("room-similarity must be greater than 0 and smaller than 1: %v", roomSimilarity)
 	}
 
@@ -166,4 +172,27 @@ func main() {
 			log.Fatalf("an error occurred while writing to the output file: %v", err)
 		}
 	}
+
+	os.Exit(10)
+}
+
+func setConfigPath() {
+	execPath, err := os.Executable()
+	if err != nil {
+		log.Fatalf("cannot determine executable path: %v", err)
+	}
+	execPath = path.Dir(execPath)
+
+	// Verify config.json exists
+	files, err := os.ReadDir(execPath)
+	if err != nil {
+		log.Fatalf("cannot read executable's directory: %v", err)
+	}
+	fileNames := lo.Map(files, func(file os.DirEntry, _ int) string { return file.Name() })
+
+	if !slices.Contains(fileNames, "config.json") {
+		log.Fatalf("config.json file was not found: %v", fileNames)
+	}
+
+	sat.ConfigPath = execPath + "/config.json"
 }
