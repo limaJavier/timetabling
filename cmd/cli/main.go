@@ -90,10 +90,13 @@ func main() {
 	timetabler := timetablers[strategy](solver)
 
 	// Build timetable
-	timetable, err := timetabler.Build(input)
+	timetable, variables, clauses, err := timetabler.Build(input)
+
 	if err != nil {
 		log.Fatalf("an error occurred during timetable construction: %v", err)
 	} else if timetable == nil {
+		fmt.Printf("Variables: %v\n", variables)
+		fmt.Printf("Clauses: %v\n", clauses)
 		os.Exit(20)
 	}
 
@@ -173,6 +176,8 @@ func main() {
 		}
 	}
 
+	fmt.Printf("Variables: %v\n", variables)
+	fmt.Printf("Clauses: %v\n", clauses)
 	os.Exit(10)
 }
 

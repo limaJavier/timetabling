@@ -12,7 +12,7 @@ func NewEmbeddedRoomTimetabler(solver sat.SATSolver) Timetabler {
 	}
 }
 
-func (timetabler *embeddedRoomTimetabler) Build(modelInput ModelInput) ([][6]uint64, error) {
+func (timetabler *embeddedRoomTimetabler) Build(modelInput ModelInput) (timetable [][6]uint64, variables uint64, clauses uint64, err error) {
 	//** Extract attributes's domains
 	totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms := getAttributes(modelInput)
 
@@ -22,7 +22,7 @@ func (timetabler *embeddedRoomTimetabler) Build(modelInput ModelInput) ([][6]uin
 	generator := newPermutationGenerator(totalPeriods, totalDays, totalLessons, totalSubjectProfessors, totalGroups, totalRooms)
 
 	//** Build SAT instance
-	variables := totalPeriods * totalDays * totalLessons * totalSubjectProfessors * totalGroups * totalRooms
+	variables = totalPeriods * totalDays * totalLessons * totalSubjectProfessors * totalGroups * totalRooms
 
 	// Constraints functions
 	constraints := []func(state constraintState) [][]int64{
@@ -55,12 +55,12 @@ func (timetabler *embeddedRoomTimetabler) Build(modelInput ModelInput) ([][6]uin
 	//** Solve SAT instance
 	solution, err := timetabler.solver.Solve(satInstance)
 	if err != nil {
-		return nil, err
+		return nil, 0, 0, err
 	} else if solution == nil { // Return nil if the SAT instance is not satisfiable
-		return nil, nil
+		return nil, variables, uint64(len(satInstance.Clauses)), nil
 	}
 
-	timetable := [][6]uint64{}
+	timetable = [][6]uint64{}
 	for _, variable := range solution {
 		// Acknowledge only positive variables that are explicitly stated in the clauses
 		if variable > 0 && explicitVariables[variable] {
@@ -70,7 +70,7 @@ func (timetabler *embeddedRoomTimetabler) Build(modelInput ModelInput) ([][6]uin
 		}
 	}
 
-	return timetable, nil
+	return timetable, variables, uint64(len(satInstance.Clauses)), nil
 }
 
 func (timetabler *embeddedRoomTimetabler) Verify(timetable [][6]uint64, modelInput ModelInput) bool {

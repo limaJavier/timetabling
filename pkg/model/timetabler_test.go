@@ -70,7 +70,7 @@ func satisfiableExecution(t *testing.T, timetabler Timetabler) {
 		}
 
 		//** Act
-		timetable, err := timetabler.Build(input)
+		timetable, _, _, err := timetabler.Build(input)
 
 		//** Assert
 		assert.Nil(t, err)
