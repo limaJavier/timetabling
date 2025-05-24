@@ -93,12 +93,10 @@ func main() {
 	solvers := getSolvers()
 	results := make([]BenchmarkResult, 0, len(tests)*len(timetablers)*len(solvers))
 
-	tests = tests[:1]
-
 	for _, test := range tests {
 		for _, timetabler := range timetablers {
 			for _, solver := range solvers {
-				fmt.Printf("Benchmarking test \"%v\" with strategy \"%v\", solver \"%v\" and similarity \"%v\"\n", test.Name, timetablerTypes[timetabler.Type], solverTypes[solver], timetabler.RoomSimilarityThreshold)
+				log.Printf("Benchmarking test \"%v\" with strategy \"%v\", solver \"%v\" and similarity \"%v\"\n", test.Name, timetablerTypes[timetabler.Type], solverTypes[solver], timetabler.RoomSimilarityThreshold)
 
 				duration, maxMemory, cpuPercentage, result := measure(timetabler.Type, solver, timetabler.RoomSimilarityThreshold, test.Name)
 
