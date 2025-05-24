@@ -13,8 +13,6 @@ import (
 	"github.com/samber/lo"
 )
 
-var minisatPath = Config["minisatPath"]
-
 type minisatSolver struct{}
 
 func NewMinisatSolver() SATSolver {
@@ -22,6 +20,7 @@ func NewMinisatSolver() SATSolver {
 }
 
 func (solver *minisatSolver) Solve(sat SAT) (SATSolution, error) {
+	minisatPath := getExecutablePath("minisatPath")
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	// Create a temporary file to hold the DIMACS content

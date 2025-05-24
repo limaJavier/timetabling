@@ -2,7 +2,7 @@
     "kissatPath": "kissat",
     "cadicalPath": "cadical",
     "minisatPath": "minisat",
-    "cryptominisatPath": "crytominisat",
+    "cryptominisatPath": "cryptominisat",
     "glucoseSimpPath": "glucose-simp",
     "glucoseSyrupPath": "glucose-syrup",
     "slimePath": "slime",

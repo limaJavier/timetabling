@@ -7,8 +7,6 @@ import (
 	"os/exec"
 )
 
-var ortoolsatPath = Config["ortoolsatPath"]
-
 type ortoolsatSolver struct{}
 
 func NewOrtoolsatSolver() SATSolver {
@@ -16,6 +14,7 @@ func NewOrtoolsatSolver() SATSolver {
 }
 
 func (solver *ortoolsatSolver) Solve(sat SAT) (SATSolution, error) {
+	ortoolsatPath := getExecutablePath("ortoolsatPath")
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	// Create a temporary file to hold the DIMACS content

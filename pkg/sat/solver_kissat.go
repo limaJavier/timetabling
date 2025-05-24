@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-var kissatPath = Config["kissatPath"]
-
 type kissatSolver struct{}
 
 func NewKissatSolver() SATSolver {
@@ -16,6 +14,7 @@ func NewKissatSolver() SATSolver {
 }
 
 func (solver *kissatSolver) Solve(sat SAT) (SATSolution, error) {
+	kissatPath := getExecutablePath("kissatPath")
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	cmd := exec.Command(kissatPath, "-q", "--relaxed")

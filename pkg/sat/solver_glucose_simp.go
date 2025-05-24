@@ -13,8 +13,6 @@ import (
 	"github.com/samber/lo"
 )
 
-var glucoseSimpPath = Config["glucoseSimpPath"]
-
 type glucoseSimpSolver struct{}
 
 func NewGlucoseSimpSolver() SATSolver {
@@ -22,6 +20,7 @@ func NewGlucoseSimpSolver() SATSolver {
 }
 
 func (solver *glucoseSimpSolver) Solve(sat SAT) (SATSolution, error) {
+	glucoseSimpPath := getExecutablePath("glucoseSimpPath")
 	dimacs := sat.ToDIMACS() // Transform SAT into DIMACS-CNF string format
 
 	// Create a temporary file to hold the DIMACS content
