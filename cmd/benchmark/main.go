@@ -44,14 +44,6 @@ const (
 	glucosesyrup
 )
 
-type ResultType int
-
-const (
-	solved ResultType = iota
-	unsatisfiable
-	timeout
-)
-
 var (
 	timetablerTypes = map[TimetablerType]string{
 		pure:      "pure",
@@ -67,11 +59,6 @@ var (
 		ortoolsat:     "ortoolsat",
 		glucosesimp:   "glucosesimp",
 		glucosesyrup:  "glucosesyrup",
-	}
-	resultTypes = map[ResultType]string{
-		solved:        "solved",
-		unsatisfiable: "unsatisfiable",
-		timeout:       "timeout",
 	}
 )
 
@@ -97,7 +84,7 @@ type BenchmarkResult struct {
 	Duration      int64
 	Memory        float32
 	CpuPercentage int64
-	Result        ResultType
+	Result        bool
 }
 
 func main() {
@@ -193,7 +180,7 @@ func getTimetablers() []TimetablerMetadata {
 	}
 }
 
-func measure(timetable TimetablerType, solver SolverType, roomSimilarity float32, testFile string) (duration int64, maxMemory float32, cpuPercentage int64, result ResultType) {
+func measure(timetable TimetablerType, solver SolverType, roomSimilarity float32, testFile string) (duration int64, maxMemory float32, cpuPercentage int64, result bool) {
 	cmd := exec.Command("/usr/bin/time", "-v", executablePath, "-strategy", timetablerTypes[timetable], "-solver", solverTypes[solver], "-similarity", fmt.Sprint(roomSimilarity), "-file", testFile)
 
 	var stdOut bytes.Buffer
@@ -205,10 +192,11 @@ func measure(timetable TimetablerType, solver SolverType, roomSimilarity float32
 	if cmd.ProcessState.ExitCode() != 10 && cmd.ProcessState.ExitCode() != 20 {
 		log.Fatalf("an error occurred during the execution \"timetable\" at test \"%v\" using strategy \"%v\", solver \"%v\", room-similarity \"%v\": %v\n", testFile, timetablerTypes[timetable], solverTypes[solver], roomSimilarity, stdErr.String())
 	} else if cmd.ProcessState.ExitCode() == 20 {
-		result = unsatisfiable
+		result = false
 	} else {
-		result = solved
+		result = true
 	}
+
 	splits := strings.Split(stdErr.String(), "\n")
 	getLine := func(substr string) string {
 		line, ok := lo.Find(splits, func(line string) bool {
@@ -257,7 +245,7 @@ func toCsv(results []BenchmarkResult) {
 			fmt.Sprintf("%d", result.Duration),
 			fmt.Sprintf("%.1f", result.Memory),
 			fmt.Sprintf("%d", result.CpuPercentage),
-			resultTypes[result.Result],
+			fmt.Sprintf("%v", result.Result),
 		}
 		if err := writer.Write(record); err != nil {
 			log.Panicf("cannot write CSV record: %v", err)
