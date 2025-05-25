@@ -44,6 +44,14 @@ const (
 	glucosesyrup
 )
 
+type ResultType int
+
+const (
+	satisfiable ResultType = iota
+	unsatisfiable
+	verificationFailed
+)
+
 var (
 	timetablerTypes = map[TimetablerType]string{
 		pure:      "pure",
@@ -59,6 +67,11 @@ var (
 		ortoolsat:     "ortoolsat",
 		glucosesimp:   "glucosesimp",
 		glucosesyrup:  "glucosesyrup",
+	}
+	resultTypes = map[ResultType]string{
+		satisfiable:        "satisfiable",
+		unsatisfiable:      "unsatisfiable",
+		verificationFailed: "verification-failed",
 	}
 )
 
@@ -86,7 +99,7 @@ type BenchmarkResult struct {
 	Duration      int64
 	Memory        float32
 	CpuPercentage int64
-	Result        bool
+	Result        ResultType
 }
 
 func main() {
@@ -182,7 +195,7 @@ func getTimetablers() []TimetablerMetadata {
 	}
 }
 
-func measure(timetable TimetablerType, solver SolverType, roomSimilarity float32, testFile string) (variables, clauses, duration int64, maxMemory float32, cpuPercentage int64, result bool) {
+func measure(timetable TimetablerType, solver SolverType, roomSimilarity float32, testFile string) (variables, clauses, duration int64, maxMemory float32, cpuPercentage int64, result ResultType) {
 	cmd := exec.Command("/usr/bin/time", "-v", executablePath, "-strategy", timetablerTypes[timetable], "-solver", solverTypes[solver], "-similarity", fmt.Sprint(roomSimilarity), "-file", testFile)
 
 	var stdOut bytes.Buffer
@@ -191,12 +204,16 @@ func measure(timetable TimetablerType, solver SolverType, roomSimilarity float32
 	cmd.Stderr = &stdErr
 
 	cmd.Run()
-	if cmd.ProcessState.ExitCode() != 10 && cmd.ProcessState.ExitCode() != 20 {
+	// Exit code of 10 stands for satisfiable, 20 for unsatisfiable and 15 for verification-failed (that is a timetable was generated but it was not correct)
+	if cmd.ProcessState.ExitCode() != 10 && cmd.ProcessState.ExitCode() != 20 && cmd.ProcessState.ExitCode() != 15 {
 		log.Fatalf("an error occurred during the execution \"timetable\" at test \"%v\" using strategy \"%v\", solver \"%v\", room-similarity \"%v\": %v\n", testFile, timetablerTypes[timetable], solverTypes[solver], roomSimilarity, stdErr.String())
 	} else if cmd.ProcessState.ExitCode() == 20 {
-		result = false
+		result = unsatisfiable
+
+	} else if cmd.ProcessState.ExitCode() == 15 {
+		result = verificationFailed
 	} else {
-		result = true
+		result = satisfiable
 	}
 
 	splits := strings.Split(stdErr.String(), "\n")
@@ -253,7 +270,7 @@ func toCsv(results []BenchmarkResult) {
 			fmt.Sprintf("%d", result.Duration),
 			fmt.Sprintf("%.1f", result.Memory),
 			fmt.Sprintf("%d", result.CpuPercentage),
-			fmt.Sprintf("%v", result.Result),
+			resultTypes[result.Result],
 		}
 		if err := writer.Write(record); err != nil {
 			log.Panicf("cannot write CSV record: %v", err)
