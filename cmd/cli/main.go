@@ -102,7 +102,9 @@ func main() {
 
 	// Verify timetable correctness
 	if !timetabler.Verify(timetable, input) {
-		log.Fatal("verification failed")
+		fmt.Printf("Variables: %v\n", variables)
+		fmt.Printf("Clauses: %v\n", clauses)
+		os.Exit(15)
 	}
 
 	compare := func(a, b [6]uint64, i int) int {
