@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	executablePath                     = "../../bin/timetable"
+	executablePath                     = "../../bin/timetabler"
 	satisfiableTestDirectory           = "../../test/out/satisfiable/"
 	unsatisfiableTestDirectory         = "../../test/out/unsatisfiable/"
 	KB                                 = 1024
