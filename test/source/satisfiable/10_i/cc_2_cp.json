@@ -1,0 +1,118 @@
+{
+    "major": "cc",
+    "year": "2",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "eda",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0]
+            ],
+            "professor": "alain",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "eda",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0]
+            ],
+            "professor": "marcos_tirador",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "edo",
+            "lessons": 1,
+            "groups": [["1", "2", "cd21"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "ernesto",
+            "rooms": ["aula 5", "aula 6"]
+        },
+        
+        {
+            "name": "ac",
+            "lessons": 1,
+            "groups": [["1" , "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1]
+            ],
+            "professor": "rafael",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "discreta",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1]
+            ],
+            "professor": "alejandra",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "numerica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1]
+            ],
+            "professor": "rocio",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "numerica",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1]
+            ],
+            "professor": "odette",
+            "rooms": ["aula 5", "aula 6"]
+        }
+    ]
+}

@@ -1,0 +1,102 @@
+{
+    "major": "cd",
+    "year": "3",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "procesos",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "yanet",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "sri",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "carlos_leon",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "simulacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "daniel",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "ingenieria",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "niley",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+        
+        {
+            "name": "imagenes",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "angela",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "optativo",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "optcd_2",
+            "rooms": ["optcd_2"]
+        }
+    ]
+}

@@ -1,0 +1,166 @@
+{
+    "major": "cc",
+    "year": "1",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "algebra",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "celia",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "algebra",
+            "lessons": 1,
+            "groups": [["3"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "miguel_gonzalez",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1", "2", "3"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "alejandro_piad",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "analisis",
+            "lessons": 1,
+            "groups": [["1", "2", "cd11"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "idania",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "analisis",
+            "lessons": 1,
+            "groups": [["3"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "ernesto",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "economia",
+            "lessons": 2,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "ortiz",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "economia",
+            "lessons": 2,
+            "groups": [["3"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "natalia",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "historia",
+            "lessons": 2,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "ortiz",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "historia",
+            "lessons": 2,
+            "groups": [["3"]],
+            "permissibility": [
+                [1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "natalia",
+            "rooms": ["aula 1", "aula 5", "aula 6", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "educacionfisica",
+            "lessons": 1,
+            "groups": [["1", "2", "3", "m11", "cd11"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "ef",
+            "rooms": ["ceder"]
+        }
+    ]
+}

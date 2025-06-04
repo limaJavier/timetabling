@@ -1,0 +1,69 @@
+{
+    "major": "cd",
+    "year": "3",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "miguel_diaz",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]        
+        },
+        
+        {
+            "name": "muestreo",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "rolando_sanchez",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "redesneuronales",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "daniel",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]        },
+    
+        {
+            "name": "volumenes",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "deborah",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]
+        }
+    ]
+}

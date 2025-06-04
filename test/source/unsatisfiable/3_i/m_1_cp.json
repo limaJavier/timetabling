@@ -1,0 +1,70 @@
+{
+    "major": "m",
+    "year": "1",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "analisis",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 0, 1],
+                [0, 0, 1, 0, 1],
+                [0, 0, 1, 0, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "sofia",
+            "rooms": ["aula 3", "aula 4", "aula 5", "aula 8", "lab 1"]
+        },
+        
+        {
+            "name": "algebra",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "leyanis",
+            "rooms": ["aula 5", "aula 8", "lab 1"]
+        },
+    
+        {
+            "name": "geometria",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 0, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "roxana",
+            "rooms": ["aula 5", "aula 8", "lab 1"]
+        },
+    
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "manuel_valiente",
+            "rooms": ["aula 5", "aula 8", "lab 1"]
+        }
+    ]
+}

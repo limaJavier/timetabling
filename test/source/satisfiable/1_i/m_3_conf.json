@@ -1,0 +1,118 @@
+{
+    "major": "m",
+    "year": "3",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "funciones",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_elizabeth",
+            "rooms": ["aula 11"]
+        },
+        
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_ada",
+            "rooms": ["aula 11"]
+        },
+    
+        {
+            "name": "edo",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_rachel",
+            "rooms": ["aula 11"]
+        },
+    
+        {
+            "name": "numerica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_monica",
+            "rooms": ["aula 11"]
+        },
+    
+        {
+            "name": "optimizacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_phoebe",
+            "rooms": ["aula 11"]
+        },
+    
+        {
+            "name": "teoriapolitica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_joey",
+            "rooms": ["aula 11"]
+        },
+
+        {
+            "name": "optativa",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_chandler",
+            "rooms": ["aula 11"]
+        }
+    ]
+}

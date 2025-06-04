@@ -1,0 +1,70 @@
+{
+    "major": "cd",
+    "year": "2",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "matematica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "__polly",
+            "rooms": ["aula 20"]
+        },
+        
+        {
+            "name": "probabilidades",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "__elizabeth",
+            "rooms": ["aula 20"]
+        },
+    
+        {
+            "name": "basedatos",
+            "lessons": 1,
+            "groups"    : [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "__ada",
+            "rooms": ["aula 20"]
+        },
+    
+        {
+            "name": "eda",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "__rachel",
+            "rooms": ["aula 20"]
+        }
+    ]
+}

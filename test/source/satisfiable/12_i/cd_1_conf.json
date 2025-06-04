@@ -1,0 +1,54 @@
+{
+    "major": "cd",
+    "year": "1",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "suilan",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "intro",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "yudivian",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "filosofia",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "luis_fernandez",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        }
+    ]
+}

@@ -1,0 +1,70 @@
+{
+    "major": "cc",
+    "year": "4",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "machinelearning",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "talia",
+            "rooms": ["aula 4"]
+        },
+
+        {
+            "name": "sistemasdistribuidos",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "luciano",
+            "rooms": ["aula 5"]
+        },
+
+        {
+            "name": "sistemasdistribuidos",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "kaleb",
+            "rooms": ["aula 6"]
+        },
+
+        {
+            "name": "daa",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "esther",
+            "rooms": ["aula 4"]
+        }
+    ]
+}

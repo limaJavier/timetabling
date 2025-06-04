@@ -1,0 +1,102 @@
+{
+    "major": "cd",
+    "year": "2",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "optimizacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "aymee",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "sistemas",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "roberto",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "machine_learning",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "daniel",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "redes_complejas",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "yudivian",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+        
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "yanet",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "complejidad",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "alejandro_piad",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        }
+    ]
+}
