@@ -1,0 +1,86 @@
+{
+    "major": "cd",
+    "year": "1",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "exploratorio",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "vivian_sistach",
+            "rooms": ["aula 7"]
+        },
+
+        {
+            "name": "numerica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "angela",
+            "rooms": ["aula 7"]
+        },
+
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1", "m11"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "suilan",
+            "rooms": ["aula 8"]
+        },
+
+        {
+            "name": "comunicacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "yudivian",
+            "rooms": ["aula 7"]
+        },
+
+        {
+            "name": "historia",
+            "lessons": 2,
+            "groups": [["1", "m11"]],
+            "permissibility": [
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 0, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "alba",
+            "rooms": ["aula 8"]
+        }
+    ]
+}

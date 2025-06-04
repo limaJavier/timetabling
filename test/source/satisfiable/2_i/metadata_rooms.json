@@ -1,0 +1,50 @@
+[
+    {
+        "name": "ceder",
+        "capacity": 1000 
+    },
+    {
+        "name": "aula 0", 
+        "capacity": 180 
+    },
+    {
+        "name": "aula 1", 
+        "capacity": 60 
+    },
+    {
+        "name": "aula 2", 
+        "capacity": 60 
+    },
+    {
+        "name": "aula 3", 
+        "capacity": 60 
+    },
+    {
+        "name": "aula 4", 
+        "capacity": 80 
+    },
+    {
+        "name": "aula 5", 
+        "capacity": 80 
+    },
+    {
+        "name": "aula 6",
+        "capacity": 80 
+    },
+    {
+        "name": "aula 10", 
+        "capacity": 80
+    },
+    {
+        "name": "aula 11", 
+        "capacity": 80
+    },
+    {
+        "name": "aula 20", 
+        "capacity": 80
+    },
+    {
+        "name": "aula 21",
+        "capacity": 80
+    }
+]

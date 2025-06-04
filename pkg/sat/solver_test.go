@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-const testDirectory = "test/"
+const testDirectory = "../../test/cnfs/"
 
 func TestKissat(t *testing.T) {
 	solver := NewKissatSolver()

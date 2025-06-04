@@ -1,0 +1,54 @@
+{
+    "major": "cd",
+    "year": "2",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "probabilidades",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "marco_torres",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "basedatos",
+            "lessons": 1,
+            "groups"    : [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "carlos_leon",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "eda",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "marcos_tirador",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]
+        }
+    ]
+}

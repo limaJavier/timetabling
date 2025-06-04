@@ -1,0 +1,134 @@
+{
+    "major": "cc",
+    "year": "1",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "algebra",
+            "lessons": 2,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "andy",
+            "rooms": ["aula 0"]
+        },
+
+        {
+            "name": "algebra",
+            "lessons": 2,
+            "groups": [["3", "4"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "manuel",
+            "rooms": ["aula 1"]
+        },
+        
+        {
+            "name": "analisis",
+            "lessons": 2,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "lisa",
+            "rooms": ["aula 0"]
+        },
+
+        {
+            "name": "analisis",
+            "lessons": 2,
+            "groups": [["3", "4"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "mona",
+            "rooms": ["aula 1"]
+        },
+
+        {
+            "name": "logica",
+            "lessons": 2,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "luisa",
+            "rooms": ["aula 0"]
+        },
+
+        {
+            "name": "logica",
+            "lessons": 2,
+            "groups": [["3", "4"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "miguel",
+            "rooms": ["aula 1"]
+        },
+
+        {
+            "name": "programacion",
+            "lessons": 2,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "olivia",
+            "rooms": ["aula 1"]
+        },
+
+        {
+            "name": "programacion",
+            "lessons": 2,
+            "groups": [["3", "4"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "fermin",
+            "rooms": ["aula 2"]
+        }
+    ]
+}

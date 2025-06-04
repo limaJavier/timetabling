@@ -1,0 +1,1443 @@
+[
+    { 
+        "name": "juan",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "pedro",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "julia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "olga",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "mercedes",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "ernesto",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "andy",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "manuel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "lisa",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "mona",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "luisa",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "miguel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "olivia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "fermin",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "thomas",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "john",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "arthur",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "jeremiah",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "polly",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "elizabeth",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "ada",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "rachel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "monica",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "phoebe",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "joey",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "chandler",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "ross",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "janice",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "gunther",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "richard",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "mike",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "alfredo",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "rosalia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "nelson",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "raudel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "david",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "beatriz",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "gladys",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "janet",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "maria",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "mila",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "antonela",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "helena",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "cristina",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "carlos",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "julio",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "marcos",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "lucas",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "alejandra",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "laura",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "andres",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "ricardo",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "lilian",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "claudia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "alicia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "talia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "luciano",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "kaleb",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "esther",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_juan",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_pedro",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_julia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_olga",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_mercedes",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_ernesto",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_andy",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_manuel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_lisa",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_mona",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_luisa",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_miguel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_olivia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_fermin",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_thomas",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_john",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_arthur",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_jeremiah",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_polly",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_elizabeth",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_ada",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_rachel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_monica",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_phoebe",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_joey",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_chandler",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_ross",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_janice",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_gunther",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_richard",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_mike",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_alfredo",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_rosalia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_nelson",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_raudel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_david",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_beatriz",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_gladys",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "_janet",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__juan",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__pedro",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__julia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__olga",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__mercedes",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__ernesto",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__andy",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__manuel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__lisa",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__mona",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__luisa",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__miguel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__olivia",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__fermin",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__thomas",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__john",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__arthur",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__jeremiah",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__polly",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__elizabeth",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__ada",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__rachel",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__monica",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__phoebe",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__joey",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__chandler",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__ross",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__janice",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__gunther",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__richard",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__mike",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__alfredo",
+        "availability": [
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true],
+            [true, true, true, true, true]
+        ]
+    },
+    { 
+        "name": "__rosalia",
+        "availability": [
+            [true, true, false, true, true],
+            [true, true, false, false, true],
+            [true, true, false, false, true],
+            [true, true, false, false, true],
+            [true, true, false, false, true],
+            [true, true, false, false, true]
+        ]
+    }
+]

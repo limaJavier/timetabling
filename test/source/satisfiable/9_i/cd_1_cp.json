@@ -1,0 +1,37 @@
+{
+    "major": "cd",
+    "year": "1",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "manuel_vila",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]        },
+
+        {
+            "name": "filosofia",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "luis_fernandez",
+            "rooms": ["aula 2", "aula 3", "aula 4", "aula 7", "aula 8", "lab 1", "lab 2"]
+        }
+    ]
+}
