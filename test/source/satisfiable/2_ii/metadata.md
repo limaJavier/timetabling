@@ -1,0 +1,2 @@
+- Segundo Semestre
+- Es el equivalente a 4 pero para el segundo semestre.

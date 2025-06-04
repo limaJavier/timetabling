@@ -1,0 +1,118 @@
+{
+    "major": "cc",
+    "year": "2",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "eda",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "alberto",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "discreta",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "alejandro_piad",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "probabilidades",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "lachi",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "sistemas_operativos",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "aracelis",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "base_datos",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "victor",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "optativo",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "optcc_2",
+            "rooms": ["optcc_2"]
+        },
+
+        {
+            "name": "educacionfisica",
+            "lessons": 1,
+            "groups": [["1", "2", "m21", "cd21"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "ef",
+            "rooms": ["ceder"]
+        }
+    ]
+}

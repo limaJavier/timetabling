@@ -1,0 +1,102 @@
+{
+    "major": "cc",
+    "year": "4",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "machinelearning",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "suilan",
+            "rooms": ["aula 9"]
+        },
+        
+        {
+            "name": "sociedad",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "vivian_orozco",
+            "rooms": ["aula 9"]
+        },
+    
+        {
+            "name": "sistemasdistribuidos",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "roberto",
+            "rooms": ["aula 9"]
+        },
+    
+        {
+            "name": "daa",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "alejandro_piad",
+            "rooms": ["aula 9"]
+        },
+    
+        {
+            "name": "seguridadnacional",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "yuri",
+            "rooms": ["aula 9"]
+        },
+    
+        {
+            "name": "electivo",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "elec_cc_4_1",
+            "rooms": ["elec_cc_4_1"]
+        }
+    ]
+}

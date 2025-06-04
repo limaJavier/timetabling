@@ -1,0 +1,118 @@
+{
+    "major": "m",
+    "year": "1",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "analisis",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_juan",
+            "rooms": ["aula 10"]
+        },
+        
+        {
+            "name": "algebra",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_pedro",
+            "rooms": ["aula 10"]
+        },
+    
+        {
+            "name": "geometria",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_julia",
+            "rooms": ["aula 10"]
+        },
+    
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_olga",
+            "rooms": ["aula 10"]
+        },
+    
+        {
+            "name": "matematica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_mercedes",
+            "rooms": ["aula 10"]
+        },
+
+        {
+            "name": "filosofia",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_ernesto",
+            "rooms": ["aula 10"]
+        },
+    
+        {
+            "name": "educacionfisica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_andy",
+            "rooms": ["ceder 2"]
+        }
+    ]
+}

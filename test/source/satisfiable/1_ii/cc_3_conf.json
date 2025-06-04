@@ -1,0 +1,102 @@
+{
+    "major": "cc",
+    "year": "3",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "compilacion",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "alejandro_piad",
+            "rooms": ["aula 9"]
+        },
+
+        {
+            "name": "lp",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "miguel_katrib",
+            "rooms": ["aula 9"]
+        },
+
+        {
+            "name": "sri",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "carlos_leon",
+            "rooms": ["aula 9"]
+        },
+
+        {
+            "name": "ia",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "suilan",
+            "rooms": ["aula 9"]
+        },
+
+        {
+            "name": "simulacion",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "daniel",
+            "rooms": ["aula 9"]
+        },
+
+        {
+            "name": "modelos",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "fernando",
+            "rooms": ["aula 9"]
+        }
+    ]
+}

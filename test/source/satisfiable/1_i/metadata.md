@@ -1,0 +1,3 @@
+- Primer Semestre
+- Primera versión
+- Esta versión está basada en el horario real de la universidad, sin embargo no tiene en cuenta la cantidad de aulas reales, ni sus capacidades, así como tampoco los profesores ni sus asociaciones con las asignaturas

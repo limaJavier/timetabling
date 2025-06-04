@@ -1,0 +1,71 @@
+[
+    {
+        "name": "ceder",
+        "capacity": 1000 
+    },
+    {
+        "name": "aula 1", 
+        "capacity": 60,
+        "description": "mathmorras"
+    },
+    {
+        "name": "aula 2", 
+        "capacity": 60,
+        "description": "mathmorras"
+    },
+    {
+        "name": "aula 3", 
+        "capacity": 60,
+        "description": "mathmorras"
+    },
+    {
+        "name": "aula 4", 
+        "capacity": 60,
+        "description": "matematica abajo"
+    },
+    {
+        "name": "aula 5", 
+        "capacity": 80,
+        "description": "cc arriba chiquita"
+    },
+    {
+        "name": "aula 6",
+        "capacity": 180,
+        "description": "cc arriba grande"
+    },
+    {
+        "name": "aula 7", 
+        "capacity": 80,
+        "description": "ciencias de datos arriba"
+    },
+    {
+        "name": "aula 8", 
+        "capacity": 80,
+        "description": "matematica arriba"
+    },
+    {
+        "name": "aula 9", 
+        "capacity": 80,
+        "description": "cc abajo"
+    },
+    {
+        "name": "lab 1",
+        "capacity": 80
+    },
+    {
+        "name": "lab 2",
+        "capacity": 40
+    },
+    {
+        "name": "optcc_2",
+        "capacity": 80
+    },
+    {
+        "name": "optcd_2",
+        "capacity": 80
+    },
+    {
+        "name": "optm_4",
+        "capacity": 80
+    }
+]

@@ -1,0 +1,102 @@
+{
+    "major": "cc",
+    "year": "4",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "machinelearning",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "suilan",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        },
+        
+        {
+            "name": "sociedad",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "vivian_orozco",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "sistemasdistribuidos",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "roberto",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "daa",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "alejandro_piad",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "seguridadnacional",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "yuri",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "electivo",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0]
+            ],
+            "professor": "elec_cc_4_1",
+            "rooms": ["elec_cc_4_1"]
+        }
+    ]
+}

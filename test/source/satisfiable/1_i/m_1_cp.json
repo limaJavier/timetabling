@@ -1,0 +1,70 @@
+{
+    "major": "m",
+    "year": "1",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "analisis",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 0, 1],
+                [0, 0, 1, 0, 1],
+                [0, 0, 1, 0, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_manuel",
+            "rooms": ["aula 10"]
+        },
+        
+        {
+            "name": "algebra",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_lisa",
+            "rooms": ["aula 10"]
+        },
+    
+        {
+            "name": "geometria",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 0, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_mona",
+            "rooms": ["aula 10"]
+        },
+    
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "_luisa",
+            "rooms": ["aula 10"]
+        }
+    ]
+}

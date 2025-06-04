@@ -1,0 +1,3 @@
+- Primer Semestre
+- Basada en la versión 3
+- El conjunto de aulas a impartir es un subconjunto del conjunto de aulas por cada carrera, para cada subject-professor

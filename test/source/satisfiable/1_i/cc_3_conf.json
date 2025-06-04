@@ -1,0 +1,102 @@
+{
+    "major": "cc",
+    "year": "3",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "alfredo",
+            "rooms": ["aula 4"]
+        },
+        
+        {
+            "name": "ingenieriasoftware",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "rosalia",
+            "rooms": ["aula 4"]
+        },
+    
+        {
+            "name": "redes",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "nelson",
+            "rooms": ["aula 4"]
+        },
+    
+        {
+            "name": "basedatos",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "raudel",
+            "rooms": ["aula 4"]
+        },
+    
+        {
+            "name": "optimizacion",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "david",
+            "rooms": ["aula 4"]
+        },
+    
+        {
+            "name": "declarativa",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "beatriz",
+            "rooms": ["aula 4"]
+        }
+    ]
+}

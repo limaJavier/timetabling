@@ -1,0 +1,70 @@
+{
+    "major": "cc",
+    "year": "4",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "machinelearning",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "elena",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "sistemasdistribuidos",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "roberto",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "sistemasdistribuidos",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "alejandro_beltran",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "daa",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "rolando_rodrigo",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 5", "aula 6",  "aula 9", "lab 1", "lab 2"]
+        }
+    ]
+}

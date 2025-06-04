@@ -1,0 +1,102 @@
+{
+    "major": "cd",
+    "year": "3",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "__monica",
+            "rooms": ["aula 21"]
+        },
+        
+        {
+            "name": "muestreo",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "__phoebe",
+            "rooms": ["aula 21"]
+        },
+    
+        {
+            "name": "redesneuronales",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "__joey",
+            "rooms": ["aula 21"]
+        },
+    
+        {
+            "name": "nlp",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "__chandler",
+            "rooms": ["aula 21"]
+        },
+
+        {
+            "name": "volumenes",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "__ross",
+            "rooms": ["aula 21"]
+        },
+    
+        {
+            "name": "teoriapolitica",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "__janice",
+            "rooms": ["aula 21"]
+        }
+    ]
+}

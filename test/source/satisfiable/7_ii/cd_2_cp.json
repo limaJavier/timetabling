@@ -1,0 +1,70 @@
+{
+    "major": "cd",
+    "year": "2",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "optimizacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "fernando",
+            "rooms": ["aula 2"]
+        },
+
+        {
+            "name": "sistemas",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "roberto",
+            "rooms": ["aula 2"]
+        },
+
+        {
+            "name": "machine_learning",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "elena",
+            "rooms": ["aula 2"]
+        },
+    
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "miguel_diaz",
+            "rooms": ["aula 2"]
+        }
+    ]
+}

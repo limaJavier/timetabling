@@ -1,0 +1,2 @@
+- Primer Semestre
+- Equivalente a 3_i pero con restricciones de disponibilidad de profesores

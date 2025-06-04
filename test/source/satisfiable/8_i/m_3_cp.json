@@ -1,0 +1,86 @@
+{
+    "major": "m",
+    "year": "3",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "funciones",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "joaquin_herrera",
+            "rooms": ["aula 4"]
+        },
+        
+        {
+            "name": "estadistica",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "yanet",
+            "rooms": ["aula 4"]
+        },
+    
+        {
+            "name": "edo",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "ana",
+            "rooms": ["aula 4"]
+        },
+    
+        {
+            "name": "numerica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "fernando",
+            "rooms": ["aula 4"]
+        },
+    
+        {
+            "name": "optimizacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "gema",
+            "rooms": ["aula 4"]
+        }
+    ]
+}

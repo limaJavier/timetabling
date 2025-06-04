@@ -1,0 +1,3 @@
+- Primer Semestre
+- Equivalente a 4_ii
+- Las aulas asignadas son las mismas para todas las entradas, el conjunto de todas las aulas

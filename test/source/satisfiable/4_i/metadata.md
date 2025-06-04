@@ -1,0 +1,3 @@
+- Primer Semestre
+- Basada en la versión 3
+- El conjunto de aulas a impartir es el conjunto de aulas por cada carrera, es decir para cualquier subject-professor de CC va a tener disponible un conjunto de aulas que serán consideradas como aulas de CC

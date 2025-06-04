@@ -1,0 +1,4 @@
+- Primer Semestre
+- Segunda version 
+- Esta versión esta basada en el horario real de la universidad, tiene en cuenta los profesores reales y sus asociaciones con las asignaturas a impartir.
+- Esta versión no tiene en cuenta las aulas reales, ni sus capacidades

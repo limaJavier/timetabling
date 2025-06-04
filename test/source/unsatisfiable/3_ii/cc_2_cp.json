@@ -1,0 +1,166 @@
+{
+    "major": "cc",
+    "year": "2",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "eda",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "raudel",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "eda",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "alex",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "discreta",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "alejandra",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "discreta",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "rolando_rodrigo",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "probabilidades",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "lachi",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "probabilidades",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "alejandra",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "sistemas_operativos",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "rafael",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "sistemas_operativos",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "johana",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "base_datos",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "carlos_leon",
+            "rooms": ["aula 5", "aula 6"]
+        },
+
+        {
+            "name": "base_datos",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "naomi",
+            "rooms": ["aula 5", "aula 6"]
+        }
+    ]
+}

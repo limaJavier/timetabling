@@ -1,0 +1,2 @@
+- Segundo Semestre
+- Equivalente a 1_ii pero con restricciones de disponibilidad de profesores

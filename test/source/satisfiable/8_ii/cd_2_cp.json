@@ -1,0 +1,70 @@
+{
+    "major": "cd",
+    "year": "2",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "optimizacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "fernando",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "sistemas",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "roberto",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "machine_learning",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "elena",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+    
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0]
+            ],
+            "professor": "miguel_diaz",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        }
+    ]
+}

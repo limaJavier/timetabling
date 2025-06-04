@@ -1,0 +1,102 @@
+{
+    "major": "m",
+    "year": "1",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "analisis",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "giani",
+            "rooms": ["aula 8"]
+        },
+        
+        {
+            "name": "algebra",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "david_balbuena",
+            "rooms": ["aula 8"]
+        },
+    
+        {
+            "name": "geometria",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "roxana",
+            "rooms": ["aula 8"]
+        },
+    
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "alejandro_mesejo",
+            "rooms": ["aula 5"]
+        },
+    
+        {
+            "name": "matematica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "david_balbuena",
+            "rooms": ["aula 8"]
+        },
+
+        {
+            "name": "filosofia",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "joaquin_rafael",
+            "rooms": ["aula 8"]
+        }
+    ]
+}

@@ -1,0 +1,2 @@
+- Segundo Semestre
+- Las aulas asignadas son las mismas para todas las entradas, el conjunto de todas las aulas
