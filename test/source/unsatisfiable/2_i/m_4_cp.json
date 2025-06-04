@@ -1,0 +1,38 @@
+{
+    "major": "m",
+    "year": "4",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "medida",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0]
+            ],
+            "professor": "rita",
+            "rooms": ["aula 3", "aula 4", "aula 5", "aula 8", "lab 1"]
+        },
+        
+        {
+            "name": "geometria",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 1, 1, 0, 0]
+            ],
+            "professor": "alicia",
+            "rooms": ["aula 3", "aula 4", "aula 5", "aula 8", "lab 1"]
+        }
+    ]
+}

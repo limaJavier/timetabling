@@ -1,0 +1,38 @@
+{
+    "major": "m",
+    "year": "2",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "funciones",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0]
+            ],
+            "professor": "jose_julian",
+            "rooms": ["aula 3", "aula 4", "aula 5", "aula 8", "lab 1"]
+        },
+        
+        {
+            "name": "complementos",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "carlos_ernesto",
+            "rooms": ["aula 3", "aula 4", "aula 5", "aula 8", "lab 1"]
+        }
+    ]
+}

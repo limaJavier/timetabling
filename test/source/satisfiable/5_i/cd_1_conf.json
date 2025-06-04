@@ -1,0 +1,54 @@
+{
+    "major": "cd",
+    "year": "1",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "programacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "suilan",
+            "rooms": ["aula 7", "aula 8", "lab 1"]
+        },
+
+        {
+            "name": "intro",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "yudivian",
+            "rooms": ["aula 7", "aula 8", "lab 1"]
+        },
+    
+        {
+            "name": "filosofia",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "luis_fernandez",
+            "rooms": ["aula 7", "aula 8", "lab 1"]
+        }
+    ]
+}

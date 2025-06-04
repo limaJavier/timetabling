@@ -1,0 +1,102 @@
+{
+    "major": "m",
+    "year": "4",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "medida",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0]
+            ],
+            "professor": "rita",
+            "rooms": ["aula 11"]
+        },
+        
+        {
+            "name": "geometria",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0]
+            ],
+            "professor": "mariano",
+            "rooms": ["aula 11"]
+        },
+    
+        {
+            "name": "historia",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "carlos_sanchez",
+            "rooms": ["aula 11"]
+        },
+    
+        {
+            "name": "sociedad",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0]
+            ],
+            "professor": "joaquin_rafael",
+            "rooms": ["aula 11"]
+        },
+    
+        {
+            "name": "optativaI",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "optam",
+            "rooms": ["aula 11"]
+        },
+    
+        {
+            "name": "optativaII",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "optam",
+            "rooms": ["aula 11"]
+        }
+    ]
+}

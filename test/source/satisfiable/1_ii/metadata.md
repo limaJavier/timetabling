@@ -1,0 +1,2 @@
+- Segundo Semestre
+- Es el equivalente a 3_i pero para el segundo semestre.

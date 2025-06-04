@@ -1,0 +1,182 @@
+{
+    "major": "cc",
+    "year": "3",
+    "type": "cp",
+    "curriculum": [
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "lachi",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "estadistica",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "alejandra",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "ingenieriasoftware",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "joana",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "ingenieriasoftware",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "aracelis",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+        
+        {
+            "name": "redes",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "roberto",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "redes",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "alejandro_beltran",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "basedatos",
+            "lessons": 1,
+            "groups": [["1", "2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "carlos_leon",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "optimizacion",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "fernando",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "optimizacion",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "rocio",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "declarativa",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "hiram",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        },
+
+        {
+            "name": "declarativa",
+            "lessons": 1,
+            "groups": [["2"]],
+            "permissibility": [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ],
+            "professor": "niley",
+            "rooms": ["aula 1", "aula 2", "aula 3", "aula 4", "aula 5", "aula 6", "aula 7", "aula 8", "aula 9", "lab 1", "lab 2"]
+        }
+    ]
+}

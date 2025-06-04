@@ -1,0 +1,70 @@
+{
+    "major": "m",
+    "year": "2",
+    "type": "conf",
+    "curriculum": [
+        {
+            "name": "funciones",
+            "lessons": 2,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 0],
+                [1, 0, 1, 0, 0]
+            ],
+            "professor": "valentina",
+            "rooms": ["aula 10"]
+        },
+        
+        {
+            "name": "complementos",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0]
+            ],
+            "professor": "fidel",
+            "rooms": ["aula 10"]
+        },
+    
+        {
+            "name": "problemas",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 1, 0]
+            ],
+            "professor": "fidel",
+            "rooms": ["aula 10"]
+        },
+    
+        {
+            "name": "electiva",
+            "lessons": 1,
+            "groups": [["1"]],
+            "permissibility": [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 0]
+            ],
+            "professor": "elecm",
+            "rooms": ["aula 10"]
+        }
+    ]
+}

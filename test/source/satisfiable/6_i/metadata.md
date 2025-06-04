@@ -1,0 +1,2 @@
+- Primer Semestre
+- Las aulas asignadas serán comunes por subject-profesor. Es decir si en 3 dos entradas tenían el mismo subject-profesor entonces aquí, ambas tendrán las mismas aulas.
