@@ -1,5 +1,30 @@
 import json
+import os
+import string
+import subprocess
+import tempfile
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
+from reportlab.lib import colors
 
+PDF = 'pdf'
+JSON = 'json'
+
+
+SATISFIABLE = 10
+UNSATISFIABLE = 20
+VERIFICATION_FAILED = 15
+ERROR = 1
+
+DAYS = {
+    0: "Lunes",
+    1: "Martes",
+    2: "Miércoles",
+    3: "Jueves",
+    4: "Viernes",
+    5: "Sábado",
+    6: "Domingo"
+}
 
 class Subject:
     def __init__(self, name: str) -> None:
@@ -47,7 +72,10 @@ class Entry:
 
 
 class Model:
-    def __init__(self) -> None:
+    def __init__(self, timetabler_path: str) -> None:
+        self._timetable: dict[str, list[dict[str, int]]]
+        self._timetabler_path = timetabler_path
+
         self._subjects: list[Subject] = []
         self._professors: list[Professor] = []
         self._rooms: list[Room] = []
@@ -85,7 +113,8 @@ class Model:
         # TODO: Verify that can only be one entry for each subject-professor and group
         self._entries.append(entry)
 
-    def timetable(self) -> None:
+    def build_timetable(self) -> tuple[int, str]:
+        # Prepare input as json
         cli_input = json.dumps(
             {
                 "subjects": [subject.__dict__ for subject in self._subjects],
@@ -95,12 +124,70 @@ class Model:
                 "entries": [entry.__dict__ for entry in self._entries],
             }
         )
-        print(cli_input)
+
+        # Create temporary file for timetabler's input
+        with tempfile.NamedTemporaryFile(
+            delete=False, mode="w", suffix=".json"
+        ) as temp_file:
+            temp_file.write(cli_input)
+            temp_file_path = temp_file.name
+
+        try:
+            arguments = [f"{self._timetabler_path}", "-file", f"{temp_file_path}"]
+            process = subprocess.Popen(
+                arguments,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            stdout, _ = process.communicate()
+
+            if process.returncode == ERROR:
+                return ERROR, stdout
+            elif process.returncode == VERIFICATION_FAILED:
+                return VERIFICATION_FAILED, ""
+            elif process.returncode == UNSATISFIABLE:
+                return UNSATISFIABLE, ""
+
+            raw_timetable : dict[str, list] = json.loads(stdout.split("\n")[0])
+            self._timetable = {}
+
+            for key, value in raw_timetable.items():
+                key = self._classes[int(key)].name
+                self._timetable[key] = []
+                for lesson in value:
+                    self._timetable[key].append({
+                        'period': lesson['period'],
+                        'day': lesson['day'],
+                        'subject': self._subjects[lesson['subject']].name,
+                        'professor': self._professors[ lesson['professor']].name,
+                        'room': self._rooms[lesson['room']].name
+                    })
+
+            return SATISFIABLE, ""
+        finally:
+            os.remove(
+                temp_file_path
+            )  # Ensure temporary file is removed whatever happens
 
     def load(self, filename: str) -> None:
+        """
+        Load model from json file
+        """
+        # Reset entities
+        self._subjects = []
+        self._professors = []
+        self._rooms = []
+        self._classes = []
+        self._entries = []
+
+        # Load json
         with open(filename, "r") as file:
             data = json.load(file)
 
+        # Fill entities
         for subject in data["subjects"]:
             self.add_subject(Subject(subject["name"]))
 
@@ -134,6 +221,65 @@ class Model:
                     ),
                 )
             )
+
+    def export(self, file_type : str, filename : str):
+        if file_type == PDF:
+            self._export_pdf(filename)
+        elif file_type == JSON:
+            self._export_json(filename)
+        else:
+            raise Exception(f'file-type "{file_type}" is not expected')
+
+    def _export_json(self, filename : str):
+        with open(filename, 'w') as file:
+            json.dump(self._timetable, file)
+
+    def _export_pdf(self, filename : str):
+        # Create the PDF
+        doc = SimpleDocTemplate(filename=filename, pagesize=A4)
+        
+        # Define styling
+        style = TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.deepskyblue),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('FONTSIZE', (0, 0), (-1, -1), 7),
+        ])
+
+        groups = list(self._timetable.keys())
+        groups.sort() # Sort groups by alphabetical order
+        tables = []
+        # Set column widths
+        for group in groups:
+            lessons = self._timetable[group]
+
+            data = [["" for _ in range(6)] for _ in range(7)] # Assuming there are 6 periods and 5 days
+            data[0][0] = group.upper()
+
+            for i in range(1, 6):
+                data[0][i] = DAYS[i - 1]
+            for i in range(1, 7):
+                data[i][0] = f'{i}'
+
+            for lesson in lessons:
+                period = lesson['period'] + 1
+                day = lesson['day'] + 1
+
+                subject = lesson['subject']
+                professor = lesson['professor']
+                room = lesson['room']
+
+                data[period][day] = f'{subject}\n{professor}/{room}'
+
+            table = Table(data, colWidths=[20] + [100] * 5) # Create table with a fixed column-width
+            table.setStyle(style)
+            table.keepWithNext = True  # Prevent table from being split across pages
+            tables.append(table)  # Add the table to the elements list
+            tables.append(Spacer(1, 20))  # Add some space between tables
+        
+        doc.build(tables) # Add the table to the document and build it
 
     def _add_entity(self, entity, registered_entities: list) -> None:
         if any(
