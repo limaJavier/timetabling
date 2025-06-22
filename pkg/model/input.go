@@ -11,7 +11,7 @@ import (
 	"github.com/samber/lo"
 )
 
-type RawEntry struct {
+type rawEntry struct {
 	Subject        uint64
 	Professor      uint64
 	Classes        []uint64
@@ -20,12 +20,12 @@ type RawEntry struct {
 	Rooms          []uint64
 }
 
-type RawModelInput struct {
+type rawModelInput struct {
 	Subjects   []Subject
 	Professors []Professor
 	Classes    []Class
 	Rooms      []Room
-	Entries    []RawEntry
+	Entries    []rawEntry
 }
 
 type Subject struct {
@@ -90,12 +90,12 @@ func InputFromJson(file string) (ModelInput, error) {
 		return ModelInput{}, err
 	}
 
-	var rawInput RawModelInput
+	var rawInput rawModelInput
 	mapstructure.Decode(inputJson, &rawInput)
-	return ProcessRawInput(rawInput)
+	return processRawInput(rawInput)
 }
 
-func ProcessRawInput(rawInput RawModelInput) (ModelInput, error) {
+func processRawInput(rawInput rawModelInput) (ModelInput, error) {
 	input := ModelInput{
 		Subjects:   rawInput.Subjects,
 		Professors: rawInput.Professors,

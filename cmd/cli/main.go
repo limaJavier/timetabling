@@ -56,7 +56,8 @@ func main() {
 	strategyPtr := flag.String("strategy", "pure", `Strategy to build the timetable. Allowed values are: 
 - "pure" (All restrictions and assigments are guarenteed by the SAT, therefore a solution will be found if it exists), 
 - "postponed"(Room assigment will be postponed. Correctness is not guaranteed) and 
-- "hybrid"(Room assignment is postponed, but similarity restriction are imposed in the SAT. Correctness is not guaranteed), where \"pure\" is the default`)
+- "hybrid"(Room assignment is postponed, but similarity restriction are imposed in the SAT. Correctness is not guaranteed), 
+where \"pure\" is the default`)
 	solverPtr := flag.String("solver", "kissat", "SAT-Solver to use. Allowed values are: \"kissat\", \"cadical\", \"minisat\", \"cryptominisat\", \"glucosesimp\", \"glucosesyrup\", \"slime\", \"ortoolsat\", where \"kissat\" is the default")
 	roomSimilarityPtr := flag.Float64("similarity", 0.5, "Similarity threshold (between 0 and 1) used by the hybrid strategy, where 0.5 is the default")
 	filePathPtr := flag.String("file", "", "Path to the input file")
