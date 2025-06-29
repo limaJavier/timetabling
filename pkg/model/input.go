@@ -83,9 +83,13 @@ type ModelInput struct {
 }
 
 func InputFromJson(file string) (ModelInput, error) {
-	bytes, _ := os.ReadFile(file)
+	bytes, err := os.ReadFile(file)
+	if err != nil {
+		return ModelInput{}, err
+	}
+
 	var inputJson map[string]any
-	err := json.Unmarshal(bytes, &inputJson)
+	err = json.Unmarshal(bytes, &inputJson)
 	if err != nil {
 		return ModelInput{}, err
 	}

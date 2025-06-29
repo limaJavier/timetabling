@@ -130,11 +130,6 @@ func (evaluator *predicateEvaluatorStandard) RoomSimilar(subjectProfessor1, subj
 			intersection[room] = true
 		}
 	})
-	lo.ForEach(rooms2, func(room uint64, _ int) {
-		if slices.Contains(rooms1, room) {
-			intersection[room] = true
-		}
-	})
 
 	// Calculate Jaccard similarity
 	jaccardSimilarity := float32(len(intersection)) / float32(len(union))
